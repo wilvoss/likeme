@@ -1,0 +1,36 @@
+{
+    "name":"Drop 'n Stop!",
+    "lang":"en-us",
+    "short_name":"DnS",
+    "description":"The puck stops here.",
+    "start_url":"/",
+    "scope":"/",
+    "id":"/",
+    "display":"standalone",
+    "theme_color":"#000000",
+    "background_color":"#87c4a4",
+    "orientation":"any",
+    "publisher": "Big Tent Games",
+    "icons":[
+        {
+            "src":"/images/icon120.png",
+            "sizes":"120x120",
+            "purpose":"any maskable"
+        },
+        {
+            "src":"/images/icon180.png",
+            "sizes":"180x180",
+            "purpose":"any maskable"
+        },
+        {
+            "src":"/images/icon192.png",
+            "sizes":"192x192",
+            "purpose":"any maskable"
+        },
+        {
+            "src":"/images/icon.png",
+            "sizes":"512x512",
+            "purpose":"any maskable"
+        }
+    ]
+ }
