@@ -1,11 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="120" height="120" viewBox="0 0 120 120">
-  <defs>
-    <clipPath id="clip-Circle">
-      <rect width="120" height="120"/>
-    </clipPath>
-  </defs>
-  <g id="Circle" clip-path="url(#clip-Circle)">
-    <rect id="Rectangle_2" data-name="Rectangle 2" width="120" height="120" fill="rgba(255,255,255,0)"/>
-    <circle id="Ellipse_1" data-name="Ellipse 1" cx="49" cy="49" r="49" transform="translate(11 11)"/>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="120" height="120" viewBox="0 0 120 120"><defs><clipPath id="b"><rect width="120" height="120"/></clipPath></defs><g id="a" clip-path="url(#b)"><rect width="120" height="120" fill="rgba(255,255,255,0)"/><circle cx="49" cy="49" r="49" transform="translate(11 11)"/></g></svg>

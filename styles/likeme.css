@@ -1,8 +1,4 @@
 @font-face {
-  font-family: 'Fred';
-  src: url('../fonts/FrederickatheGreat-Regular.ttf');
-}
-@font-face {
   font-family: 'Bungee';
   src: url('../fonts/BungeeShade-Regular.ttf');
 }
@@ -22,6 +18,7 @@
   --shape2: url(images/Circle.svg);
   --shape3: url(images/Triangle.svg);
   --shape4: url(images/Hexagon.svg);
+  --infinity: url(images/Infinity.svg);
 
   --bgImage1: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.5) 20px, rgba(255, 255, 255, 0) 20px, rgba(255, 255, 255, 0) 40px);
   --bgImage2: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.7) 0px, rgba(255, 255, 255, 0.7) 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 4px);
@@ -37,11 +34,9 @@ body {
   overflow: hidden;
   color: var(--appForeground);
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  background: repeating-linear-gradient(90deg, rgb(182, 182, 182) 0px, rgba(182, 182, 182, 1) 40px, rgb(175, 175, 175) 40px, rgba(175, 175, 175, 1) 80px);
+  background: repeating-linear-gradient(90deg, rgb(84 84 84) 0px, rgb(84 84 84) 40px, rgb(70 70 70) 40px, rgb(70 70 70) 80px);
   user-select: none;
   -webkit-user-select: none;
-  -ms-touch-action: manipulation;
-  touch-action: manipulation;
 }
 
 body {
@@ -60,7 +55,7 @@ body {
 .disabled,
 :disabled {
   pointer-events: none;
-  opacity: 0.3;
+  opacity: 0.15;
 }
 
 h1,
@@ -139,7 +134,8 @@ settings.show {
   display: flex;
 }
 
-settings #donate {
+settings #donate,
+button {
   width: 220px;
   height: 70px;
   margin-top: 20px;
@@ -150,11 +146,13 @@ settings #donate {
   font-family: 'Bungee';
   font-size: 1.7em;
   font-weight: bold;
-  color: var(--appForeground);
+  color: var(--color2);
 }
 
 settings #donate:focus,
-settings #donate:active {
+settings #donate:active,
+button:focus,
+button:active {
   transform: translateY(2px);
   box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.7);
 }
@@ -241,6 +239,10 @@ board {
   margin: 30px 0px 50px;
 }
 
+piece {
+  transition: 150ms ease-out all;
+}
+
 piece,
 piece gild {
   width: var(--pieceSize);
@@ -249,15 +251,14 @@ piece gild {
   background-size: 100%;
   background-position: center;
   background-repeat: no-repeat;
-  mask-size: cover;
+  mask-size: var(--pieceSize), var(--pieceSize);
   mask-position: center;
   mask-repeat: no-repeat;
   mask-origin: fill-box;
-  -webkit-mask-size: cover;
+  -webkit-mask-size: var(--pieceSize), var(--pieceSize);
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-position: center;
   -webkit-mask-origin: fill-box;
-  transition: 150ms ease-out all;
   -webkit-backface-visibility: visible; /* Safari */
   backface-visibility: visible;
 }
@@ -278,16 +279,16 @@ piece.selected {
 }
 
 puzzle piece {
-  height: 100px;
-  width: 100px;
+  width: var(--pieceSize);
+  height: var(--pieceSize);
   box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.5);
   border-radius: 8px;
   background: white;
 }
 
 puzzle piece gild {
-  height: 100px;
-  width: 100px;
+  width: var(--pieceSize);
+  height: var(--pieceSize);
 }
 
 puzzle piece:focus,
@@ -321,7 +322,6 @@ puzzle.nope piece {
 
 clears {
   display: block;
-  width: 100px;
   font-family: 'Courier New', Courier, monospace;
 }
 
@@ -330,11 +330,27 @@ me {
   padding: 20px 0px;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 me p {
   padding: 0px 30px 0px;
   width: 33%;
+}
+
+gameover {
+  display: flex;
+  position: absolute;
+  z-index: 100;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  margin-top: 100px;
+}
+
+gameover h1 {
+  font-size: 3em;
 }
 
 @media only screen and (max-width: 500px) {

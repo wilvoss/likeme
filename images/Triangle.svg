@@ -1,11 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="120" height="120" viewBox="0 0 120 120">
-  <defs>
-    <clipPath id="clip-Triangle">
-      <rect width="120" height="120"/>
-    </clipPath>
-  </defs>
-  <g id="Triangle" clip-path="url(#clip-Triangle)">
-    <rect id="Rectangle_2" data-name="Rectangle 2" width="120" height="120" fill="rgba(255,255,255,0)"/>
-    <path id="Polygon_1" data-name="Polygon 1" d="M51,0l51,88H0Z" transform="translate(9 16)"/>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="120" height="120" viewBox="0 0 120 120"><defs><clipPath id="b"><rect width="120" height="120"/></clipPath></defs><g id="a" clip-path="url(#b)"><rect width="120" height="120" fill="rgba(255,255,255,0)"/><path d="M50.673,7.474a5,5,0,0,1,8.654,0l46.328,80.021A5,5,0,0,1,101.328,95H8.672a5,5,0,0,1-4.327-7.505Z" transform="translate(5 9)"/></g></svg>

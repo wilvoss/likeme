@@ -3,14 +3,13 @@
     "lang":"en-us",
     "short_name":"Like Me?",
     "description":"What in this whole world is like me?",
-    "start_url":"",
-    "scope":"",
-    "id":"",
+    "start_url":"/",
+    "scope":"/",
+    "id":"/",
     "display":"standalone",
     "theme_color":"#000000",
     "background_color":"#efefef",
     "orientation":"any",
-    "publisher": "Big Tent Games",
     "icons":[
         {
             "src":"images/icon120.png",

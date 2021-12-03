@@ -1,1 +1,0 @@
-class ModeObject{constructor(e){this.name=null==e.name?"":e.name,this.numberOfPieces=e.numberOfPieces=e.numberOfPieces}}var Modes=[new ModeObject({name:"Easy"}),new ModeObject({name:"Hard"})];

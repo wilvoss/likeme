@@ -31,6 +31,12 @@ var app = new Vue({
       color: Colors[getRandomInt(0, Colors.length)],
       backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)],
     }),
+    infinityPiece: new PieceObject({
+      name: 'infinityPiece',
+      shape: 'var(--infinity)',
+      color: Colors[getRandomInt(0, Colors.length)],
+      backgroundImage: 'var(--bgImage4)',
+    }),
     pieces: [],
     timer: 180000,
     showInstructions: true,
@@ -115,10 +121,17 @@ var app = new Vue({
       if (piece == this.hardPiece && !this.hardPiece.isSelected) {
         this.easyPiece.isSelected = false;
         this.hardPiece.isSelected = true;
+        this.infinityPiece.isSelected = false;
         this.RestartGame();
       } else if (piece == this.easyPiece && !this.easyPiece.isSelected) {
         this.easyPiece.isSelected = true;
         this.hardPiece.isSelected = false;
+        this.infinityPiece.isSelected = false;
+        this.RestartGame();
+      } else if (piece == this.infinityPiece && !this.infinityPiece.isSelected) {
+        this.easyPiece.isSelected = false;
+        this.hardPiece.isSelected = false;
+        this.infinityPiece.isSelected = true;
         this.RestartGame();
       }
       localStorage.setItem('mode', piece.name);
@@ -126,11 +139,12 @@ var app = new Vue({
     UpdateApp() {
       if (this.timer > 0) {
         this.hardPieceChangeCount++;
-        this.timer = this.timer - 100;
+        if (!this.infinityPiece.isSelected) {
+          this.timer = this.timer - 100;
+        }
       } else {
         this.gameOver = true;
       }
-
       if (this.hardPieceChangeCount == 10) {
         if (this.showSettings) {
           this.hardPiece.shape = Shapes[getRandomInt(0, Shapes.length)];
@@ -154,18 +168,18 @@ var app = new Vue({
       var secs = s % 60;
       s = (s - secs) / 60;
       var mins = s % 60;
-      var hrs = (s - mins) / 60;
 
-      return ('0' + mins).slice(-2) + ':' + ('0' + secs).slice(-2) + '.' + ms.toString().slice(0, 1);
+      return mins + ':' + ('0' + secs).slice(-2);
     },
     GetSettings() {
       let mode = localStorage.getItem('mode');
       if (mode != undefined && mode != null) {
         if (mode == 'easyPiece') {
           this.SelectMode(this.easyPiece);
-        }
-        if (mode == 'hardPiece') {
+        } else if (mode == 'hardPiece') {
           this.SelectMode(this.hardPiece);
+        } else if (mode == 'infinityPiece') {
+          this.SelectMode(this.infinityPiece);
         }
       }
     },

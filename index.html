@@ -45,11 +45,11 @@
     <link rel="stylesheet" href="styles/likeme.css" media="screen" />
     <script src="helpers/console-enhancer.js" type='text/javascript'></script>
     <script type="text/javascript">
-      // if ('serviceWorker' in navigator) {
-      //   window.addEventListener('load', function () {
-      //     navigator.serviceWorker.register('/sw.js');
-      //   });
-      // }
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('/sw.js');
+        });
+      }
     </script>
   </head>
 
@@ -58,6 +58,10 @@
       <settings :class="{show: showSettings}">
         <h1>Game mode</h1>
         <modes>
+          <piece @pointerdown="SelectMode(infinityPiece)" :class="{selected: infinityPiece.isSelected}">
+            <gild
+              :style="{maskImage: infinityPiece.shape, webkitMaskImage: infinityPiece.shape, backgroundColor: infinityPiece.color, backgroundImage: infinityPiece.backgroundImage }">
+          </piece>
           <piece @pointerdown="SelectMode(easyPiece)" :class="{selected: easyPiece.isSelected}">
             <gild
               :style="{maskImage: easyPiece.shape, webkitMaskImage: easyPiece.shape, backgroundColor: easyPiece.color, backgroundImage: easyPiece.backgroundImage }">
@@ -87,13 +91,17 @@
         <source src="" id="themeSource" type="audio/aac">
       </audio>
       <stage v-cloak>
+        <gameOver v-if="gameOver">
+          <h1>Game Over</h1>
+          <button @click="RestartGame">Replay?</button>
+        </gameOver>
         <chrome>
           <settingsbutton @click="showSettings = !showSettings">
             {{ showSettings ? '✕&#xFE0E;' : '⚙&#xFE0E;' }}
           </settingsbutton>
           <clears>{{numberOfClears}} clears</clears>
-          <time>{{gameOver ? 'Misses: ' + numberOfFails : MsToTime(timer)}}</time>
-          <quit @click="RestartGame">↺&#xFE0E;</quit>
+          <time v-if="!infinityPiece.isSelected">{{gameOver ? 'Misses: ' + numberOfFails : MsToTime(timer)}}</time>
+          <quit :class="{disabled: gameOver}" @click="gameOver = true">↦&#xFE0E;</quit>
         </chrome>
         <playarea>
           <board :class="{disabled: gameOver}">
@@ -104,9 +112,10 @@
               </gild>
             </piece>
           </board>
-          <me>
-            <p v-show="showInstructions">Which ones are like me in <u>more</u> than 1 way?</p>
-            <puzzle :class="{disabled: gameOver, nope: nope}">
+          <me :class="{disabled: gameOver}">
+            <p @pointerdown="showInstructions=false" v-if="showInstructions">Which ones are like me in <u>more</u>
+              than 1 way?</p>
+            <puzzle :class="{nope: nope}">
               <piece @click="CheckBoard">
                 <gild
                   :style="{maskImage: puzzlePiece.shape, webkitMaskImage: puzzlePiece.shape, backgroundColor: puzzlePiece.color, backgroundImage: puzzlePiece.backgroundImage }">
@@ -114,8 +123,8 @@
                 </gild>
               </piece>
             </puzzle>
-            <p v-show="showInstructions">
-              &lt; Click me to test.</p>
+            <p @pointerdown="showInstructions=false" v-if="showInstructions">
+              &lt; Click to test</p>
           </me>
         </playarea>
         <!-- <controls class="endgame">
