@@ -1,6 +1,6 @@
 @font-face {
-  font-family: 'Bungee';
-  src: url('../fonts/BungeeShade-Regular.ttf');
+  font-family: 'Bangers';
+  src: url('../fonts/Bangers-Regular.ttf');
 }
 
 :root {
@@ -33,7 +33,7 @@ body {
   height: 100%;
   overflow: hidden;
   color: var(--appForeground);
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-family: 'Courier New', Courier, monospace;
   background: repeating-linear-gradient(90deg, rgb(84 84 84) 0px, rgb(84 84 84) 40px, rgb(70 70 70) 40px, rgb(70 70 70) 80px);
   user-select: none;
   -webkit-user-select: none;
@@ -63,15 +63,19 @@ h2,
 h3,
 h4,
 h5 {
-  font-family: 'Bungee';
-  margin: 80px 0px 30px 0px;
+  font-family: 'Bangers';
+  margin: 80px 0px 0px 0px;
   line-height: 100%;
+  font-weight: normal;
+}
+
+h1 {
+  font-size: 3em;
 }
 
 p {
   text-align: center;
-  padding: 20px 30px 0px;
-  margin: 0px;
+  padding: 0px 30px 0px;
 }
 
 app {
@@ -92,7 +96,8 @@ stage {
   box-shadow: 0px 0px 40px black;
 }
 
-settings {
+home,
+howto {
   display: block;
   max-width: 500px;
   width: 100%;
@@ -101,24 +106,20 @@ settings {
   margin: 0px auto;
 }
 
-settingsbutton,
 quit {
-  width: 50px;
   height: 50px;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  justify-content: flex-end;
   font-size: 2em;
-  z-index: 1001;
-  cursor: pointer;
-}
-
-quit {
-  align-items: center;
   z-index: 1;
+  cursor: pointer;
+  align-items: center;
+  padding-right: 20px;
+  width: 90px;
 }
 
-settings {
+home,
+howto {
   position: absolute;
   z-index: 1000;
   background: rgb(243, 243, 243);
@@ -130,39 +131,44 @@ settings {
   flex-direction: column;
 }
 
-settings.show {
+home.show,
+howto.show {
   display: flex;
 }
 
-settings #donate,
+home #donate,
 button {
   width: 220px;
-  height: 70px;
+  height: 50px;
   margin-top: 20px;
   box-shadow: 0px 10px 10px rgb(0 0 0 / 50%);
   border-radius: 8px;
-  background: white;
+  color: white;
   border: none;
-  font-family: 'Bungee';
+  font-family: 'Bangers';
   font-size: 1.7em;
-  font-weight: bold;
-  color: var(--color2);
+  background-color: var(--color2);
 }
 
-settings #donate:focus,
-settings #donate:active,
+button.primary {
+  background-color: var(--color1);
+  color: white;
+}
+
+home #donate:focus,
+home #donate:active,
 button:focus,
 button:active {
   transform: translateY(2px);
   box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.7);
 }
 
-settings a {
+home a {
   text-decoration: none;
   color: hsla(273, 100%, 50%, 1);
 }
 
-settings img {
+home img {
   width: 50%;
   margin: 0px auto;
   display: block;
@@ -170,6 +176,7 @@ settings img {
 
 modes {
   display: flex;
+  margin: 40px 0px 0px;
 }
 
 chrome {
@@ -180,19 +187,13 @@ chrome {
   align-items: center;
 }
 
-/* quit {
-  display: block;
-  width: 50px;
-  text-align: right;
-  height: 40px;
-  font-size: 2em;
-  padding: 0px 12px 24px 12px;
-  cursor: pointer;
-} */
-
 version {
   display: block;
   font-size: 0.8em;
+  width: calc(100% - 40px);
+  padding: 0px 20px;
+  position: absolute;
+  bottom: 20px;
 }
 
 logo {
@@ -323,6 +324,7 @@ puzzle.nope piece {
 clears {
   display: block;
   font-family: 'Courier New', Courier, monospace;
+  padding: 0px 20px;
 }
 
 me {

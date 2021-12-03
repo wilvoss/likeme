@@ -13,9 +13,6 @@ var app = new Vue({
   el: '#app',
   data: {
     gameOver: false,
-    boardCount: 0,
-    boardMaxCount: 20,
-    showSettings: false,
     piecesCount: 16,
     puzzlePiece: { shape: 'square' },
     easyPiece: new PieceObject({
@@ -39,7 +36,9 @@ var app = new Vue({
     }),
     pieces: [],
     timer: 180000,
+    showHome: true,
     showInstructions: true,
+    showHowTo: false,
     numberOfClears: 0,
     nope: false,
     numberOfFails: 0,
@@ -97,7 +96,6 @@ var app = new Vue({
         this.pieces.push(piece);
       }
       this.puzzlePiece = new PieceObject({ shape: Shapes[getRandomInt(0, Shapes.length)], color: Colors[getRandomInt(0, Colors.length)], backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)] });
-      this.boardCount++;
     },
     TogglePieceSelection(piece) {
       if (!this.gameOver) {
@@ -115,6 +113,7 @@ var app = new Vue({
       this.timer = 180000;
       this.numberOfFails = 0;
       this.numberOfClears = 0;
+      this.showHome = false;
       this.NewGame();
     },
     SelectMode(piece) {
@@ -122,17 +121,14 @@ var app = new Vue({
         this.easyPiece.isSelected = false;
         this.hardPiece.isSelected = true;
         this.infinityPiece.isSelected = false;
-        this.RestartGame();
       } else if (piece == this.easyPiece && !this.easyPiece.isSelected) {
         this.easyPiece.isSelected = true;
         this.hardPiece.isSelected = false;
         this.infinityPiece.isSelected = false;
-        this.RestartGame();
       } else if (piece == this.infinityPiece && !this.infinityPiece.isSelected) {
         this.easyPiece.isSelected = false;
         this.hardPiece.isSelected = false;
         this.infinityPiece.isSelected = true;
-        this.RestartGame();
       }
       localStorage.setItem('mode', piece.name);
     },
@@ -146,7 +142,7 @@ var app = new Vue({
         this.gameOver = true;
       }
       if (this.hardPieceChangeCount == 10) {
-        if (this.showSettings) {
+        if (this.showHome) {
           this.hardPiece.shape = Shapes[getRandomInt(0, Shapes.length)];
           this.hardPiece.color = Colors[getRandomInt(0, Colors.length)];
           this.hardPiece.backgroundImage = BackgroundImages[getRandomInt(0, BackgroundImages.length)];
@@ -170,6 +166,12 @@ var app = new Vue({
       var mins = s % 60;
 
       return mins + ':' + ('0' + secs).slice(-2);
+    },
+    EndGame() {
+      let confirm = window.confirm('Are you sure you want to quit?');
+      if (confirm) {
+        this.gameOver = true;
+      }
     },
     GetSettings() {
       let mode = localStorage.getItem('mode');

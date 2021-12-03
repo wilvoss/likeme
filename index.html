@@ -55,8 +55,9 @@
 
   <body>
     <app id="app">
-      <settings :class="{show: showSettings}">
-        <h1>Game mode</h1>
+      <home :class="{show: showHome}">
+        <h1>Like Me?</h1>
+        <p>A game of matching likenesses.</p>
         <modes>
           <piece @pointerdown="SelectMode(infinityPiece)" :class="{selected: infinityPiece.isSelected}">
             <gild
@@ -71,8 +72,11 @@
               :style="{maskImage: hardPiece.shape, webkitMaskImage: hardPiece.shape, backgroundColor: hardPiece.color, backgroundImage: hardPiece.backgroundImage }">
           </piece>
         </modes>
-        <h1>Published by</h1>
-        <a href="https://bigtentgames.com" target="_blank"><img src="images/big_tent_logo.svg" /></a>
+        <p>Game mode: {{ easyPiece.isSelected ? "Normal" : hardPiece.isSelected ? "Hard" : "Infinite"}}</p>
+        <button class="primary" @click="RestartGame">Play</button>
+        <button @click="showHowTo = true">How to play</button>
+
+
 
         <form action="https://www.paypal.com/donate" method="post" target="_blank">
           <input type="hidden" name="business" value="ZLBYQH4GJJL7J" />
@@ -86,22 +90,34 @@
           </button>
         </form>
 
-      </settings>
+      </home>
+      <howto :class="{show: showHowTo}">
+        <h1>How to play</h1>
+        <p>This is me.</p>
+        <img src="images/me.png" />
+        <p>Select all of the pieces from the board that share at least 2 attributes with me.
+        </p>
+        <img style="width: 50%" src="images/pieces.png" />
+        <p>Then click me to check!</p>
+        <button @click="showHowTo = false">Okay</button>
+
+      </howto>
       <audio id="themeMusic" loop>
         <source src="" id="themeSource" type="audio/aac">
       </audio>
       <stage v-cloak>
         <gameOver v-if="gameOver">
           <h1>Game Over</h1>
-          <button @click="RestartGame">Replay?</button>
+          <button class="primary" @click="RestartGame">Replay?</button>
+          <button @click="showHome = true">Home</button>
         </gameOver>
         <chrome>
-          <settingsbutton @click="showSettings = !showSettings">
-            {{ showSettings ? '✕&#xFE0E;' : '⚙&#xFE0E;' }}
-          </settingsbutton>
+          <!-- <settingsbutton @click="showHome = !showHome">
+            {{ showHome ? '✕&#xFE0E;' : '⚙&#xFE0E;' }}
+          </settingsbutton> -->
           <clears>{{numberOfClears}} clears</clears>
           <time v-if="!infinityPiece.isSelected">{{gameOver ? 'Misses: ' + numberOfFails : MsToTime(timer)}}</time>
-          <quit :class="{disabled: gameOver}" @click="gameOver = true">↦&#xFE0E;</quit>
+          <quit :class="{disabled: gameOver}" @click="EndGame">↦&#xFE0E;</quit>
         </chrome>
         <playarea>
           <board :class="{disabled: gameOver}">
@@ -113,30 +129,20 @@
             </piece>
           </board>
           <me :class="{disabled: gameOver}">
-            <p @pointerdown="showInstructions=false" v-if="showInstructions">Which ones are like me in <u>more</u>
-              than 1 way?</p>
             <puzzle :class="{nope: nope}">
               <piece @click="CheckBoard">
                 <gild
                   :style="{maskImage: puzzlePiece.shape, webkitMaskImage: puzzlePiece.shape, backgroundColor: puzzlePiece.color, backgroundImage: puzzlePiece.backgroundImage }">
-
                 </gild>
               </piece>
             </puzzle>
-            <p @pointerdown="showInstructions=false" v-if="showInstructions">
-              &lt; Click to test</p>
           </me>
         </playarea>
-        <!-- <controls class="endgame">
-          <button id="refreshApp" class="action" style="width: 100%; position: relative; margin: 0px;"
-            @click="RestartGame">New Game</button>
-          <button id="shareApp" class="action secondary"
-            style="width: 100%; position: relative; margin: 10px 0px 0px 0px;" @click="Share">Share App</button>
-        </controls> -->
+        <version>1.0</version>
       </stage>
     </app>
     <script id="vue-framework" src="helpers/vue.min.js" type='text/javascript'></script>
-    <script id="vue-framework" src="models/PieceObject.js" type='text/javascript'></script>
+    <script src="models/PieceObject.js" type='text/javascript'></script>
     <script src="scripts/likeme.js" type='text/javascript'></script>
   </body>
 
