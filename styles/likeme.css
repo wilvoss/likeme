@@ -1,7 +1,32 @@
+@font-face {
+  font-family: 'Fred';
+  src: url('../fonts/FrederickatheGreat-Regular.ttf');
+}
+@font-face {
+  font-family: 'Bungee';
+  src: url('../fonts/BungeeShade-Regular.ttf');
+}
+
 :root {
-  --appBackground: hsl(148, 34%, 65%);
-  --appForeground: hsl(148, 41%, 17%);
+  --appBackground: hsl(0, 0%, 100%);
+  --appForeground: hsl(0, 0%, 11%);
   --targetX: 50%;
+
+  --pieceSize: 110px;
+
+  --color1: rgb(92, 36, 80);
+  --color2: rgb(68, 157, 168);
+  --color3: rgb(198, 207, 64);
+
+  --shape1: url(images/Square.svg);
+  --shape2: url(images/Circle.svg);
+  --shape3: url(images/Triangle.svg);
+  --shape4: url(images/Hexagon.svg);
+
+  --bgImage1: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.5) 20px, rgba(255, 255, 255, 0) 20px, rgba(255, 255, 255, 0) 40px);
+  --bgImage2: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.7) 0px, rgba(255, 255, 255, 0.7) 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 4px);
+  --bgImage3: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.5) 10px, rgba(245, 63, 63, 0) 10px, rgba(255, 255, 255, 0) 20px);
+  --bgImage4: none;
 }
 html,
 body {
@@ -11,10 +36,20 @@ body {
   height: 100%;
   overflow: hidden;
   color: var(--appForeground);
-  font-family: 'Courier New', Courier, monospace;
-  background: var(--appBackground);
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  background: repeating-linear-gradient(90deg, rgb(182, 182, 182) 0px, rgba(182, 182, 182, 1) 40px, rgb(175, 175, 175) 40px, rgba(175, 175, 175, 1) 80px);
   user-select: none;
   -webkit-user-select: none;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+}
+
+body {
+  max-width: 500px;
+  height: 100%;
+  margin: 0px auto;
+  overflow: visible;
+  background: rgb(240, 240, 240);
 }
 
 [v-cloak] {
@@ -28,5 +63,282 @@ body {
   opacity: 0.3;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: 'Bungee';
+  margin: 80px 0px 30px 0px;
+  line-height: 100%;
+}
+
+p {
+  text-align: center;
+  padding: 20px 30px 0px;
+  margin: 0px;
+}
+
+app {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  /* align-items: center;
+  flex-direction: column; */
+  height: 100%;
+}
+
+stage {
+  display: flex;
+  max-width: 500px;
+  margin: 0px auto;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-shadow: 0px 0px 40px black;
+}
+
+settings {
+  display: block;
+  max-width: 500px;
+  width: 100%;
+  height: 100%;
+  background: white;
+  margin: 0px auto;
+}
+
+settingsbutton,
+quit {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  font-size: 2em;
+  z-index: 1001;
+  cursor: pointer;
+}
+
+quit {
+  align-items: center;
+  z-index: 1;
+}
+
+settings {
+  position: absolute;
+  z-index: 1000;
+  background: rgb(243, 243, 243);
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
+  display: none;
+  align-items: center;
+  align-content: center;
+  justify-content: flex-start;
+  flex-direction: column;
+}
+
+settings.show {
+  display: flex;
+}
+
+settings #donate {
+  width: 220px;
+  height: 70px;
+  margin-top: 20px;
+  box-shadow: 0px 10px 10px rgb(0 0 0 / 50%);
+  border-radius: 8px;
+  background: white;
+  border: none;
+  font-family: 'Bungee';
+  font-size: 1.7em;
+  font-weight: bold;
+  color: var(--appForeground);
+}
+
+settings #donate:focus,
+settings #donate:active {
+  transform: translateY(2px);
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.7);
+}
+
+settings a {
+  text-decoration: none;
+  color: hsla(273, 100%, 50%, 1);
+}
+
+settings img {
+  width: 50%;
+  margin: 0px auto;
+  display: block;
+}
+
+modes {
+  display: flex;
+}
+
+chrome {
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* quit {
+  display: block;
+  width: 50px;
+  text-align: right;
+  height: 40px;
+  font-size: 2em;
+  padding: 0px 12px 24px 12px;
+  cursor: pointer;
+} */
+
+version {
+  display: block;
+  font-size: 0.8em;
+}
+
+logo {
+  display: inline-block;
+  position: absolute;
+  mask-image: url(../images/big_tent_logo.svg);
+  -webkit-mask-image: url(../images/big_tent_logo.svg);
+  background: hsl(0, 0%, 82%);
+  margin-top: 200px;
+  width: 100%;
+  max-width: 500px;
+  height: 300px;
+  mask-size: 290px;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-size: 200px;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+
+time {
+  pointer-events: none;
+  display: block;
+  text-align: center;
+  max-width: 460px;
+  /* margin-top: 30px; */
+  font-family: 'Courier New', Courier, monospace;
+}
+
+puzzle {
+  display: flex;
+  justify-content: center;
+}
+
+board {
+  display: flex;
+  width: 100%;
+  min-height: 100px;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-content: stretch;
+  justify-content: space-evenly;
+  align-items: stretch;
+  margin: 30px 0px 50px;
+}
+
+piece,
+piece gild {
+  width: var(--pieceSize);
+  height: var(--pieceSize);
+  display: block;
+  background-size: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  mask-size: cover;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-origin: fill-box;
+  -webkit-mask-size: cover;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-origin: fill-box;
+  transition: 150ms ease-out all;
+  -webkit-backface-visibility: visible; /* Safari */
+  backface-visibility: visible;
+}
+
+piece gild {
+  width: var(--pieceSize);
+  height: var(--pieceSize);
+  display: block;
+}
+
+piece gild img {
+  opacity: 0;
+}
+
+piece.selected {
+  box-shadow: inset 0px 0px 10px hsla(0, 0%, 0%, 0.5);
+  background: hsl(0, 0%, 100%);
+}
+
+puzzle piece {
+  height: 100px;
+  width: 100px;
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  background: white;
+}
+
+puzzle piece gild {
+  height: 100px;
+  width: 100px;
+}
+
+puzzle piece:focus,
+puzzle piece:active {
+  transform: translateY(2px);
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.7);
+}
+
+puzzle.nope piece {
+  animation: nope 0.15s linear 0s 3;
+  -webkit-animation: nope 0.15s linear 0s 3;
+}
+
+@keyframes nope {
+  33% {
+    transform: translate(3px);
+  }
+  66% {
+    transform: translate(-3px);
+  }
+}
+
+@-webkit-keyframes nope {
+  33% {
+    transform: translate(3px);
+  }
+  66% {
+    transform: translate(-3px);
+  }
+}
+
+clears {
+  display: block;
+  width: 100px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+me {
+  margin-top: 20px;
+  padding: 20px 0px;
+  display: flex;
+  align-items: center;
+}
+
+me p {
+  padding: 0px 30px 0px;
+  width: 33%;
+}
+
 @media only screen and (max-width: 500px) {
+  quit {
+    align-items: flex-start;
+  }
 }

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="120" height="120" viewBox="0 0 120 120">
+  <defs>
+    <clipPath id="clip-Hexagon">
+      <rect width="120" height="120"/>
+    </clipPath>
+  </defs>
+  <g id="Hexagon" clip-path="url(#clip-Hexagon)">
+    <rect id="Rectangle_2" data-name="Rectangle 2" width="120" height="120" fill="rgba(255,255,255,0)"/>
+    <path id="Polygon_1" data-name="Polygon 1" d="M76.5,0,102,44,76.5,88h-51L0,44,25.5,0Z" transform="translate(9 16)"/>
+  </g>
+</svg>

@@ -1,3 +1,6 @@
+/// <reference path="../models/PieceObject.js" />
+/// <reference path="../helpers/console-enhancer.js" />
+
 // if (!UseDebug) {
 Vue.config.devtools = false;
 Vue.config.debug = false;
@@ -9,19 +12,92 @@ Vue.config.ignoredElements = ['app', 'page', 'navbar', 'settings', 'splash', 'sp
 var app = new Vue({
   el: '#app',
   data: {
-    speed: 6,
-    dropMaxCount: 3,
-    dropCount: 2,
-    dropTotalCount: 100,
-    isSuccess: false,
-    score: 0,
+    gameOver: false,
+    boardCount: 0,
+    boardMaxCount: 20,
     showSettings: false,
-    results: [],
-    modes: Modes,
-    currentMode: Modes[1],
+    piecesCount: 16,
+    puzzlePiece: { shape: 'square' },
+    easyPiece: new PieceObject({
+      name: 'easyPiece',
+      shape: Shapes[getRandomInt(0, Shapes.length)],
+      color: Colors[getRandomInt(0, Colors.length)],
+      backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)],
+      isSelected: true,
+    }),
+    hardPiece: new PieceObject({
+      name: 'hardPiece',
+      shape: Shapes[getRandomInt(0, Shapes.length)],
+      color: Colors[getRandomInt(0, Colors.length)],
+      backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)],
+    }),
+    pieces: [],
+    timer: 180000,
+    showInstructions: true,
+    numberOfClears: 0,
+    nope: false,
+    numberOfFails: 0,
+    hardPieceChangeCount: 0,
+    r: document.querySelector(':root'),
+    // modes: Modes,
+    // currentMode: Modes[1],
   },
   methods: {
-    UpdateApp() {},
+    NewGame() {
+      this.NewBoard();
+      this.gameOver = false;
+    },
+    CheckBoard() {
+      this.nope = false;
+      if (!this.gameOver) {
+        let perfectMatch = true;
+        this.pieces.forEach((piece) => {
+          let likeness = 0;
+          if (piece.color == this.puzzlePiece.color) {
+            likeness++;
+          }
+          if (piece.shape == this.puzzlePiece.shape) {
+            likeness++;
+          }
+          if (piece.backgroundImage == this.puzzlePiece.backgroundImage) {
+            likeness++;
+          }
+          if ((likeness >= 2 && !piece.isSelected) || (likeness < 2 && piece.isSelected)) {
+            perfectMatch = false;
+          }
+        });
+        log(perfectMatch);
+        if (perfectMatch) {
+          this.NewBoard();
+          this.numberOfClears++;
+        } else {
+          this.numberOfFails++;
+          window.setTimeout(function () {
+            app.nope = true;
+          }, 5);
+        }
+      }
+    },
+    NewBoard() {
+      this.r.style.setProperty('--pieceSize', window.innerWidth < 500 ? window.innerWidth / 4 + 'px' : 500 / 4 + 'px');
+      this.pieces = [];
+      for (let x = 0; x < this.piecesCount; x++) {
+        let piece = new PieceObject({
+          shape: Shapes[getRandomInt(0, Shapes.length)],
+          color: Colors[getRandomInt(0, Colors.length)],
+          backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)],
+          isSelected: false,
+        });
+        this.pieces.push(piece);
+      }
+      this.puzzlePiece = new PieceObject({ shape: Shapes[getRandomInt(0, Shapes.length)], color: Colors[getRandomInt(0, Colors.length)], backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)] });
+      this.boardCount++;
+    },
+    TogglePieceSelection(piece) {
+      if (!this.gameOver) {
+        piece.isSelected = !piece.isSelected;
+      }
+    },
     Share() {
       navigator.share({
         title: 'Like Me?',
@@ -29,12 +105,77 @@ var app = new Vue({
         url: 'https://likeme.games',
       });
     },
+    RestartGame() {
+      this.timer = 180000;
+      this.numberOfFails = 0;
+      this.numberOfClears = 0;
+      this.NewGame();
+    },
+    SelectMode(piece) {
+      if (piece == this.hardPiece && !this.hardPiece.isSelected) {
+        this.easyPiece.isSelected = false;
+        this.hardPiece.isSelected = true;
+        this.RestartGame();
+      } else if (piece == this.easyPiece && !this.easyPiece.isSelected) {
+        this.easyPiece.isSelected = true;
+        this.hardPiece.isSelected = false;
+        this.RestartGame();
+      }
+      localStorage.setItem('mode', piece.name);
+    },
+    UpdateApp() {
+      if (this.timer > 0) {
+        this.hardPieceChangeCount++;
+        this.timer = this.timer - 100;
+      } else {
+        this.gameOver = true;
+      }
+
+      if (this.hardPieceChangeCount == 10) {
+        if (this.showSettings) {
+          this.hardPiece.shape = Shapes[getRandomInt(0, Shapes.length)];
+          this.hardPiece.color = Colors[getRandomInt(0, Colors.length)];
+          this.hardPiece.backgroundImage = BackgroundImages[getRandomInt(0, BackgroundImages.length)];
+        }
+        if (this.hardPiece.isSelected) {
+          let index = getRandomInt(0, this.pieces.length);
+          let rando = this.pieces[index];
+          rando.shape = Shapes[getRandomInt(0, Shapes.length)];
+          rando.color = Colors[getRandomInt(0, Colors.length)];
+          rando.backgroundImage = BackgroundImages[getRandomInt(0, BackgroundImages.length)];
+        }
+
+        this.hardPieceChangeCount = 0;
+      }
+    },
+    MsToTime(s) {
+      var ms = s % 1000;
+      s = (s - ms) / 1000;
+      var secs = s % 60;
+      s = (s - secs) / 60;
+      var mins = s % 60;
+      var hrs = (s - mins) / 60;
+
+      return ('0' + mins).slice(-2) + ':' + ('0' + secs).slice(-2) + '.' + ms.toString().slice(0, 1);
+    },
+    GetSettings() {
+      let mode = localStorage.getItem('mode');
+      if (mode != undefined && mode != null) {
+        if (mode == 'easyPiece') {
+          this.SelectMode(this.easyPiece);
+        }
+        if (mode == 'hardPiece') {
+          this.SelectMode(this.hardPiece);
+        }
+      }
+    },
   },
 
   mounted() {
+    this.NewGame();
     this.GetSettings();
-    this.ReadyStage();
-    this.updateInterval = window.setInterval(this.UpdateApp, 1);
+    // this.ReadyStage();
+    this.updateInterval = window.setInterval(this.UpdateApp, 100);
   },
 
   computed: {},

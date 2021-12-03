@@ -1,1 +1,0 @@
-class ResultObject{constructor(t){this.count=t.count,this.difficulty=null==t.difficulty?"easy":t.difficulty,this.attempts=null==t.attempts?4:t.attempts,this.success=null!=t.success&&t.success,this.deltas=null==t.deltas?[]:t.deltas,this.value=null==t.value?0:t.value,this.ky=t.ky,this.kx=t.kx,this.kh=t.kh,this.ty=t.ty,this.th=t.th}}
