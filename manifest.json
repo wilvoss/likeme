@@ -2,7 +2,7 @@
     "name":"Like Me?",
     "lang":"en-us",
     "short_name":"Like Me?",
-    "description":"What in this whole world is like me?",
+    "description":"A game of matching likenesses.",
     "start_url":"/",
     "scope":"/",
     "id":"/",
