@@ -22,7 +22,7 @@
 
   --bgImage1: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.5) 20px, rgba(255, 255, 255, 0) 20px, rgba(255, 255, 255, 0) 40px);
   --bgImage2: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.7) 0px, rgba(255, 255, 255, 0.7) 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 4px);
-  --bgImage3: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.5) 10px, rgba(245, 63, 63, 0) 10px, rgba(255, 255, 255, 0) 20px);
+  --bgImage3: repeating-radial-gradient(circle, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.5) 10px, rgba(245, 63, 63, 0) 10px, rgba(255, 255, 255, 0) 20px);
   --bgImage4: none;
 }
 html,
@@ -33,7 +33,7 @@ body {
   height: 100%;
   overflow: hidden;
   color: var(--appForeground);
-  font-family: 'Courier New', Courier, monospace;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: repeating-linear-gradient(90deg, rgb(84 84 84) 0px, rgb(84 84 84) 40px, rgb(70 70 70) 40px, rgb(70 70 70) 80px);
   user-select: none;
   -webkit-user-select: none;
@@ -55,7 +55,7 @@ body {
 .disabled,
 :disabled {
   pointer-events: none;
-  opacity: 0.15;
+  opacity: 0.1;
 }
 
 h1,
@@ -230,7 +230,7 @@ time {
   text-align: center;
   max-width: 460px;
   /* margin-top: 30px; */
-  font-family: 'Courier New', Courier, monospace;
+  /* font-family: 'Courier New', Courier, monospace; */
 }
 
 puzzle {
@@ -333,8 +333,9 @@ puzzle.nope piece {
 
 clears {
   display: block;
-  font-family: 'Courier New', Courier, monospace;
+  /* font-family: 'Courier New', Courier, monospace; */
   padding: 0px 20px;
+  width: 70px;
 }
 
 me {

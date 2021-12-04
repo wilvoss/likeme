@@ -122,7 +122,7 @@
             {{ showHome ? '✕&#xFE0E;' : '⚙&#xFE0E;' }}
           </settingsbutton> -->
           <clears>{{numberOfClears}} clears</clears>
-          <time v-if="!infinityPiece.isSelected">{{gameOver ? 'Misses: ' + numberOfFails : MsToTime(timer)}}</time>
+          <time>{{gameOver ? 'Misses: ' + numberOfFails : MsToTime(timer)}}</time>
           <quit :class="{disabled: gameOver}" @click="EndGame">↦&#xFE0E;</quit>
         </chrome>
         <playarea>
@@ -144,8 +144,8 @@
             </puzzle>
           </me>
         </playarea>
-        <version>1.0</version>
       </stage>
+      <version>1.1</version>
     </app>
     <script id="vue-framework" src="helpers/vue.min.js" type='text/javascript'></script>
     <script src="models/PieceObject.js" type='text/javascript'></script>

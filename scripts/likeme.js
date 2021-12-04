@@ -110,7 +110,7 @@ var app = new Vue({
       });
     },
     RestartGame() {
-      this.timer = 180000;
+      this.timer = this.infinityPiece.isSelected ? 0 : 180000;
       this.numberOfFails = 0;
       this.numberOfClears = 0;
       this.showHome = false;
@@ -133,10 +133,12 @@ var app = new Vue({
       localStorage.setItem('mode', piece.name);
     },
     UpdateApp() {
-      if (this.timer > 0) {
+      if (this.timer > 0 || (this.infinityPiece.isSelected && !this.gameOver)) {
         this.hardPieceChangeCount++;
         if (!this.infinityPiece.isSelected) {
           this.timer = this.timer - 100;
+        } else {
+          this.timer = this.timer + 100;
         }
       } else {
         this.gameOver = true;
@@ -164,8 +166,12 @@ var app = new Vue({
       var secs = s % 60;
       s = (s - secs) / 60;
       var mins = s % 60;
+      var hrs = (s - mins) / 60;
 
-      return mins + ':' + ('0' + secs).slice(-2);
+      var secstring = mins != 0 || hrs != 0 ? ('0' + secs).slice(-2) : secs;
+      var minstring = mins != 0 ? mins + '∶' : '';
+      var hrsstring = hrs != 0 ? hrs + '∶' : '';
+      return this.infinityPiece.isSelected ? hrsstring + minstring + secstring : minstring + secstring;
     },
     EndGame() {
       let confirm = window.confirm('Are you sure you want to quit?');
