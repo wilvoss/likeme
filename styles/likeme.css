@@ -200,9 +200,10 @@ version {
   display: block;
   font-size: 0.8em;
   width: calc(100% - 40px);
-  padding: 0px 20px;
+  padding: 0px;
   position: absolute;
-  bottom: 20px;
+  bottom: 10px;
+  left: 10px;
 }
 
 logo {
