@@ -115,7 +115,7 @@ quit {
   cursor: pointer;
   align-items: center;
   padding-right: 20px;
-  width: 90px;
+  width: 110px;
 }
 
 home,
@@ -335,7 +335,7 @@ clears {
   display: block;
   /* font-family: 'Courier New', Courier, monospace; */
   padding: 0px 20px;
-  width: 70px;
+  width: 90px;
 }
 
 me {
