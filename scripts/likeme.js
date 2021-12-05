@@ -42,7 +42,9 @@ var app = new Vue({
     numberOfClears: 0,
     nope: false,
     numberOfFails: 0,
+    currentMisses: 0,
     hardPieceChangeCount: 0,
+    flyaway: false,
     r: document.querySelector(':root'),
     // modes: Modes,
     // currentMode: Modes[1],
@@ -73,9 +75,17 @@ var app = new Vue({
         });
         log(perfectMatch);
         if (perfectMatch) {
-          this.NewBoard();
+          if (this.currentMisses == 0 && !this.infinityPiece.isSelected) {
+            this.timer = this.timer + 3000;
+            this.flyaway = true;
+            window.setTimeout(function () {
+              app.flyaway = false;
+            }, 5);
+          }
           this.numberOfClears++;
+          this.NewBoard();
         } else {
+          this.currentMisses++;
           this.numberOfFails++;
           window.setTimeout(function () {
             app.nope = true;
@@ -86,6 +96,7 @@ var app = new Vue({
     NewBoard() {
       this.r.style.setProperty('--pieceSize', window.innerWidth < 500 ? window.innerWidth / 4 + 'px' : 500 / 4 + 'px');
       this.pieces = [];
+      this.currentMisses = 0;
       for (let x = 0; x < this.piecesCount; x++) {
         let piece = new PieceObject({
           shape: Shapes[getRandomInt(0, Shapes.length)],

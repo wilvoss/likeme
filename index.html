@@ -99,13 +99,17 @@
           <quit @pointerdown="showHowTo = false">✕&#xFE0E;</quit>
         </chrome>
         <h1>How to play</h1>
-        <p>This is me.</p>
-        <img src="images/me.png" @pointerdown="showHowTo = false" />
-        <p>Select board pieces that share at least 2 attributes with me (color, shape, pattern).
+        <p style="margin: 1.5em 30px .5em">This is me.</p>
+        <!-- <img src="images/me.png" @pointerdown="showHowTo = false" /> -->
+        <piece>
+          <gild
+            style="-webkit-mask-image: var(--shape1); background-color: var(--color2); background-image: var(--bgImage1);">
+          </gild>
+        </piece>
+        <p>Select all board pieces that share at least 2 attributes with me (color, shape, pattern).
         </p>
         <img style="width: 50%" src="images/pieces.png" />
         <p>Then click me to check!</p>
-        <button @click="showHowTo = false">Okay</button>
 
       </howto>
       <audio id="themeMusic" loop>
@@ -122,7 +126,10 @@
             {{ showHome ? '✕&#xFE0E;' : '⚙&#xFE0E;' }}
           </settingsbutton> -->
           <clears>{{numberOfClears}} clears</clears>
-          <time>{{gameOver ? 'Misses: ' + numberOfFails : MsToTime(timer)}}</time>
+          <time>{{gameOver ? 'Misses: ' + numberOfFails : MsToTime(timer)}}
+            <addtime :class="{flyaway: flyaway}">+3 sec</addtime>
+          </time>
+
           <quit :class="{disabled: gameOver}" @click="EndGame">↦&#xFE0E;</quit>
         </chrome>
         <playarea>
