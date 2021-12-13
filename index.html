@@ -126,7 +126,7 @@
         <playarea>
           <board :class="{disabled: gameOver}">
             <piece v-for="piece in pieces" @pointerdown="TogglePieceSelection(piece)"
-              :class="{selected: piece.isSelected}">
+              :class="{selected: piece.isSelected, dropped: piece.hasDropped}">
               <gild
                 :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color, backgroundImage: piece.backgroundImage }">
               </gild>
@@ -143,7 +143,7 @@
           </me>
         </playarea>
       </stage>
-      <version>2.0</version>
+      <version>2.1</version>
     </app>
     <script id="vue-framework" src="helpers/vue.min.js" type='text/javascript'></script>
     <script src="models/PieceObject.js" type='text/javascript'></script>

@@ -5,6 +5,8 @@ class PieceObject {
     this.color = spec.color == undefined ? 'var(--color1)' : spec.color;
     this.backgroundImage = spec.backgroundImage == undefined ? 'var(--bgImage1)' : spec.backgroundImage;
     this.isSelected = spec.isSelected == undefined ? false : spec.isSelected;
+    this.hasDropped = spec.hasDropped == undefined ? false : spec.hasDropped;
+    this.delay = spec.delay == undefined ? 0 : spec.delay;
   }
 }
 

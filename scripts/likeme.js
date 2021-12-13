@@ -73,7 +73,6 @@ var app = new Vue({
             perfectMatch = false;
           }
         });
-        log(perfectMatch);
         if (perfectMatch) {
           if (this.currentMisses == 0 && !this.infinityPiece.isSelected) {
             this.timer = this.timer + 3000;
@@ -103,8 +102,14 @@ var app = new Vue({
           color: Colors[getRandomInt(0, Colors.length)],
           backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)],
           isSelected: false,
+          hasDropped: false,
+          delay: (this.piecesCount - x) * 15,
         });
+        log(x + ' delay = ' + piece.delay);
         this.pieces.push(piece);
+        window.setTimeout(function () {
+          piece.hasDropped = true;
+        }, piece.delay);
       }
       this.puzzlePiece = new PieceObject({ shape: Shapes[getRandomInt(0, Shapes.length)], color: Colors[getRandomInt(0, Colors.length)], backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)] });
     },
