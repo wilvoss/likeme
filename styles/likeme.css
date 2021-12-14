@@ -22,7 +22,7 @@
 
   --bgImage1: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.5) 20px, rgba(255, 255, 255, 0) 20px, rgba(255, 255, 255, 0) 40px);
   --bgImage2: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.7) 0px, rgba(255, 255, 255, 0.7) 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 4px);
-  --bgImage3: repeating-radial-gradient(circle, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.5) 10px, rgba(245, 63, 63, 0) 10px, rgba(255, 255, 255, 0) 20px);
+  --bgImage3: repeating-radial-gradient(circle, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.5) 15%, rgba(245, 63, 63, 0) 15%, rgba(255, 255, 255, 0) 30%);
   --bgImage4: none;
 }
 html,
@@ -138,6 +138,7 @@ howto.show {
 
 home #donate,
 button {
+  cursor: pointer;
   width: 220px;
   height: 50px;
   margin-top: 20px;
@@ -207,6 +208,7 @@ version {
 }
 
 logo {
+  cursor: pointer;
   display: block;
   background: url(../images/big_tent_logo.svg);
   width: 130px;
@@ -266,6 +268,7 @@ piece {
   /* opacity: 0; */
   transform: translateY(-600px);
   transition: 00ms ease-out all;
+  cursor: pointer;
 }
 
 piece.dropped,
