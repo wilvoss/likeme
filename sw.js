@@ -1,6 +1,6 @@
 // the cache version gets updated every time there is a new deployment
-const CACHE_VERSION = 2.3;
-const CURRENT_CACHE = `cache-${CACHE_VERSION}`;
+const CACHE_VERSION = 2.2;
+const CURRENT_CACHE = `main-${CACHE_VERSION}`;
 
 // these are the routes we are going to cache for offline support
 const cacheFiles = [
@@ -15,7 +15,6 @@ const cacheFiles = [
   'images/icon120.png',
   'images/pieces.png',
   'models/PieceObject.js',
-  'audio/phft4.mp3',
   'fonts/Bangers-Regular.ttf',
   'images/big_tent_logo.svg',
   'images/Square.svg',
@@ -25,7 +24,6 @@ const cacheFiles = [
   'images/Circle.svg',
   'helpers/vue.min.js',
   'helpers/console-enhancer.js',
-  'helpers/howler-min.js',
   'styles/likeme.css',
   'scripts/likeme.js',
   'index.html',

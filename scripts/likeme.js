@@ -1,6 +1,5 @@
 /// <reference path="../models/PieceObject.js" />
 /// <reference path="../helpers/console-enhancer.js" />
-/// <reference path="../helpers/howler.js" />
 
 // if (!UseDebug) {
 Vue.config.devtools = false;
@@ -102,16 +101,11 @@ var app = new Vue({
           backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)],
           isSelected: false,
           hasDropped: false,
-          delay: (this.piecesCount - x) * 45,
+          delay: (this.piecesCount - x) * 15,
         });
+        log(x + ' delay = ' + piece.delay);
         this.pieces.push(piece);
         window.setTimeout(function () {
-          new Howl({
-            src: ['audio/phft4.mp3'],
-            autoplay: true,
-            loop: false,
-            volume: 0.2,
-          });
           piece.hasDropped = true;
         }, piece.delay);
       }
