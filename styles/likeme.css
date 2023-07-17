@@ -4,15 +4,15 @@
 }
 
 :root {
-  --appBackground: hsl(0, 0%, 100%);
-  --appForeground: hsl(0, 0%, 11%);
+  --appBackground: hsl(0, 0%, 94%);
+  --appForeground: hsl(0, 0%, 31%);
   --targetX: 50%;
 
   --pieceSize: 110px;
 
-  --color1: rgb(92, 36, 80);
-  --color2: rgb(68, 157, 168);
-  --color3: rgb(198, 207, 64);
+  --color1: hsl(313, 44%, 25%);
+  --color2: hsl(187, 42%, 46%);
+  --color3: hsl(64, 60%, 53%);
 
   --shape1: url(images/Square.svg);
   --shape2: url(images/Circle.svg);
@@ -20,11 +20,12 @@
   --shape4: url(images/Hexagon.svg);
   --infinity: url(images/Infinity.svg);
 
-  --bgImage1: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.5) 20px, rgba(255, 255, 255, 0) 20px, rgba(255, 255, 255, 0) 40px);
-  --bgImage2: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.7) 0px, rgba(255, 255, 255, 0.7) 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 4px);
-  --bgImage3: repeating-radial-gradient(circle, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.5) 15%, rgba(245, 63, 63, 0) 15%, rgba(255, 255, 255, 0) 30%);
+  --bgImage1: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.5) 16px, rgba(255, 255, 255, 0) 16px, rgba(255, 255, 255, 0) 32px);
+  --bgImage2: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.7) 0px, rgba(255, 255, 255, 0.7) 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 7px);
+  --bgImage3: repeating-radial-gradient(circle, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.5) 14.5%, rgba(255, 255, 255, 0) 14.5%, rgba(255, 255, 255, 0) 29%);
   --bgImage4: none;
 }
+
 html,
 body {
   padding: 0px;
@@ -33,8 +34,8 @@ body {
   height: 100%;
   overflow: hidden;
   color: var(--appForeground);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: repeating-linear-gradient(90deg, rgb(84 84 84) 0px, rgb(84 84 84) 40px, rgb(70 70 70) 40px, rgb(70 70 70) 80px);
+  font-family: Tahoma, Geneva, Verdana, sans-serif;
+  background: repeating-linear-gradient(90deg, rgb(80 80 80) 0px, rgb(80 80 80) 40px, rgb(74 74 74) 40px, rgb(74 74 74) 80px);
   user-select: none;
   -webkit-user-select: none;
 }
@@ -45,6 +46,7 @@ body {
   margin: 0px auto;
   overflow: visible;
   background: rgb(240, 240, 240);
+  line-height: 160%;
 }
 
 [v-cloak] {
@@ -55,7 +57,7 @@ body {
 .disabled,
 :disabled {
   pointer-events: none;
-  opacity: 0.1;
+  opacity: 0.05;
 }
 
 h1,
@@ -67,15 +69,40 @@ h5 {
   margin: 80px 0px 0px 0px;
   line-height: 100%;
   font-weight: normal;
+  letter-spacing: 2px;
+  color: hsl(0, 0%, 11%);
 }
 
 h1 {
   font-size: 3em;
 }
 
+home h1 {
+  font-size: 4em;
+}
+
 p {
   text-align: center;
-  padding: 0px 30px 0px;
+  margin: 0;
+  padding: 0px 30px 20px;
+  max-width: calc(100% - 60px);
+}
+
+a,
+a:visited,
+a:focus,
+a:active {
+  text-decoration: none;
+  color: black;
+}
+
+divider {
+  display: flex;
+  width: 100%;
+  height: 1px;
+  margin: 0px;
+  background-color: black;
+  opacity: 0.2;
 }
 
 app {
@@ -92,7 +119,7 @@ stage {
   max-width: 500px;
   margin: 0px auto;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: stretch;
   box-shadow: 0px 0px 40px black;
 }
 
@@ -102,32 +129,53 @@ howto {
   max-width: 500px;
   width: 100%;
   height: 100%;
-  background: white;
+  background: var(--appBackground);
   margin: 0px auto;
+}
+
+section {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: flex-start;
+  flex-direction: column;
+}
+
+section:last-of-type {
+  margin-bottom: 6em;
+}
+
+playarea {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: calc(100% - 50px);
 }
 
 quit {
   height: 50px;
   display: flex;
   justify-content: flex-end;
-  font-size: 2em;
+  font-size: 1.2em;
+  letter-spacing: 1px;
+  font-family: 'Bangers';
   z-index: 1;
   cursor: pointer;
   align-items: center;
   padding-right: 20px;
   width: 110px;
+  color: var(--color1);
 }
 
 home,
 howto {
   position: absolute;
   z-index: 1000;
-  background: rgb(243, 243, 243);
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
+  background: var(--appBackground);
   display: none;
   align-items: center;
   align-content: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   flex-direction: column;
 }
 
@@ -136,38 +184,49 @@ howto.show {
   display: flex;
 }
 
-home #donate,
 button {
   cursor: pointer;
-  width: 220px;
-  height: 50px;
-  min-height: 50px;
-  margin-top: 20px;
-  box-shadow: 0px 10px 10px rgb(0 0 0 / 50%);
-  border-radius: 8px;
+  width: 250px;
+  height: 46px;
+  min-height: 46px;
+  margin-top: 16px;
+  /* box-shadow: 0px 5px 5px rgb(0 0 0 / 20%); */
   color: white;
-  border: none;
+  border: 1px solid var(--color1);
+  border-radius: 6px;
   font-family: 'Bangers';
-  font-size: 1.7em;
-  background-color: var(--color2);
+  font-size: 1.5em;
+  letter-spacing: 2px;
+  background-color: var(--color1);
+}
+
+button:first-of-type {
+  margin-top: 20px;
 }
 
 button.primary {
   background-color: var(--color1);
+  border-color: var(--color1);
   color: white;
 }
 
-home #donate:focus,
-home #donate:active,
+button.secondary {
+  background-color: var(--color2);
+  border-color: var(--color2);
+  color: white;
+}
+
+button.tertiary {
+  background: var(--appBackground);
+  border-color: var(--color2);
+  color: var(--color2);
+  box-shadow: none;
+}
+
 button:focus,
 button:active {
   transform: translateY(2px);
-  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.7);
-}
-
-home a {
-  text-decoration: none;
-  color: hsla(273, 100%, 50%, 1);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
 }
 
 home img {
@@ -178,7 +237,8 @@ home img {
 
 modes {
   display: flex;
-  margin: 40px 0px 0px;
+  column-gap: 10px;
+  margin: 20px 0px 0px;
 }
 
 chrome {
@@ -188,6 +248,7 @@ chrome {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  line-height: 100%;
 }
 
 howto chrome {
@@ -198,14 +259,19 @@ howto h1 {
   margin-top: 30px;
 }
 
+howto img {
+  width: 70%;
+}
+
 version {
   display: block;
-  font-size: 0.8em;
-  width: calc(100% - 40px);
+  font-size: 0.7em;
+  width: 100%;
   padding: 0px;
+  text-align: center;
   position: absolute;
-  bottom: 10px;
-  left: 10px;
+  bottom: 14px;
+  opacity: 0.6;
 }
 
 logo {
@@ -224,27 +290,31 @@ time {
   display: block;
   text-align: center;
   max-width: 460px;
-  /* margin-top: 30px; */
-  /* font-family: 'Courier New', Courier, monospace; */
 }
 
 addtime {
   display: block;
-  position: absolute;
-  transform: translateY(-20px);
+  transform: translateY(-80px);
   font-family: 'Bangers';
   font-size: 1.5em;
-  color: black;
-  transition: 3000ms ease-out all;
+  scroll-padding-block-start: black;
+  transition-delay: 200ms;
+  transition: 2000ms ease-in-out all;
   opacity: 0;
   user-select: none;
   -webkit-user-select: none;
-  margin-left: -0.6em;
+  width: 100%;
+  text-align: center;
+  height: 0px;
+  overflow: visible;
+  line-height: 0;
+  padding: 0;
+  margin: 0;
 }
 
 addtime.flyaway {
   transition: 0ms linear none;
-  transform: translateY(20px);
+  transform: translateY(-20px);
   opacity: 1;
 }
 
@@ -255,14 +325,16 @@ puzzle {
 
 board {
   display: flex;
-  width: 100%;
+  width: calc(100% - 20px);
   min-height: 100px;
   flex-wrap: wrap;
   flex-direction: row;
-  align-content: stretch;
-  justify-content: space-evenly;
-  align-items: stretch;
-  margin: 30px 0px 50px;
+  row-gap: 6px;
+  column-gap: 6px;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  margin: 30px 10px 50px;
 }
 
 piece {
@@ -278,7 +350,17 @@ home piece,
 howto piece {
   /* opacity: 1; */
   transition: 300ms ease-out all;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
+  border-radius: 6px;
+}
+
+me piece {
+  margin: 20px 0px;
+  transform: translateY(0) scale(1.2);
+}
+
+howto piece {
+  /* transform: translateY(0) scale(1.2); */
 }
 
 piece,
@@ -312,7 +394,7 @@ piece gild img {
 }
 
 piece.selected {
-  box-shadow: inset 0px 0px 10px hsla(0, 0%, 0%, 0.5);
+  box-shadow: inset 0px 1px 4px hsla(0, 0%, 0%, 0.4);
   background: hsl(0, 0%, 100%);
 }
 
@@ -320,7 +402,7 @@ puzzle piece,
 howto piece {
   width: var(--pieceSize);
   height: var(--pieceSize);
-  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 5px 5px rgb(0 0 0 / 20%);
   border-radius: 8px;
   background: white;
 }
@@ -333,7 +415,12 @@ puzzle piece gild {
 puzzle piece:focus,
 puzzle piece:active {
   transform: translateY(2px);
-  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.7);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+me piece:focus,
+me piece:active {
+  transform: translateY(2px) scale(1.2);
 }
 
 puzzle.nope piece {
@@ -343,40 +430,34 @@ puzzle.nope piece {
 
 @keyframes nope {
   33% {
-    transform: translate(3px);
+    transform: translate(3px) scale(1.2);
   }
   66% {
-    transform: translate(-3px);
+    transform: translate(-3px) scale(1.2);
   }
 }
 
 @-webkit-keyframes nope {
   33% {
-    transform: translate(3px);
+    transform: translate(3px) scale(1.2);
   }
   66% {
-    transform: translate(-3px);
+    transform: translate(-3px) scale(1.2);
   }
 }
 
 clears {
   display: block;
-  /* font-family: 'Courier New', Courier, monospace; */
   padding: 0px 20px;
   width: 90px;
 }
 
 me {
-  margin-top: 20px;
+  margin-top: 0px;
   padding: 20px 0px;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-me p {
-  padding: 0px 30px 0px;
-  width: 33%;
 }
 
 gameover {
@@ -396,6 +477,24 @@ gameover h1 {
 
 @media only screen and (max-width: 500px) {
   quit {
-    align-items: flex-start;
+    align-items: center;
+  }
+
+  divider {
+    margin: 10px 0;
+  }
+
+  howto img {
+    width: 80%;
+  }
+
+  board {
+    margin: 20px 10px;
+    padding: 0px;
+  }
+
+  me {
+    margin: 0;
+    padding: 0 0 20px;
   }
 }

@@ -77,7 +77,7 @@ var app = new Vue({
             this.flyaway = true;
             window.setTimeout(function () {
               app.flyaway = false;
-            }, 5);
+            }, 600);
           }
           this.numberOfClears++;
           this.NewBoard();
@@ -91,7 +91,7 @@ var app = new Vue({
       }
     },
     NewBoard() {
-      this.r.style.setProperty('--pieceSize', window.innerWidth < 500 ? window.innerWidth / 4 + 'px' : 500 / 4 + 'px');
+      this.r.style.setProperty('--pieceSize', window.innerWidth < 440 ? (window.innerWidth - 60) / 4 + 'px' : 440 / 4 + 'px');
       this.pieces = [];
       this.currentMisses = 0;
       for (let x = 0; x < this.piecesCount; x++) {

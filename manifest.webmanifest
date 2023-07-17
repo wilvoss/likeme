@@ -7,29 +7,30 @@
     "scope":"/",
     "id":"/",
     "display":"standalone",
-    "theme_color":"#000000",
-    "background_color":"#efefef",
+    "theme_color":"#f0f0f0",
+    "background_color":"#f0f0f0",
     "orientation":"any",
+    "publisher": "Big Tent Games",
     "icons":[
         {
             "src":"images/icon120.png",
             "sizes":"120x120",
-            "purpose":"any maskable"
+            "purpose":"any"
         },
         {
             "src":"images/icon180.png",
             "sizes":"180x180",
-            "purpose":"any maskable"
+            "purpose":"any"
         },
         {
             "src":"images/icon192.png",
             "sizes":"192x192",
-            "purpose":"any maskable"
+            "purpose":"any"
         },
         {
             "src":"images/icon.png",
             "sizes":"512x512",
-            "purpose":"any maskable"
+            "purpose":"any"
         }
     ]
  }
