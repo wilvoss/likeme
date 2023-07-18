@@ -34,6 +34,7 @@ var app = new Vue({
       color: Colors[getRandomInt(0, Colors.length)],
       backgroundImage: 'var(--bgImage4)',
     }),
+    hardInterval: 100,
     pieces: [],
     startingTime: 180000,
     timer: 180000,
@@ -185,12 +186,12 @@ var app = new Vue({
       if (this.timer > 0 || (this.infinityPiece.isSelected && !this.gameOver)) {
         this.hardPieceChangeCount++;
         if (!this.infinityPiece.isSelected) {
-          this.timer = this.timer - 100;
+          this.timer = this.timer - this.hardInterval;
           if (this.numberOfClears == 0 && this.timer <= this.startingTime - 10000 && !this.atLeastOnePieceHasBeenSelected) {
             this.showHint = this.useHints;
           }
         } else {
-          this.timer = this.timer + 100;
+          this.timer = this.timer + this.hardInterval;
           if (this.numberOfClears == 0 && this.timer >= 10000 && !this.atLeastOnePieceHasBeenSelected) {
             this.showHint = this.useHints;
           }
@@ -261,7 +262,7 @@ var app = new Vue({
     this.gameOver = true;
     this.GetSettings();
     // this.ReadyStage();
-    this.updateInterval = window.setInterval(this.UpdateApp, 100);
+    this.updateInterval = window.setInterval(this.UpdateApp, this.hardInterval);
   },
 
   computed: {},
