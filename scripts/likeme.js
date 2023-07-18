@@ -185,12 +185,12 @@ var app = new Vue({
       if (this.timer > 0 || (this.infinityPiece.isSelected && !this.gameOver)) {
         this.hardPieceChangeCount++;
         if (!this.infinityPiece.isSelected) {
-          this.timer = this.timer - 1000;
+          this.timer = this.timer - 100;
           if (this.numberOfClears == 0 && this.timer <= this.startingTime - 10000 && !this.atLeastOnePieceHasBeenSelected) {
             this.showHint = this.useHints;
           }
         } else {
-          this.timer = this.timer + 1000;
+          this.timer = this.timer + 100;
           if (this.numberOfClears == 0 && this.timer >= 10000 && !this.atLeastOnePieceHasBeenSelected) {
             this.showHint = this.useHints;
           }
@@ -261,7 +261,7 @@ var app = new Vue({
     this.gameOver = true;
     this.GetSettings();
     // this.ReadyStage();
-    this.updateInterval = window.setInterval(this.UpdateApp, 1000);
+    this.updateInterval = window.setInterval(this.UpdateApp, 100);
   },
 
   computed: {},
