@@ -12,7 +12,7 @@ Vue.config.ignoredElements = ['app', 'page', 'navbar', 'settings', 'splash', 'sp
 var app = new Vue({
   el: '#app',
   data: {
-    gameOver: false,
+    gameOver: true,
     piecesCount: 16,
     puzzlePiece: { shape: 'square' },
     easyPiece: new PieceObject({
@@ -35,16 +35,22 @@ var app = new Vue({
       backgroundImage: 'var(--bgImage4)',
     }),
     pieces: [],
+    startingTime: 180000,
     timer: 180000,
     showHome: true,
     showInstructions: true,
     showHowTo: false,
+    showHint: false,
     numberOfClears: 0,
     nope: false,
     numberOfFails: 0,
     currentMisses: 0,
     hardPieceChangeCount: 0,
+    atLeastOnePieceHasBeenSelected: false,
     flyaway: false,
+    useHints: true,
+    bonusTimeHintDisplayed: false,
+    hintText: 'Select pieces that share <b>at least two</b> of my attributes (color, shape, pattern).',
     r: document.querySelector(':root'),
   },
   methods: {
@@ -54,6 +60,8 @@ var app = new Vue({
     },
     CheckBoard() {
       this.nope = false;
+      let totalPossibleLikePieces = 0;
+      log('this.currentMisses = ' + this.currentMisses);
       if (!this.gameOver) {
         let perfectMatch = true;
         this.pieces.forEach((piece) => {
@@ -69,10 +77,21 @@ var app = new Vue({
           }
           if ((likeness >= 2 && !piece.isSelected) || (likeness < 2 && piece.isSelected)) {
             perfectMatch = false;
+            // return;
+          }
+          if (likeness >= 2) {
+            totalPossibleLikePieces++;
           }
         });
         if (perfectMatch) {
+          this.showHint = false;
+          this.atLeastOnePieceHasBeenSelected = true;
           if (this.currentMisses == 0 && !this.infinityPiece.isSelected) {
+            if (!this.bonusTimeHintDisplayed) {
+              this.showHint = this.useHints;
+              this.hintText = 'Getting a perfect match on your first attempt adds 3 seconds to the clock!';
+              this.bonusTimeHintDisplayed = true;
+            }
             this.timer = this.timer + 3000;
             this.flyaway = true;
             window.setTimeout(function () {
@@ -80,8 +99,21 @@ var app = new Vue({
             }, 600);
           }
           this.numberOfClears++;
+          // log('this.numberOfClears = ' + this.numberOfClears + ': this.currentMisses = ' + this.currentMisses + ': this.mode = ' + this.mode);
           this.NewBoard();
         } else {
+          // this.atLeastOnePieceHasBeenSelected = false;
+          if (this.currentMisses == 0 && !this.atLeastOnePieceHasBeenSelected) {
+            this.showHint = this.useHints;
+          }
+          if (this.currentMisses >= 1) {
+            this.showHint = this.useHints;
+            if (totalPossibleLikePieces == 0) {
+              this.hintText = 'Some boards have zero matches.';
+            } else {
+              this.hintText = totalPossibleLikePieces == 1 ? 'There is ' + totalPossibleLikePieces + ' piece like me.' : 'There are a total of ' + totalPossibleLikePieces + ' pieces like me.';
+            }
+          }
           this.currentMisses++;
           this.numberOfFails++;
           window.setTimeout(function () {
@@ -114,6 +146,7 @@ var app = new Vue({
     TogglePieceSelection(piece) {
       if (!this.gameOver) {
         piece.isSelected = !piece.isSelected;
+        this.atLeastOnePieceHasBeenSelected = true;
       }
     },
     Share() {
@@ -128,6 +161,8 @@ var app = new Vue({
       this.numberOfFails = 0;
       this.numberOfClears = 0;
       this.showHome = false;
+      this.atLeastOnePieceHasBeenSelected = false;
+      this.showHint = false;
       this.NewGame();
     },
     SelectMode(piece) {
@@ -150,9 +185,15 @@ var app = new Vue({
       if (this.timer > 0 || (this.infinityPiece.isSelected && !this.gameOver)) {
         this.hardPieceChangeCount++;
         if (!this.infinityPiece.isSelected) {
-          this.timer = this.timer - 100;
+          this.timer = this.timer - 1000;
+          if (this.numberOfClears == 0 && this.timer <= this.startingTime - 10000 && !this.atLeastOnePieceHasBeenSelected) {
+            this.showHint = this.useHints;
+          }
         } else {
-          this.timer = this.timer + 100;
+          this.timer = this.timer + 1000;
+          if (this.numberOfClears == 0 && this.timer >= 10000 && !this.atLeastOnePieceHasBeenSelected) {
+            this.showHint = this.useHints;
+          }
         }
       } else {
         this.gameOver = true;
@@ -193,6 +234,10 @@ var app = new Vue({
         this.gameOver = true;
       }
     },
+    ToggleUsingHints() {
+      this.useHints = !this.useHints;
+      localStorage.setItem('useHints', this.useHints);
+    },
     GetSettings() {
       let mode = localStorage.getItem('mode');
       if (mode != undefined && mode != null) {
@@ -204,14 +249,19 @@ var app = new Vue({
           this.SelectMode(this.infinityPiece);
         }
       }
+      let hints = localStorage.getItem('useHints');
+      if (hints != undefined && hints != null) {
+        this.useHints = hints == 'true';
+      }
     },
   },
 
   mounted() {
     this.NewGame();
+    this.gameOver = true;
     this.GetSettings();
     // this.ReadyStage();
-    this.updateInterval = window.setInterval(this.UpdateApp, 100);
+    this.updateInterval = window.setInterval(this.UpdateApp, 1000);
   },
 
   computed: {},
