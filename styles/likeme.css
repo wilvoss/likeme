@@ -330,7 +330,7 @@ addtime.flyaway {
   opacity: 1;
 }
 
-puzzle {
+me {
   display: flex;
   justify-content: center;
 }
@@ -483,7 +483,7 @@ piece.selected {
   background: hsl(0, 0%, 100%);
 }
 
-puzzle piece,
+me piece,
 howto piece {
   width: var(--pieceSize);
   height: var(--pieceSize);
@@ -492,13 +492,13 @@ howto piece {
   background: white;
 }
 
-puzzle piece gild {
+me piece gild {
   width: var(--pieceSize);
   height: var(--pieceSize);
 }
 
-puzzle piece:focus,
-puzzle piece:active {
+me piece:focus,
+me piece:active {
   transform: translateY(2px);
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
 }
@@ -508,7 +508,7 @@ me piece:active {
   transform: translateY(2px) scale(1.2);
 }
 
-puzzle.nope piece {
+me.nope piece {
   animation: nope 0.15s linear 0s 3;
   -webkit-animation: nope 0.15s linear 0s 3;
 }

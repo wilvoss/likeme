@@ -94,12 +94,14 @@
         </section>
         <divider></divider>
         <section>
-          <p>Notice me.</p>
-          <piece>
-            <gild
-              style="mask-image: var(--shape1); -webkit-mask-image: var(--shape1); background-color: var(--color2); background-image: var(--bgImage1);">
-            </gild>
-          </piece>
+          <p>Notice me (my shape, color, and pattern).</p>
+          <me>
+            <piece>
+              <gild
+                style="mask-image: var(--shape1); -webkit-mask-image: var(--shape1); background-color: var(--color2); background-image: var(--bgImage1);">
+              </gild>
+            </piece>
+          </me>
         </section>
         <divider></divider>
         <section>
@@ -134,14 +136,12 @@
               </gild>
             </piece>
           </board>
-          <me :class="{disabled: gameCurrentIsGameOver}">
-            <puzzle :class="{nope: gameCurrentIsUserGuessWrong}">
-              <piece @click="CheckBoard">
-                <gild
-                  :style="{maskImage: gameCurrentMePiece.shape, webkitMaskImage: gameCurrentMePiece.shape, backgroundColor: gameCurrentMePiece.color, backgroundImage: gameCurrentMePiece.backgroundImage }">
-                </gild>
-              </piece>
-            </puzzle>
+          <me :class="{disabled: gameCurrentIsGameOver, nope: gameCurrentIsUserGuessWrong}">
+            <piece @click="CheckBoard">
+              <gild
+                :style="{maskImage: gameCurrentMePiece.shape, webkitMaskImage: gameCurrentMePiece.shape, backgroundColor: gameCurrentMePiece.color, backgroundImage: gameCurrentMePiece.backgroundImage }">
+              </gild>
+            </piece>
           </me>
           <hint
             :class="{show: appVisualStateShowElementHint && !gameCurrentIsGameOver && userSettingsUseHints, disabled: gameCurrentIsGameOver}"
