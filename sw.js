@@ -2,21 +2,14 @@
 const CACHE_VERSION = 3.4;
 const CURRENT_CACHE = `main-${CACHE_VERSION}`;
 
+// prettier-ignore
 // these are the routes we are going to cache for offline support
 const cacheFiles = [
   '/',
   '',
-  'manifest.webmanifest',
-  'favicon.png',
-  'favicon-16x16.png',
-  'images/icon512.png',
-  'images/icon192.png',
-  'images/icon180.png',
-  'images/icon120.png',
-  'images/pieces.png',
   'models/PieceObject.js',
+  'models/ModeObject.js',
   'fonts/Bangers-Regular.ttf',
-  'images/big_tent_logo.svg',
   'images/Square.svg',
   'images/Triangle.svg',
   'images/Infinity.svg',

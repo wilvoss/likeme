@@ -1,4 +1,5 @@
 /// <reference path="../models/PieceObject.js" />
+/// <reference path="../models/ModeObject.js" />
 /// <reference path="../helpers/console-enhancer.js" />
 
 // if (!UseDebug) {
@@ -7,149 +8,158 @@ Vue.config.debug = false;
 Vue.config.silent = true;
 // }
 
-Vue.config.ignoredElements = ['app', 'page', 'navbar', 'settings', 'splash', 'splashwrap', 'message', 'notifications', 'speedControls', 'state', 'bank', 'commodity', 'detail', 'gameover', 'listheader', 'listings', 'category', 'name', 'units', 'currentPrice', 'description', 'market', 'currentValue', 'contractSize', 'goldbacking', 'contractUnit'];
+// prettier-ignore
+Vue.config.ignoredElements = [
+  'app',
+  'home',
+  'modes',
+  'mode',
+  'piece',
+  'gild',
+  'value',
+  'checkbox',
+  'toggle',
+  'version',
+  'howto',
+  'chrome',
+  'quit',
+  'divider',
+  'stage',
+  'gameover',
+  'clears',
+  'time',
+  'playarea',
+  'addtime',
+  'board',
+  'me',
+  'puzzle',
+  'hint',
+];
 
 var app = new Vue({
   el: '#app',
+
   data: {
-    gameOver: true,
-    piecesCount: 16,
-    puzzlePiece: { shape: 'square' },
-    easyPiece: new PieceObject({
-      name: 'easyPiece',
-      shape: Shapes[getRandomInt(0, Shapes.length)],
-      color: Colors[getRandomInt(0, Colors.length)],
-      backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)],
-      isSelected: true,
-    }),
-    hardPiece: new PieceObject({
-      name: 'hardPiece',
-      shape: Shapes[getRandomInt(0, Shapes.length)],
-      color: Colors[getRandomInt(0, Colors.length)],
-      backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)],
-    }),
-    infinityPiece: new PieceObject({
-      name: 'infinityPiece',
-      shape: 'var(--infinity)',
-      color: Colors[getRandomInt(0, Colors.length)],
-      backgroundImage: 'var(--bgImage4)',
-    }),
-    hardInterval: 100,
-    pieces: [],
-    startingTime: 180000,
-    timer: 180000,
-    showHome: true,
-    showInstructions: true,
-    showHowTo: false,
-    showHint: false,
-    numberOfClears: 0,
-    nope: false,
-    numberOfFails: 0,
-    currentMisses: 0,
-    hardPieceChangeCount: 0,
-    atLeastOnePieceHasBeenSelected: false,
-    flyaway: false,
-    useHints: true,
-    bonusTimeHintDisplayed: false,
-    hintText: 'Select pieces that share <b>at least two</b> of my attributes (color, shape, pattern).',
-    r: document.querySelector(':root'),
+    appSettingsModes: Modes,
+    appSettingsModeHardInterval: 100,
+    appSettingsModeHardInternalChangeCounterCount: 0,
+    appSettingsModeHardIntervalChangeCounterLimit: 10,
+    appSettingsTotalNumberOfBoardPieces: 16,
+    appVisualStateShowPageHome: true,
+    appVisualStateShowPageHowToPlay: false,
+    appVisualStateShowElementHint: false,
+    appVisualStateShowElementFlyaway: false,
+    gameCurrentIsGameOver: true,
+    gameCurrentMePiece: { shape: 'square' },
+    gameBoardPieces: [],
+    gameCurrentStartingTime: 180000,
+    gameCurrentTimer: 180000,
+    gameCurrentNumberOfClears: 0,
+    gameCurrentIsUserGuessWrong: false,
+    gameCurrentNumberOfFails: 0,
+    gameCurrentNumberOfMisses: 0,
+    gameCurrentHasBonusTimeHintDisplayed: false,
+    gameCurrentHintText: 'Select pieces that share <b>at least two</b> of my attributes (color, shape, pattern).',
+    gameCurrentHasAnyPieceEverBeenSelected: false,
+    userSettingsUseHints: true,
+    documentCssRoot: document.querySelector(':root'),
   },
+
   methods: {
     NewGame() {
       this.NewBoard();
-      this.gameOver = false;
+      this.gameCurrentIsGameOver = false;
     },
+
     CheckBoard() {
-      this.nope = false;
+      this.gameCurrentIsUserGuessWrong = false;
       let totalPossibleLikePieces = 0;
-      log('this.currentMisses = ' + this.currentMisses);
-      if (!this.gameOver) {
+      if (!this.gameCurrentIsGameOver) {
         let perfectMatch = true;
-        this.pieces.forEach((piece) => {
+        this.gameBoardPieces.forEach((piece) => {
           let likeness = 0;
-          if (piece.color == this.puzzlePiece.color) {
+          if (piece.color == this.gameCurrentMePiece.color) {
             likeness++;
           }
-          if (piece.shape == this.puzzlePiece.shape) {
+          if (piece.shape == this.gameCurrentMePiece.shape) {
             likeness++;
           }
-          if (piece.backgroundImage == this.puzzlePiece.backgroundImage) {
+          if (piece.backgroundImage == this.gameCurrentMePiece.backgroundImage) {
             likeness++;
           }
           if ((likeness >= 2 && !piece.isSelected) || (likeness < 2 && piece.isSelected)) {
             perfectMatch = false;
-            // return;
           }
           if (likeness >= 2) {
             totalPossibleLikePieces++;
           }
         });
         if (perfectMatch) {
-          this.showHint = false;
-          this.atLeastOnePieceHasBeenSelected = true;
-          if (this.currentMisses == 0 && !this.infinityPiece.isSelected) {
-            if (!this.bonusTimeHintDisplayed) {
-              this.showHint = this.useHints;
-              this.hintText = 'Getting a perfect match on your first attempt adds 3 seconds to the clock!';
-              this.bonusTimeHintDisplayed = true;
+          this.appVisualStateShowElementHint = false;
+          this.gameCurrentHasAnyPieceEverBeenSelected = true;
+          if (this.gameCurrentNumberOfMisses == 0 && !this.appSettingsModes.infinite.isSelected) {
+            if (!this.gameCurrentHasBonusTimeHintDisplayed) {
+              this.appVisualStateShowElementHint = this.userSettingsUseHints;
+              this.gameCurrentHintText = 'Successfully selecting all matching pieces on your first attempt adds <b>3 seconds</b> to the clock!';
+              this.gameCurrentHasBonusTimeHintDisplayed = true;
             }
-            this.timer = this.timer + 3000;
-            this.flyaway = true;
+            this.gameCurrentTimer = this.gameCurrentTimer + 3000;
+            this.appVisualStateShowElementFlyaway = true;
             window.setTimeout(function () {
-              app.flyaway = false;
+              app.appVisualStateShowElementFlyaway = false;
             }, 600);
           }
-          this.numberOfClears++;
-          // log('this.numberOfClears = ' + this.numberOfClears + ': this.currentMisses = ' + this.currentMisses + ': this.mode = ' + this.mode);
+          this.gameCurrentNumberOfClears++;
           this.NewBoard();
         } else {
-          // this.atLeastOnePieceHasBeenSelected = false;
-          if (this.currentMisses == 0 && !this.atLeastOnePieceHasBeenSelected) {
-            this.showHint = this.useHints;
+          if (this.gameCurrentNumberOfMisses == 0 && !this.gameCurrentHasAnyPieceEverBeenSelected) {
+            this.appVisualStateShowElementHint = this.userSettingsUseHints;
           }
-          if (this.currentMisses >= 1) {
-            this.showHint = this.useHints;
+          if (this.gameCurrentNumberOfMisses >= 1) {
+            this.appVisualStateShowElementHint = this.userSettingsUseHints;
             if (totalPossibleLikePieces == 0) {
-              this.hintText = 'Some boards have zero matches.';
+              this.gameCurrentHintText = 'Some boards have zero matches.';
             } else {
-              this.hintText = totalPossibleLikePieces == 1 ? 'There is ' + totalPossibleLikePieces + ' piece like me.' : 'There are a total of ' + totalPossibleLikePieces + ' pieces like me.';
+              this.gameCurrentHintText = totalPossibleLikePieces == 1 ? 'There is <b>' + totalPossibleLikePieces + '</b> piece like me.' : 'There are a total of <b>' + totalPossibleLikePieces + '</b> pieces like me.';
             }
           }
-          this.currentMisses++;
-          this.numberOfFails++;
+          this.gameCurrentNumberOfMisses++;
+          this.gameCurrentNumberOfFails++;
           window.setTimeout(function () {
-            app.nope = true;
+            app.gameCurrentIsUserGuessWrong = true;
           }, 5);
         }
       }
     },
+
     NewBoard() {
-      this.r.style.setProperty('--pieceSize', window.innerWidth < 440 ? (window.innerWidth - 60) / 4 + 'px' : 440 / 4 + 'px');
-      this.pieces = [];
-      this.currentMisses = 0;
-      for (let x = 0; x < this.piecesCount; x++) {
+      this.documentCssRoot.style.setProperty('--pieceSize', window.innerWidth < 440 ? (window.innerWidth - 60) / 4 + 'px' : 440 / 4 + 'px');
+      this.gameBoardPieces = [];
+      this.gameCurrentNumberOfMisses = 0;
+      for (let x = 0; x < this.appSettingsTotalNumberOfBoardPieces; x++) {
         let piece = new PieceObject({
           shape: Shapes[getRandomInt(0, Shapes.length)],
           color: Colors[getRandomInt(0, Colors.length)],
           backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)],
           isSelected: false,
           hasDropped: false,
-          delay: (this.piecesCount - x) * 15,
+          delay: (this.appSettingsTotalNumberOfBoardPieces - x) * 15,
         });
-        log(x + ' delay = ' + piece.delay);
-        this.pieces.push(piece);
+        this.gameBoardPieces.push(piece);
         window.setTimeout(function () {
           piece.hasDropped = true;
         }, piece.delay);
       }
-      this.puzzlePiece = new PieceObject({ shape: Shapes[getRandomInt(0, Shapes.length)], color: Colors[getRandomInt(0, Colors.length)], backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)] });
+      this.gameCurrentMePiece = new PieceObject({ shape: Shapes[getRandomInt(0, Shapes.length)], color: Colors[getRandomInt(0, Colors.length)], backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)] });
     },
+
     TogglePieceSelection(piece) {
-      if (!this.gameOver) {
+      if (!this.gameCurrentIsGameOver) {
         piece.isSelected = !piece.isSelected;
-        this.atLeastOnePieceHasBeenSelected = true;
+        this.gameCurrentHasAnyPieceEverBeenSelected = true;
       }
     },
+
     Share() {
       navigator.share({
         title: 'Like Me?',
@@ -157,65 +167,69 @@ var app = new Vue({
         url: 'https://likeme.games',
       });
     },
+
     RestartGame() {
-      this.timer = this.infinityPiece.isSelected ? 0 : 180000;
-      this.numberOfFails = 0;
-      this.numberOfClears = 0;
-      this.showHome = false;
-      this.atLeastOnePieceHasBeenSelected = false;
-      this.showHint = false;
+      this.gameCurrentTimer = this.appSettingsModes.infinite.isSelected ? 0 : 180000;
+      this.gameCurrentNumberOfFails = 0;
+      this.gameCurrentNumberOfClears = 0;
+      this.appVisualStateShowPageHome = false;
+      this.gameCurrentHasAnyPieceEverBeenSelected = false;
+      this.appVisualStateShowElementHint = false;
       this.NewGame();
     },
-    SelectMode(piece) {
-      if (piece == this.hardPiece && !this.hardPiece.isSelected) {
-        this.easyPiece.isSelected = false;
-        this.hardPiece.isSelected = true;
-        this.infinityPiece.isSelected = false;
-      } else if (piece == this.easyPiece && !this.easyPiece.isSelected) {
-        this.easyPiece.isSelected = true;
-        this.hardPiece.isSelected = false;
-        this.infinityPiece.isSelected = false;
-      } else if (piece == this.infinityPiece && !this.infinityPiece.isSelected) {
-        this.easyPiece.isSelected = false;
-        this.hardPiece.isSelected = false;
-        this.infinityPiece.isSelected = true;
+
+    SelectMode(mode) {
+      if (mode == this.appSettingsModes.hard && !this.appSettingsModes.hard.isSelected) {
+        this.appSettingsModes.easy.isSelected = false;
+        this.appSettingsModes.hard.isSelected = true;
+        this.appSettingsModes.infinite.isSelected = false;
+      } else if (mode == this.appSettingsModes.easy && !this.appSettingsModes.easy.isSelected) {
+        this.appSettingsModes.easy.isSelected = true;
+        this.appSettingsModes.hard.isSelected = false;
+        this.appSettingsModes.infinite.isSelected = false;
+      } else if (mode == this.appSettingsModes.infinite && !this.appSettingsModes.infinite.isSelected) {
+        this.appSettingsModes.easy.isSelected = false;
+        this.appSettingsModes.hard.isSelected = false;
+        this.appSettingsModes.infinite.isSelected = true;
       }
-      localStorage.setItem('mode', piece.name);
+      localStorage.setItem('mode', mode.name);
     },
+
     UpdateApp() {
-      if (this.timer > 0 || (this.infinityPiece.isSelected && !this.gameOver)) {
-        this.hardPieceChangeCount++;
-        if (!this.infinityPiece.isSelected) {
-          this.timer = this.timer - this.hardInterval;
-          if (this.numberOfClears == 0 && this.timer <= this.startingTime - 10000 && !this.atLeastOnePieceHasBeenSelected) {
-            this.showHint = this.useHints;
+      if (this.gameCurrentTimer > 0 || (this.appSettingsModes.infinite.isSelected && !this.gameCurrentIsGameOver)) {
+        this.appSettingsModeHardInternalChangeCounterCount++;
+        if (!this.appSettingsModes.infinite.isSelected) {
+          this.gameCurrentTimer = this.gameCurrentTimer - this.appSettingsModeHardInterval;
+          if (this.gameCurrentNumberOfClears == 0 && this.gameCurrentTimer <= this.gameCurrentStartingTime - 10000 && !this.gameCurrentHasAnyPieceEverBeenSelected) {
+            this.appVisualStateShowElementHint = this.userSettingsUseHints;
           }
         } else {
-          this.timer = this.timer + this.hardInterval;
-          if (this.numberOfClears == 0 && this.timer >= 10000 && !this.atLeastOnePieceHasBeenSelected) {
-            this.showHint = this.useHints;
+          this.gameCurrentTimer = this.gameCurrentTimer + this.appSettingsModeHardInterval;
+          if (this.gameCurrentNumberOfClears == 0 && this.gameCurrentTimer >= 10000 && !this.gameCurrentHasAnyPieceEverBeenSelected) {
+            this.appVisualStateShowElementHint = this.userSettingsUseHints;
           }
         }
       } else {
-        this.gameOver = true;
+        this.gameCurrentIsGameOver = true;
       }
-      if (this.hardPieceChangeCount == 10) {
-        if (this.showHome) {
-          this.hardPiece.shape = Shapes[getRandomInt(0, Shapes.length)];
-          this.hardPiece.color = Colors[getRandomInt(0, Colors.length)];
-          this.hardPiece.backgroundImage = BackgroundImages[getRandomInt(0, BackgroundImages.length)];
+      if (this.appSettingsModeHardInternalChangeCounterCount == this.appSettingsModeHardIntervalChangeCounterLimit) {
+        if (this.appVisualStateShowPageHome) {
+          this.appSettingsModes.hard.piece.shape = Shapes[getRandomInt(0, Shapes.length)];
+          this.appSettingsModes.hard.piece.color = Colors[getRandomInt(0, Colors.length)];
+          this.appSettingsModes.hard.piece.backgroundImage = BackgroundImages[getRandomInt(0, BackgroundImages.length)];
         }
-        if (this.hardPiece.isSelected) {
-          let index = getRandomInt(0, this.pieces.length);
-          let rando = this.pieces[index];
+        if (this.appSettingsModes.hard.isSelected) {
+          let index = getRandomInt(0, this.gameBoardPieces.length);
+          let rando = this.gameBoardPieces[index];
           rando.shape = Shapes[getRandomInt(0, Shapes.length)];
           rando.color = Colors[getRandomInt(0, Colors.length)];
           rando.backgroundImage = BackgroundImages[getRandomInt(0, BackgroundImages.length)];
         }
 
-        this.hardPieceChangeCount = 0;
+        this.appSettingsModeHardInternalChangeCounterCount = 0;
       }
     },
+
     MsToTime(s) {
       var ms = s % 1000;
       s = (s - ms) / 1000;
@@ -227,42 +241,44 @@ var app = new Vue({
       var secstring = mins != 0 || hrs != 0 ? ('0' + secs).slice(-2) : secs;
       var minstring = mins != 0 ? mins + '∶' : '';
       var hrsstring = hrs != 0 ? hrs + '∶' : '';
-      return this.infinityPiece.isSelected ? hrsstring + minstring + secstring : minstring + secstring;
+      return this.appSettingsModes.infinite.isSelected ? hrsstring + minstring + secstring : minstring + secstring;
     },
+
     EndGame() {
       let confirm = window.confirm('Are you sure you want to quit?');
       if (confirm) {
-        this.gameOver = true;
+        this.gameCurrentIsGameOver = true;
       }
     },
+
     ToggleUsingHints() {
-      this.useHints = !this.useHints;
-      localStorage.setItem('useHints', this.useHints);
+      this.userSettingsUseHints = !this.userSettingsUseHints;
+      localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
     },
+
     GetSettings() {
       let mode = localStorage.getItem('mode');
       if (mode != undefined && mode != null) {
-        if (mode == 'easyPiece') {
-          this.SelectMode(this.easyPiece);
-        } else if (mode == 'hardPiece') {
-          this.SelectMode(this.hardPiece);
-        } else if (mode == 'infinityPiece') {
-          this.SelectMode(this.infinityPiece);
+        if (mode == 'hard') {
+          this.SelectMode(this.appSettingsModes.hard);
+        } else if (mode == 'infinite') {
+          this.SelectMode(this.appSettingsModes.infinite);
+        } else {
+          this.SelectMode(this.appSettingsModes.easy);
         }
       }
-      let hints = localStorage.getItem('useHints');
+      let hints = localStorage.getItem('userSettingsUseHints');
       if (hints != undefined && hints != null) {
-        this.useHints = hints == 'true';
+        this.userSettingsUseHints = hints == 'true';
       }
     },
   },
 
   mounted() {
     this.NewGame();
-    this.gameOver = true;
+    this.gameCurrentIsGameOver = true;
+    this.updateInterval = window.setInterval(this.UpdateApp, this.appSettingsModeHardInterval);
     this.GetSettings();
-    // this.ReadyStage();
-    this.updateInterval = window.setInterval(this.UpdateApp, this.hardInterval);
   },
 
   computed: {},

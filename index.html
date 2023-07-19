@@ -56,58 +56,39 @@
 
   <body>
     <app id="app" v-cloak>
-      <home :class="{show: showHome}">
+      <home :class="{show: appVisualStateShowPageHome}">
         <section>
           <h1>Like Me?</h1>
           <p>A game of matching likenesses.</p>
         </section>
         <section>
           <modes>
-            <mode :class="{selected: infinityPiece.isSelected}">
-              <piece title="Click to select Infinite mode." @pointerdown="SelectMode(infinityPiece)">
+            <mode v-for="mode in appSettingsModes" :class="{selected: mode.isSelected}">
+              <piece title="Click to select Infinite mode." @pointerdown="SelectMode(mode)">
                 <gild
-                  :style="{maskImage: infinityPiece.shape, webkitMaskImage: infinityPiece.shape, backgroundColor: infinityPiece.color, backgroundImage: infinityPiece.backgroundImage }"
+                  :style="{maskImage: mode.piece.shape, webkitMaskImage: mode.piece.shape, backgroundColor: mode.piece.color, backgroundImage: mode.piece.backgroundImage }"
                   style="mask-position: center 2px" />
               </piece>
-              <value>Inifite</value>
-            </mode>
-            <mode :class="{selected: easyPiece.isSelected}">
-              <piece title="Click to select Normal mode." @pointerdown="SelectMode(easyPiece)">
-                <gild
-                  :style="{maskImage: easyPiece.shape, webkitMaskImage: easyPiece.shape, backgroundColor: easyPiece.color, backgroundImage: easyPiece.backgroundImage }" />
-              </piece>
-              <value>Normal</value>
-            </mode>
-            <mode :class="{selected: hardPiece.isSelected}">
-              <piece title="Click to select Hard mode." @pointerdown="SelectMode(hardPiece)">
-                <gild
-                  :style="{maskImage: hardPiece.shape, webkitMaskImage: hardPiece.shape, backgroundColor: hardPiece.color, backgroundImage: hardPiece.backgroundImage }" />
-              </piece>
-              <value>Hard</value>
+              <value>{{mode.name}}</value>
             </mode>
           </modes>
-          <!-- <p>Game mode:
-            <b>{{ easyPiece.isSelected ? "normal" : hardPiece.isSelected ? "hard" : "infinite"}}</b>
-          </p> -->
-          <checkbox :class="{on: useHints}" @pointerdown="ToggleUsingHints">
+          <checkbox :class="{on: userSettingsUseHints}" @pointerdown="ToggleUsingHints">
             Use hints
-            <!-- &nbsp;<b>{{useHints ? 'on' : 'off'}}</b> -->
             <toggle></toggle>
           </checkbox>
         </section>
-        <section> <button class="primary" @click="RestartGame">Play</button>
-          <button class="secondary" @click="showHowTo = true">How to play</button>
+        <section>
+          <button class="primary" @click="RestartGame">Play</button>
+          <button class="secondary" @click="appVisualStateShowPageHowToPlay = true">How to play</button>
         </section>
         <version>
           &copy;2023 <a href="https://bigtentgames.com" target="_blank">Big Tent Games</a> - v3.4
         </version>
-
       </home>
-      <howto :class="{show: showHowTo}">
+      <howto :class="{show: appVisualStateShowPageHowToPlay}">
         <chrome>
-          <quit @pointerdown="showHowTo = false">done</quit>
+          <quit @pointerdown="appVisualStateShowPageHowToPlay = false">done</quit>
         </chrome>
-
         <section>
           <h1>How to play</h1>
         </section>
@@ -133,37 +114,38 @@
         </section>
       </howto>
       <stage>
-        <gameOver v-if="gameOver">
+        <gameover v-if="gameCurrentIsGameOver">
           <h1 style="margin-bottom: 1em;">Game Over</h1>
           <button class="primary" @click="RestartGame">Replay</button>
-          <button class="secondary" @click="showHome = true">Home</button>
-        </gameOver>
+          <button class="secondary" @click="appVisualStateShowPageHome = true">Home</button>
+        </gameover>
         <chrome>
-          <clears>{{numberOfClears}} clears</clears>
-          <time>{{gameOver ? 'Misses: ' + numberOfFails : MsToTime(timer)}}</time>
-          <quit :class="{disabled: gameOver}" @click="EndGame">quit</quit>
+          <clears>{{gameCurrentNumberOfClears}} clears</clears>
+          <time>{{gameCurrentIsGameOver ? 'Misses: ' + gameCurrentNumberOfFails : MsToTime(gameCurrentTimer)}}</time>
+          <quit :class="{disabled: gameCurrentIsGameOver}" @click="EndGame">quit</quit>
         </chrome>
         <playarea>
-          <addtime :class="{flyaway: flyaway}">+3 seconds</addtime>
-          <board :class="{disabled: gameOver}">
-            <piece v-for="piece in pieces" @pointerdown="TogglePieceSelection(piece)"
+          <addtime :class="{flyaway: appVisualStateShowElementFlyaway}">+3 seconds</addtime>
+          <board :class="{disabled: gameCurrentIsGameOver}">
+            <piece v-for="piece in gameBoardPieces" @pointerdown="TogglePieceSelection(piece)"
               :class="{selected: piece.isSelected, dropped: piece.hasDropped}">
               <gild
                 :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color, backgroundImage: piece.backgroundImage }">
               </gild>
             </piece>
           </board>
-          <me :class="{disabled: gameOver}">
-            <puzzle :class="{nope: nope}">
+          <me :class="{disabled: gameCurrentIsGameOver}">
+            <puzzle :class="{nope: gameCurrentIsUserGuessWrong}">
               <piece @click="CheckBoard">
                 <gild
-                  :style="{maskImage: puzzlePiece.shape, webkitMaskImage: puzzlePiece.shape, backgroundColor: puzzlePiece.color, backgroundImage: puzzlePiece.backgroundImage }">
+                  :style="{maskImage: gameCurrentMePiece.shape, webkitMaskImage: gameCurrentMePiece.shape, backgroundColor: gameCurrentMePiece.color, backgroundImage: gameCurrentMePiece.backgroundImage }">
                 </gild>
               </piece>
             </puzzle>
           </me>
-          <hint :class="{show: showHint && !gameOver && useHints, disabled: gameOver}" v-html="hintText">
-
+          <hint
+            :class="{show: appVisualStateShowElementHint && !gameCurrentIsGameOver && userSettingsUseHints, disabled: gameCurrentIsGameOver}"
+            v-html="gameCurrentHintText">
           </hint>
         </playarea>
       </stage>
@@ -171,6 +153,7 @@
     <script id=" vue-framework" src="helpers/vue.min.js" type='text/javascript'>
     </script>
     <script src="models/PieceObject.js" type='text/javascript'></script>
+    <script src="models/ModeObject.js" type='text/javascript'></script>
     <script src="scripts/likeme.js" type='text/javascript'></script>
   </body>
 
