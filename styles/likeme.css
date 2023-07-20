@@ -189,7 +189,6 @@ button {
   height: 46px;
   min-height: 46px;
   margin-top: 16px;
-  /* box-shadow: 0px 5px 5px rgb(0 0 0 / 20%); */
   color: white;
   border: 1px solid var(--color1);
   border-radius: 6px;
@@ -225,7 +224,6 @@ button.tertiary {
 button:focus,
 button:active {
   transform: translateY(1px);
-  /* box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3); */
 }
 
 home img {
@@ -352,7 +350,7 @@ board {
 piece {
   /* opacity: 0; */
   transform: translateY(-600px);
-  transition: 00ms ease-out all;
+  transition: 00ms ease-out transform;
   cursor: pointer;
 }
 
@@ -361,7 +359,7 @@ me piece,
 home piece,
 howto piece {
   /* opacity: 1; */
-  transition: 300ms ease-out all;
+  transition: 300ms ease-out transform;
   transform: translateY(0) scale(1);
   border-radius: 6px;
 }
@@ -376,7 +374,7 @@ hint {
   font-size: 1em;
   line-height: 160%;
   margin: 0;
-  padding: 0px 40px 20px;
+  padding: 0px 40px 60px;
   height: 30px;
   max-width: calc(100% - 60px);
   opacity: 0;
@@ -395,6 +393,7 @@ checkbox {
   border-width: 1px 0;
   width: calc(100% - 16px);
 }
+
 checkbox toggle {
   display: flex;
   flex-direction: row;
@@ -402,7 +401,6 @@ checkbox toggle {
   margin: 0px 8px;
   width: 44px;
   height: 24px;
-  /* border: 1px solid var(--color1); */
   background: rgba(0, 0, 0, 0.2);
   border-radius: 12px;
 }

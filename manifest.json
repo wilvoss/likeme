@@ -28,7 +28,7 @@
             "purpose":"any"
         },
         {
-            "src":"images/icon.png",
+            "src":"images/icon512.png",
             "sizes":"512x512",
             "purpose":"any"
         }

@@ -1,4 +1,4 @@
-var UseDebug = document.location.href.indexOf('staging') != -1;
+var UseDebug = document.location.href.indexOf('staging') != -1 || document.location.href.indexOf('pp') != -1;
 
 function highlight(text, isolate) {
   isolate = isolate == undefined ? false : isolate;
