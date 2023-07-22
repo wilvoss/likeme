@@ -56,7 +56,7 @@
 
   <body>
     <app id="app" v-cloak>
-      <home :class="{show: appVisualStateShowPageHome}">
+      <page class="home" :class="{show: appVisualStateShowPageHome}">
         <section>
           <h1>Like Me?</h1>
           <p>A game of matching likenesses.</p>
@@ -64,56 +64,134 @@
         <section>
           <modes>
             <mode v-for="mode in appSettingsModes" :class="{selected: mode.isSelected}">
-              <piece title="Click to select Infinite mode." @pointerdown="SelectMode(mode)">
+              <piece :title="'Click to select ' + mode.name + ' mode.'" @pointerdown="SelectMode(mode)">
                 <gild
                   :style="{maskImage: mode.piece.shape, webkitMaskImage: mode.piece.shape, backgroundColor: mode.piece.color, backgroundImage: mode.piece.backgroundImage }" />
               </piece>
               <value>{{mode.name}}</value>
             </mode>
           </modes>
+        </section>
+        <section>
+          <button class="secondary" @click="appVisualStateShowPageHowToPlay = true">How to play</button>
+          <button class="secondary" @click="appVisualStateShowPageSettings = true">Settings</button>
+          <button class="primary" @click="RestartGame">Play</button>
+        </section>
+        <section>
+          <version>
+            &copy;2023 <a href="https://bigtentgames.com" target="_blank">Big Tent Games</a> - v{{currentVersion}}
+          </version>
+        </section>
+      </page>
+      <modal :class="{show: appVisualStateShowPageHighScores}">
+        <header>
+          <chrome>
+            <quit @pointerdown="appVisualStateShowPageHighScores = false">done</quit>
+          </chrome>
+          <h1>High Scores</h1>
+        </header>
+        <section>
+          <h2>Hard</h2>
+          <score v-for="score in userScoresHighHardByValue">
+            <date>{{FormatDate(score.date)}}</date>
+            <value>{{score.value}}</value>
+          </score>
+          <p v-if="userHighScoresHard.length == 0">No scores recorded yet.</p>
+        </section>
+        <section>
+          <h2>Normal</h2>
+          <score v-for="score in userScoresHighEasyByValue">
+            <date>{{FormatDate(score.date)}}</date>
+            <value>{{score.value}}</value>
+          </score>
+          <p v-if="userHighScoresEasy.length == 0">No scores recorded yet.</p>
+        </section>
+        <section>
+          <h2>Infinite</h2>
+          <score v-for="score in userScoresHighInfiniteByValue">
+            <date>{{FormatDate(score.date)}}</date>
+            <value>{{score.value}}</value>
+          </score>
+          <p v-if="userHighScoresInfinite.length == 0">No scores recorded yet.</p>
+        </section>
+      </modal>
+      <modal :class="{show: appVisualStateShowPageHowToPlay}">
+        <header>
+          <chrome>
+            <quit @pointerdown="appVisualStateShowPageHowToPlay = false">done</quit>
+          </chrome>
+          <h1>How to play</h1>
+        </header>
+        <section>
+          <h2>Observe</h2>
+          <p>Notice my shape, color, and pattern.</p>
+          <me>
+            <piece>
+              <gild></gild>
+            </piece>
+          </me>
+        </section>
+        <section>
+          <h2>Select</h2>
+          <p>
+            Select all pieces that share <b>at least two</b> of my attributes (color, shape, pattern).
+          </p>
+          <examples>
+            <piece>
+              <gild
+                style="mask-image: var(--shape4); -webkit-mask-image: var(--shape4); background-color: var(--color2); background-image: var(--bgImage3);">
+              </gild>
+            </piece>
+            <piece>
+              <gild
+                style="mask-image: var(--shape1); -webkit-mask-image: var(--shape1); background-color: var(--color1); background-image: var(--bgImage2);">
+              </gild>
+            </piece>
+            <piece class="selected">
+              <gild
+                style="mask-image: var(--shape2); -webkit-mask-image: var(--shape2); background-color: var(--color2); background-image: var(--bgImage1);">
+              </gild>
+            </piece>
+            <piece>
+              <gild
+                style="mask-image: var(--shape3); -webkit-mask-image: var(--shape3); background-color: var(--color3); background-image: var(--bgImage1);">
+              </gild>
+            </piece>
+          </examples>
+        </section>
+        <section>
+          <h2>Check</h2>
+          <p>Click me to see if you got them all!</p>
+        </section>
+      </modal>
+      <modal :class="{show: appVisualStateShowPageSettings}">
+        <header>
+          <chrome>
+            <quit @pointerdown="appVisualStateShowPageSettings = false">done</quit>
+          </chrome>
+          <h1>Settings</h1>
+        </header>
+        <section>
           <checkbox :class="{on: userSettingsUseHints}" @pointerdown="ToggleUsingHints">
-            Use hints
+            Show guidance
             <toggle></toggle>
           </checkbox>
         </section>
         <section>
-          <button class="primary" @click="RestartGame">Play</button>
-          <button class="secondary" @click="appVisualStateShowPageHowToPlay = true">How to play</button>
+          <h2>Theme</h2>
+          <themes>
+            <theme v-for="theme in appSettingsThemes" :class="{selected: theme.isSelected}"
+              @pointerdown="SelectTheme(theme)">
+              <colors>
+                <color :style="{backgroundColor: theme.color1}"></color>
+                <color :style="{backgroundColor: theme.color2}"></color>
+                <color :style="{backgroundColor: theme.color3}"></color>
+              </colors>
+              <name>{{theme.name}}</name>
+            </theme>
+          </themes>
         </section>
-        <version>
-          &copy;2023 <a href="https://bigtentgames.com" target="_blank">Big Tent Games</a> - v{{currentVersion}}
-        </version>
-      </home>
-      <howto :class="{show: appVisualStateShowPageHowToPlay}">
-        <chrome>
-          <quit @pointerdown="appVisualStateShowPageHowToPlay = false">done</quit>
-        </chrome>
-        <section>
-          <h1>How to play</h1>
-        </section>
-        <divider></divider>
-        <section>
-          <p>Notice me (my shape, color, and pattern).</p>
-          <me>
-            <piece>
-              <gild
-                style="mask-image: var(--shape1); -webkit-mask-image: var(--shape1); background-color: var(--color2); background-image: var(--bgImage1);">
-              </gild>
-            </piece>
-          </me>
-        </section>
-        <divider></divider>
-        <section>
-          <p>
-            Select all board pieces that share <b>at least two</b> of my three attributes (color, shape, pattern).
-          </p>
-          <img src="images/pieces.png" />
-        </section>
-        <divider></divider>
-        <section>
-          <p>Click me to check!</p>
-        </section>
-      </howto>
+      </modal>
       <stage>
         <gameover v-if="gameCurrentIsGameOver">
           <h1 style="margin-bottom: 1em;">Game Over</h1>
@@ -150,6 +228,8 @@
       </stage>
     </app>
     <script id=" vue-framework" src="helpers/vue.min.js" type='text/javascript'></script>
+    <script src="models/ScoreObject.js" type='text/javascript'></script>
+    <script src="models/ThemeObject.js" type='text/javascript'></script>
     <script src="models/PieceObject.js" type='text/javascript'></script>
     <script src="models/ModeObject.js" type='text/javascript'></script>
     <script src="scripts/likeme.js" type='text/javascript'></script>

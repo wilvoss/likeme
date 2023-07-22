@@ -1,3 +1,4 @@
+/// <reference path="../models/ThemeObject.js" />
 /// <reference path="../models/PieceObject.js" />
 /// <reference path="../models/ModeObject.js" />
 /// <reference path="../helpers/console-enhancer.js" />
@@ -41,15 +42,18 @@ var app = new Vue({
 
   data: {
     storedVersion: 0,
-    currentVersion: '3.6.0',
+    currentVersion: '3.6.5',
     appSettingsModes: Modes,
     appSettingsModeHardInterval: 100,
     appSettingsModeHardInternalChangeCounterCount: 0,
     appSettingsModeHardIntervalChangeCounterLimit: 10,
     appSettingsPieceSize: 10,
+    appSettingsThemes: Themes,
     appSettingsTotalNumberOfBoardPieces: 16,
+    appVisualStateShowPageHighScores: false,
     appVisualStateShowPageHome: true,
     appVisualStateShowPageHowToPlay: false,
+    appVisualStateShowPageSettings: false,
     appVisualStateShowElementHint: false,
     appVisualStateShowElementFlyaway: false,
     gameCurrentIsGameOver: true,
@@ -64,17 +68,22 @@ var app = new Vue({
     gameCurrentHasBonusTimeHintDisplayed: false,
     gameCurrentHintText: 'Select pieces that share <b>at least two</b> of my attributes (color, shape, pattern).',
     gameCurrentHasAnyPieceEverBeenSelected: false,
+    userHighScoresInfinite: [],
+    userHighScoresEasy: [],
+    userHighScoresHard: [],
     userSettingsUseHints: true,
     documentCssRoot: document.querySelector(':root'),
   },
 
   methods: {
     NewGame() {
+      log('this.NewGame() called');
       this.NewBoard();
       this.gameCurrentIsGameOver = false;
     },
 
     CheckBoard() {
+      log('this.CheckBoard() called');
       this.gameCurrentIsUserGuessWrong = false;
       let _totalPossibleLikePieces = 0;
       if (!this.gameCurrentIsGameOver) {
@@ -136,6 +145,7 @@ var app = new Vue({
     },
 
     NewBoard() {
+      log('this.NewBoard() called');
       this.AdjustPieceSizeBasedOnViewport();
       this.gameCurrentBoardPieces = [];
       this.gameCurrentNumberOfMisses = 0;
@@ -157,6 +167,7 @@ var app = new Vue({
     },
 
     TogglePieceSelection(piece) {
+      log('this.TogglePieceSelection() called for: "' + piece.name + '"');
       if (!this.gameCurrentIsGameOver) {
         piece.isSelected = !piece.isSelected;
         this.gameCurrentHasAnyPieceEverBeenSelected = true;
@@ -172,6 +183,7 @@ var app = new Vue({
     },
 
     RestartGame() {
+      log('this.RestartGame() called');
       this.gameCurrentTimer = this.appSettingsModes.infinite.isSelected ? 0 : this.gameCurrentStartingTime;
       this.gameCurrentNumberOfFails = 0;
       this.gameCurrentNumberOfClears = 0;
@@ -182,6 +194,7 @@ var app = new Vue({
     },
 
     SelectMode(mode) {
+      log('this.SelectMode(mode) called for:  "' + mode.name + '"');
       if (mode === this.appSettingsModes.hard && !this.appSettingsModes.hard.isSelected) {
         this.appSettingsModes.easy.isSelected = false;
         this.appSettingsModes.hard.isSelected = true;
@@ -195,7 +208,18 @@ var app = new Vue({
         this.appSettingsModes.hard.isSelected = false;
         this.appSettingsModes.infinite.isSelected = true;
       }
-      localStorage.setItem('mode', mode.name);
+      // localStorage.setItem('mode', mode.name);
+    },
+
+    SelectTheme(theme) {
+      log('this.SelectTheme(theme) called for: "' + theme.name + '"');
+      this.appSettingsThemes.forEach((t) => {
+        t.isSelected = theme == t;
+      });
+      this.documentCssRoot.style.setProperty('--color1', theme.color1);
+      this.documentCssRoot.style.setProperty('--color2', theme.color2);
+      this.documentCssRoot.style.setProperty('--color3', theme.color3);
+      localStorage.setItem('userSettingsTheme', JSON.stringify(theme.name));
     },
 
     UpdateApp() {
@@ -215,7 +239,7 @@ var app = new Vue({
       } else {
         this.gameCurrentIsGameOver = true;
       }
-      if (this.appSettingsModeHardInternalChangeCounterCount === this.appSettingsModeHardIntervalChangeCounterLimit) {
+      if (this.appSettingsModeHardInternalChangeCounterCount >= this.appSettingsModeHardIntervalChangeCounterLimit) {
         if (this.appVisualStateShowPageHome) {
           this.appSettingsModes.hard.piece.shape = Shapes[getRandomInt(0, Shapes.length)];
           this.appSettingsModes.hard.piece.color = Colors[getRandomInt(0, Colors.length)];
@@ -248,18 +272,31 @@ var app = new Vue({
     },
 
     EndGame() {
+      log('this.EndGame() called');
       let _confirm = window.confirm('Are you sure you want to quit?');
       if (_confirm) {
         this.gameCurrentIsGameOver = true;
+        let _score = new ScoreObject({
+          value: this.gameCurrentNumberOfClears,
+        });
+        if (this.appSettingsModes.easy.isSelected) {
+          this.userHighScoresEasy.push(_score);
+        } else if (this.appSettingsModes.hard.isSelected) {
+          this.userHighScoresHard.push(_score);
+        } else if (this.appSettingsModes.infinite.isSelected) {
+          this.userHighScoresInfinite.push(_score);
+        }
       }
     },
 
     ToggleUsingHints() {
+      log('this.ToggleUsingHints() called');
       this.userSettingsUseHints = !this.userSettingsUseHints;
       localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
     },
 
     GetUserSettings() {
+      log('this.GetUserSettings() called');
       let _modes = localStorage.getItem('appSettingsModes');
       if (_modes !== undefined && _modes !== null) {
         _modes = JSON.parse(_modes);
@@ -272,9 +309,29 @@ var app = new Vue({
         _hints = JSON.parse(_hints);
         this.userSettingsUseHints = _hints;
       }
+
+      let _userSettingsTheme = localStorage.getItem('userSettingsTheme');
+      try {
+        let _themeFound = '';
+        if (_userSettingsTheme !== undefined && _userSettingsTheme !== null) {
+          _userSettingsTheme = JSON.parse(_userSettingsTheme);
+          this.appSettingsThemes.forEach((t) => {
+            if (t.name == _userSettingsTheme) {
+              _themeFound = t;
+            }
+          });
+        }
+        if (_themeFound != '') {
+          this.SelectTheme(_themeFound);
+        }
+      } catch (error) {
+        log('_userSettingsTheme error: ' + error);
+        _gameDataCorrupt = true;
+      }
     },
 
     RestoreCurrentGame() {
+      log('this.RestoreCurrentGame() called');
       let _gameDataCorrupt = false;
 
       let _appSettingsModeHardInterval = localStorage.getItem('appSettingsModeHardInterval');
@@ -283,7 +340,7 @@ var app = new Vue({
           this.appSettingsModeHardInterval = _appSettingsModeHardInterval;
         }
       } catch (error) {
-        log(error);
+        log('_appSettingsModeHardInterval error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -293,7 +350,7 @@ var app = new Vue({
           this.appSettingsModeHardInternalChangeCounterCount = _appSettingsModeHardInternalChangeCounterCount;
         }
       } catch (error) {
-        log(error);
+        log('_appSettingsModeHardInternalChangeCounterCount error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -303,7 +360,7 @@ var app = new Vue({
           this.appSettingsModeHardIntervalChangeCounterLimit = _appSettingsModeHardIntervalChangeCounterLimit;
         }
       } catch (error) {
-        log(error);
+        log('_appSettingsModeHardIntervalChangeCounterLimit error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -313,7 +370,7 @@ var app = new Vue({
           this.appSettingsPieceSize = _appSettingsPieceSize;
         }
       } catch (error) {
-        log(error);
+        log('_appSettingsPieceSize error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -323,7 +380,7 @@ var app = new Vue({
           this.appSettingsTotalNumberOfBoardPieces = _appSettingsTotalNumberOfBoardPieces;
         }
       } catch (error) {
-        log(error);
+        log('_appSettingsTotalNumberOfBoardPieces error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -333,7 +390,7 @@ var app = new Vue({
           this.appVisualStateShowPageHome = JSON.parse(_appVisualStateShowPageHome);
         }
       } catch (error) {
-        log(error);
+        log('_appVisualStateShowPageHome error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -343,7 +400,17 @@ var app = new Vue({
           this.appVisualStateShowPageHowToPlay = JSON.parse(_appVisualStateShowPageHowToPlay);
         }
       } catch (error) {
-        log(error);
+        log('_appVisualStateShowPageHowToPlay error: ' + error);
+        _gameDataCorrupt = true;
+      }
+
+      let _appVisualStateShowPageSettings = localStorage.getItem('appVisualStateShowPageSettings');
+      try {
+        if (_appVisualStateShowPageSettings !== undefined && _appVisualStateShowPageSettings !== null) {
+          this.appVisualStateShowPageSettings = JSON.parse(_appVisualStateShowPageSettings);
+        }
+      } catch (error) {
+        log('_appVisualStateShowPageSettings error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -353,7 +420,7 @@ var app = new Vue({
           this.appVisualStateShowElementHint = JSON.parse(_appVisualStateShowElementHint);
         }
       } catch (error) {
-        log(error);
+        log('_appVisualStateShowElementHint error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -363,7 +430,7 @@ var app = new Vue({
           this.appVisualStateShowElementFlyaway = JSON.parse(_appVisualStateShowElementFlyaway);
         }
       } catch (error) {
-        log(error);
+        log('_appVisualStateShowElementFlyaway error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -374,7 +441,7 @@ var app = new Vue({
           this.gameCurrentMePiece = new PieceObject(_gameCurrentMePiece);
         }
       } catch (error) {
-        log(error);
+        log('_gameCurrentMePiece error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -388,7 +455,7 @@ var app = new Vue({
           });
         }
       } catch (error) {
-        log(error);
+        log('_gameCurrentBoardPieces error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -398,7 +465,7 @@ var app = new Vue({
           this.gameCurrentStartingTime = _gameCurrentStartingTime;
         }
       } catch (error) {
-        log(error);
+        log('_gameCurrentStartingTime error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -408,7 +475,7 @@ var app = new Vue({
           this.gameCurrentTimer = _gameCurrentTimer;
         }
       } catch (error) {
-        log(error);
+        log('_gameCurrentTimer error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -418,7 +485,7 @@ var app = new Vue({
           this.gameCurrentNumberOfClears = _gameCurrentNumberOfClears;
         }
       } catch (error) {
-        log(error);
+        log('_gameCurrentNumberOfClears error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -428,7 +495,7 @@ var app = new Vue({
           this.gameCurrentIsUserGuessWrong = JSON.parse(_gameCurrentIsUserGuessWrong);
         }
       } catch (error) {
-        log(error);
+        log('_gameCurrentIsUserGuessWrong error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -438,7 +505,7 @@ var app = new Vue({
           this.gameCurrentNumberOfFails = _gameCurrentNumberOfFails;
         }
       } catch (error) {
-        log(error);
+        log('_gameCurrentNumberOfFails error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -448,7 +515,7 @@ var app = new Vue({
           this.gameCurrentNumberOfMisses = _gameCurrentNumberOfMisses;
         }
       } catch (error) {
-        log(error);
+        log('_gameCurrentNumberOfMisses error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -458,7 +525,7 @@ var app = new Vue({
           this.gameCurrentHasBonusTimeHintDisplayed = JSON.parse(_gameCurrentHasBonusTimeHintDisplayed);
         }
       } catch (error) {
-        log(error);
+        log('_gameCurrentHasBonusTimeHintDisplayed error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -468,7 +535,7 @@ var app = new Vue({
           this.gameCurrentHintText = _gameCurrentHintText;
         }
       } catch (error) {
-        log(error);
+        log('_gameCurrentHintText error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -478,7 +545,7 @@ var app = new Vue({
           this.gameCurrentHasAnyPieceEverBeenSelected = JSON.parse(_gameCurrentHasAnyPieceEverBeenSelected);
         }
       } catch (error) {
-        log(error);
+        log('_gameCurrentHasAnyPieceEverBeenSelected error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -512,6 +579,9 @@ var app = new Vue({
 
       this.GetUserSettings();
 
+      log('this.currentVersion = ' + this.currentVersion);
+      log('this.storedVersion = ' + this.currentVersion);
+      log('this.gameCurrentIsGameOver = ' + this.gameCurrentIsGameOver);
       if (this.currentVersion === this.storedVersion && !this.gameCurrentIsGameOver) {
         this.RestoreCurrentGame();
       } else if (this.gameCurrentIsGameOver) {
@@ -531,6 +601,7 @@ var app = new Vue({
       localStorage.setItem('appSettingsTotalNumberOfBoardPieces', this.appSettingsTotalNumberOfBoardPieces);
       localStorage.setItem('appVisualStateShowPageHome', JSON.stringify(this.appVisualStateShowPageHome));
       localStorage.setItem('appVisualStateShowPageHowToPlay', JSON.stringify(this.appVisualStateShowPageHowToPlay));
+      localStorage.setItem('appVisualStateShowPageSettings', JSON.stringify(this.appVisualStateShowPageSettings));
       localStorage.setItem('appVisualStateShowElementHint', JSON.stringify(this.appVisualStateShowElementHint));
       localStorage.setItem('appVisualStateShowElementFlyaway', JSON.stringify(this.appVisualStateShowElementFlyaway));
       localStorage.setItem('gameCurrentIsGameOver', JSON.stringify(this.gameCurrentIsGameOver));
@@ -557,13 +628,45 @@ var app = new Vue({
     HandleOnResizeEvent() {
       this.AdjustPieceSizeBasedOnViewport();
     },
+
+    FormatDate(_date) {
+      let _formattedDate = _date.getDay() + '/' + _date.getMonth() + '/' + _date.getFullYear();
+      return _formattedDate;
+    },
   },
 
   mounted() {
+    this.InitializeGame();
     window.addEventListener('unload', this.HandleOnUnloadEvent);
     window.addEventListener('resize', this.HandleOnResizeEvent);
-    this.InitializeGame();
   },
 
-  computed: {},
+  computed: {
+    userScoresHighHardByValue: function () {
+      function compare(a, b) {
+        if (a.value < b.value) return 1;
+        if (a.value > b.value) return -1;
+        return 0;
+      }
+      return this.userHighScoresHard.sort(compare).flat().slice(0, 3);
+    },
+
+    userScoresHighEasyByValue: function () {
+      function compare(a, b) {
+        if (a.value < b.value) return 1;
+        if (a.value > b.value) return -1;
+        return 0;
+      }
+      return this.userHighScoresEasy.sort(compare).flat().slice(0, 3);
+    },
+
+    userScoresHighInfiniteByValue: function () {
+      function compare(a, b) {
+        if (a.value < b.value) return 1;
+        if (a.value > b.value) return -1;
+        return 0;
+      }
+      return this.userHighScoresInfinite.sort(compare).flat().slice(0, 3);
+    },
+  },
 });
