@@ -1,6 +1,7 @@
 class ScoreObject {
   constructor(spec) {
-    this.date = new Date();
+    this.date = spec.date == undefined ? new Date() : spec.date;
+    this.isCurrent = spec.isCurrent == undefined ? false : spec.isCurrent;
     this.value = spec.value;
   }
 }

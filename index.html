@@ -11,7 +11,8 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-touch-fullscreen" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, minimum-scale=1, maximum-scale=1, user-scalable=no" />
     <meta name="theme-color" content="#f0f0f0">
 
     <meta name="keywords" content="Like Me?, Big Tent Games, Games, Free, FullyFree" />
@@ -64,7 +65,7 @@
         <section>
           <modes>
             <mode v-for="mode in appSettingsModes" :class="{selected: mode.isSelected}">
-              <piece :title="'Click to select ' + mode.name + ' mode.'" @pointerdown="SelectMode(mode)">
+              <piece :title="'Click to select ' + mode.name + ' mode.'" @click="SelectMode(mode)">
                 <gild
                   :style="{maskImage: mode.piece.shape, webkitMaskImage: mode.piece.shape, backgroundColor: mode.piece.color, backgroundImage: mode.piece.backgroundImage }" />
               </piece>
@@ -73,9 +74,10 @@
           </modes>
         </section>
         <section>
-          <button class="secondary" @click="appVisualStateShowPageHowToPlay = true">How to play</button>
-          <button class="secondary" @click="appVisualStateShowPageSettings = true">Settings</button>
           <button class="primary" @click="RestartGame">Play</button>
+          <button class="secondary" @click="ToggleHowToPlay(event, true)">How to play</button>
+          <button class="secondary" @click="ToggleHighScores(event, true)">High scores</button>
+          <button class="secondary" @click="ToggleSettings(event, true)">Settings</button>
         </section>
         <section>
           <version>
@@ -86,39 +88,42 @@
       <modal :class="{show: appVisualStateShowPageHighScores}">
         <header>
           <chrome>
-            <quit @pointerdown="appVisualStateShowPageHighScores = false">done</quit>
+            <chromebutton @click="ToggleHighScores(event, false)">done</chromebutton>
           </chrome>
           <h1>High Scores</h1>
         </header>
         <section>
           <h2>Hard</h2>
-          <score v-for="score in userScoresHighHardByValue">
+          <score v-for="score in userScoresHighHardByValue" :class="{current: score.isCurrent}">
             <date>{{FormatDate(score.date)}}</date>
-            <value>{{score.value}}</value>
+            <value>{{NumberWithCommas(score.value)}}</value>
           </score>
-          <p v-if="userHighScoresHard.length == 0">No scores recorded yet.</p>
+          <score v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighHardByValue.length">
+            <date></date>–<value></value>
+          </score>
         </section>
         <section>
           <h2>Normal</h2>
-          <score v-for="score in userScoresHighEasyByValue">
+          <score v-for="score in userScoresHighEasyByValue" :class="{current: score.isCurrent}">
             <date>{{FormatDate(score.date)}}</date>
-            <value>{{score.value}}</value>
+            <value>{{NumberWithCommas(score.value)}}</value>
           </score>
-          <p v-if="userHighScoresEasy.length == 0">No scores recorded yet.</p>
+          <score v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighEasyByValue.length">
+            <date></date>–<value></value>
+          </score>
         </section>
         <section>
-          <h2>Infinite</h2>
-          <score v-for="score in userScoresHighInfiniteByValue">
-            <date>{{FormatDate(score.date)}}</date>
-            <value>{{score.value}}</value>
-          </score>
-          <p v-if="userHighScoresInfinite.length == 0">No scores recorded yet.</p>
+          <p>Infinite mode isn't scored.</p>
+        </section>
+        <section>
+          <button :class="{disabled: userScoresHighEasyByValue.length === 0 && userScoresHighHardByValue.length === 0}"
+            class="tertiary" @click="ClearAllUserScores">Clear</button>
         </section>
       </modal>
       <modal :class="{show: appVisualStateShowPageHowToPlay}">
         <header>
           <chrome>
-            <quit @pointerdown="appVisualStateShowPageHowToPlay = false">done</quit>
+            <chromebutton @click="ToggleHowToPlay(event, false)">done</chromebutton>
           </chrome>
           <h1>How to play</h1>
         </header>
@@ -167,21 +172,20 @@
       <modal :class="{show: appVisualStateShowPageSettings}">
         <header>
           <chrome>
-            <quit @pointerdown="appVisualStateShowPageSettings = false">done</quit>
+            <chromebutton @click="ToggleSettings(event, false)">done</chromebutton>
           </chrome>
           <h1>Settings</h1>
         </header>
         <section>
-          <checkbox :class="{on: userSettingsUseHints}" @pointerdown="ToggleUsingHints">
-            Show guidance
+          <checkbox :class="{on: userSettingsUseHints}" @click="ToggleUsingHints(event)">
+            Show tips
             <toggle></toggle>
           </checkbox>
         </section>
         <section>
           <h2>Theme</h2>
           <themes>
-            <theme v-for="theme in appSettingsThemes" :class="{selected: theme.isSelected}"
-              @pointerdown="SelectTheme(theme)">
+            <theme v-for="theme in appSettingsThemes" :class="{selected: theme.isSelected}" @click="SelectTheme(theme)">
               <colors>
                 <color :style="{backgroundColor: theme.color1}"></color>
                 <color :style="{backgroundColor: theme.color2}"></color>
@@ -194,25 +198,33 @@
       </modal>
       <stage>
         <gameover v-if="gameCurrentIsGameOver">
-          <h1 style="margin-bottom: 1em;">Game Over</h1>
+          <h2 style="margin-bottom: 1em;">Game Over</h2>
+          <newhigh v-if="appVisualStateShowNewHighScoreElement">A NEW high score!</newhigh>
           <button class="primary" @click="RestartGame">Replay</button>
           <button class="secondary" @click="appVisualStateShowPageHome = true">Home</button>
+          <button class="secondary"
+            @click="appVisualStateShowPageHighScores = true; appVisualStateShowPageHome = true">High Scores</button>
         </gameover>
         <chrome>
-          <clears>{{gameCurrentNumberOfClears}} clears</clears>
+          <!-- <clears>{{gameCurrentNumberOfClears}} clears</clears> -->
+          <chromebutton :class="{disabled: gameCurrentIsGameOver}" @click="appVisualStateShowPageSettings = true">
+            Settings</chromebutton>
           <time>{{gameCurrentIsGameOver ? 'Misses: ' + gameCurrentNumberOfFails : GetMsToTime(gameCurrentTimer)}}</time>
-          <quit :class="{disabled: gameCurrentIsGameOver}" @click="EndGame">quit</quit>
+          <chromebutton :class="{disabled: gameCurrentIsGameOver}" @click="EndGame">Quit</chromebutton>
         </chrome>
         <playarea>
-          <addtime :class="{flyaway: appVisualStateShowElementFlyaway}">+3 seconds</addtime>
+          <score>
+            {{NumberWithCommas(gameCurrentTotalScore)}}
+          </score>
           <board :class="{disabled: gameCurrentIsGameOver}">
-            <piece v-for="piece in gameCurrentBoardPieces" @pointerdown="TogglePieceSelection(piece)"
+            <piece v-for="piece in gameCurrentBoardPieces" @click="TogglePieceSelection(piece)"
               :class="{selected: piece.isSelected, dropped: piece.hasDropped}">
               <gild
                 :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color, backgroundImage: piece.backgroundImage }">
               </gild>
             </piece>
           </board>
+          <addtime :class="{flyaway: appVisualStateShowElementFlyaway}">+3 seconds</addtime>
           <me :class="{disabled: gameCurrentIsGameOver, nope: gameCurrentIsUserGuessWrong}">
             <piece @click="CheckBoard">
               <gild
