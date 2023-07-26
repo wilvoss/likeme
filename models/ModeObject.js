@@ -3,6 +3,7 @@
 class ModeObject {
   constructor(spec) {
     this.name = spec.name;
+    this.description = spec.description == undefined ? 'This is a game mode.' : spec.description;
     this.piece = spec.piece;
     this.isSelected = spec.isSelected == undefined ? false : spec.isSelected;
   }
@@ -10,7 +11,8 @@ class ModeObject {
 
 var Modes = {
   infinite: new ModeObject({
-    name: 'infinite',
+    name: 'Infinite',
+    description: 'Untimed zen mode with no pressure.',
     piece: new PieceObject({
       shape: 'var(--infinity)',
       color: Colors[getRandomInt(0, Colors.length)],
@@ -18,7 +20,8 @@ var Modes = {
     }),
   }),
   easy: new ModeObject({
-    name: 'easy',
+    name: 'Easy',
+    description: 'Game ends after three minutes.',
     piece: new PieceObject({
       shape: Shapes[getRandomInt(0, Shapes.length)],
       color: Colors[getRandomInt(0, Colors.length)],
@@ -27,7 +30,8 @@ var Modes = {
     isSelected: true,
   }),
   hard: new ModeObject({
-    name: 'hard',
+    name: 'Hard',
+    description: 'Like Easy, but pieces change randomly.',
     piece: new PieceObject({
       shape: Shapes[getRandomInt(0, Shapes.length)],
       color: Colors[getRandomInt(0, Colors.length)],

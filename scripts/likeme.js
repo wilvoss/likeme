@@ -9,56 +9,36 @@ Vue.config.debug = false;
 Vue.config.silent = true;
 // }
 
-// prettier-ignore
-Vue.config.ignoredElements = [
-  'app',
-  'home',
-  'modes',
-  'mode',
-  'piece',
-  'gild',
-  'value',
-  'checkbox',
-  'toggle',
-  'version',
-  'howto',
-  'chrome',
-  'quit',
-  'divider',
-  'stage',
-  'gameover',
-  'clears',
-  'time',
-  'playarea',
-  'addtime',
-  'board',
-  'me',
-  'puzzle',
-  'hint',
-];
+Vue.config.ignoredElements = ['app', 'home', 'modes', 'mode', 'piece', 'glyph', 'gild', 'value', 'checkbox', 'toggle', 'version', 'howto', 'icon', 'chrome', 'quit', 'divider', 'stage', 'gameover', 'clears', 'time', 'playarea', 'addtime', 'board', 'me', 'puzzle', 'hint'];
 
 var app = new Vue({
   el: '#app',
 
   data: {
     storedVersion: 0,
-    currentVersion: '3.6.19',
+    currentVersion: '3.7.1',
+    appNotificationMessage: '',
     appSettingsModes: Modes,
     appSettingsModeHardInterval: 100,
     appSettingsModeHardInternalChangeCounterCount: 0,
     appSettingsModeHardIntervalChangeCounterLimit: 10,
-    appSettingsNumberOfHighScoresShown: 3,
+    appSettingsNumberOfHighScoresShown: 5,
     appSettingsPieceSize: 10,
     appSettingsScoreTwinIncrement: 10,
     appSettingsScoreSiblingIncrement: 20,
     appSettingsScoreModeHardMultiplier: 4,
     appSettingsThemes: Themes,
     appSettingsTotalNumberOfBoardPieces: 16,
+    appSettingsBoardGridSize: 4,
     appVisualStateShowPageHighScores: false,
+    appVisualStateShowPageChallenge: false,
+    appVisualStateShowPageCredits: false,
+    appVisualStateShowPageGameOver: false,
     appVisualStateShowPageHome: true,
     appVisualStateShowPageHowToPlay: false,
     appVisualStateShowPageSettings: false,
     appVisualStateShowElementHint: false,
+    appVisualStateShowNotification: false,
     appVisualStateShowElementFlyaway: false,
     appVisualStateShowNewHighScoreElement: false,
     gameCurrentIsGameOver: true,
@@ -147,8 +127,8 @@ var app = new Vue({
           this.gameCurrentHasAnyPieceEverBeenSelected = true;
           if (this.gameCurrentNumberOfMisses === 0 && !this.appSettingsModes.infinite.isSelected) {
             if (!this.gameCurrentHasBonusTimeHintDisplayed) {
-              this.appVisualStateShowElementHint = this.userSettingsUseHints;
-              this.gameCurrentHintText = 'Matching all pieces on your first attempt adds <b>3 seconds</b> to the clock!';
+              this.appVisualStateShowElementHint = true;
+              this.gameCurrentHintText = 'Nice! Matching all pieces on your first attempt adds <b>3 seconds</b> to the clock!';
               this.gameCurrentHasBonusTimeHintDisplayed = true;
             }
             this.gameCurrentTimer = this.gameCurrentTimer + 3000;
@@ -160,15 +140,12 @@ var app = new Vue({
           this.gameCurrentNumberOfClears++;
           this.NewBoard();
         } else {
-          if (this.gameCurrentNumberOfMisses === 0 && !this.gameCurrentHasAnyPieceEverBeenSelected) {
-            this.appVisualStateShowElementHint = this.userSettingsUseHints;
-          }
           if (this.gameCurrentNumberOfMisses >= 1) {
-            this.appVisualStateShowElementHint = this.userSettingsUseHints;
+            this.appVisualStateShowElementHint = true;
             if (_totalPossibleLikePieces === 0) {
               this.gameCurrentHintText = 'Some boards have zero matches.';
             } else {
-              this.gameCurrentHintText = _totalPossibleLikePieces === 1 ? 'There is <b>' + _totalPossibleLikePieces + '</b> piece like me.' : 'There are a total of <b>' + _totalPossibleLikePieces + '</b> pieces like me.';
+              this.gameCurrentHintText = _totalPossibleLikePieces === 1 ? 'There is only <b>' + _totalPossibleLikePieces + '</b> piece like me.' : 'There are a total of <b>' + _totalPossibleLikePieces + '</b> pieces like me.';
             }
           }
           this.gameCurrentNumberOfMisses++;
@@ -203,20 +180,43 @@ var app = new Vue({
       this.gameCurrentMePiece = new PieceObject({ shape: Shapes[getRandomInt(0, Shapes.length)], color: Colors[getRandomInt(0, Colors.length)], backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)] });
     },
 
-    TogglePieceSelection(piece) {
-      log('this.TogglePieceSelection() called for: " this.gameCurrentBoardPieces[' + this.gameCurrentBoardPieces.indexOf(piece) + ']"');
+    TogglePieceSelection(_piece) {
+      log('this.TogglePieceSelection() called for: " this.gameCurrentBoardPieces[' + this.gameCurrentBoardPieces.indexOf(_piece) + ']"');
+      this.appVisualStateShowElementHint = false;
       if (!this.gameCurrentIsGameOver) {
-        piece.isSelected = !piece.isSelected;
+        _piece.isSelected = !_piece.isSelected;
         this.gameCurrentHasAnyPieceEverBeenSelected = true;
       }
     },
 
-    Share() {
-      navigator.share({
+    ShareApp() {
+      let _shareObject = {
         title: 'Like Me?',
-        text: 'What in the world is like me?',
+        text: 'A game of matching likenesses!',
         url: 'https://likeme.games',
-      });
+      };
+      if (this.CheckForMobile()) {
+        navigator.share(_shareObject);
+      } else {
+        _shareObject = 'https://likeme.games';
+        this.appVisualStateShowNotification = true;
+        this.appNotificationMessage = 'Copied results to clipboard.';
+        navigator.clipboard.writeText(_shareObject);
+      }
+    },
+
+    ShareScore() {
+      let _shareText = document.getElementById('copyme').textContent;
+      if (this.CheckForMobile()) {
+        let _shareObject = {
+          text: _shareText,
+        };
+        navigator.share(_shareObject);
+      } else {
+        this.appVisualStateShowNotification = true;
+        this.appNotificationMessage = 'Copied results to clipboard.';
+        navigator.clipboard.writeText(_shareText);
+      }
     },
 
     RestartGame() {
@@ -224,38 +224,42 @@ var app = new Vue({
       this.gameCurrentTimer = this.appSettingsModes.infinite.isSelected ? 0 : this.gameCurrentStartingTime;
       this.gameCurrentNumberOfFails = 0;
       this.gameCurrentNumberOfClears = 0;
+      this.appVisualStateShowNotification = false;
       this.appVisualStateShowPageHome = false;
-      this.gameCurrentHasAnyPieceEverBeenSelected = false;
+      this.appVisualStateShowPageGameOver = false;
       this.appVisualStateShowElementHint = false;
+      this.gameCurrentHintText = 'Select pieces that share <b>at least two</b> of my attributes (color, shape, pattern).';
+      this.gameCurrentHasAnyPieceEverBeenSelected = false;
       this.NewGame();
     },
 
-    SelectMode(mode) {
-      log('this.SelectMode(mode) called for:  "' + mode.name + '"');
-      if (mode === this.appSettingsModes.hard && !this.appSettingsModes.hard.isSelected) {
+    SelectMode(_mode) {
+      log('this.SelectMode(mode) called for:  "' + _mode.name + '"');
+      if (_mode === this.appSettingsModes.hard && !this.appSettingsModes.hard.isSelected) {
         this.appSettingsModes.easy.isSelected = false;
         this.appSettingsModes.hard.isSelected = true;
         this.appSettingsModes.infinite.isSelected = false;
-      } else if (mode === this.appSettingsModes.easy && !this.appSettingsModes.easy.isSelected) {
+      } else if (_mode === this.appSettingsModes.easy && !this.appSettingsModes.easy.isSelected) {
         this.appSettingsModes.easy.isSelected = true;
         this.appSettingsModes.hard.isSelected = false;
         this.appSettingsModes.infinite.isSelected = false;
-      } else if (mode === this.appSettingsModes.infinite && !this.appSettingsModes.infinite.isSelected) {
+      } else if (_mode === this.appSettingsModes.infinite && !this.appSettingsModes.infinite.isSelected) {
         this.appSettingsModes.easy.isSelected = false;
         this.appSettingsModes.hard.isSelected = false;
         this.appSettingsModes.infinite.isSelected = true;
       }
     },
 
-    SelectTheme(theme) {
-      log('this.SelectTheme(theme) called for: "' + theme.name + '"');
+    SelectTheme(_theme) {
+      log('this.SelectTheme(theme) called for: "' + _theme.name + '"');
       this.appSettingsThemes.forEach((t) => {
-        t.isSelected = theme == t;
+        t.isSelected = _theme == t;
       });
-      this.documentCssRoot.style.setProperty('--color1', theme.color1);
-      this.documentCssRoot.style.setProperty('--color2', theme.color2);
-      this.documentCssRoot.style.setProperty('--color3', theme.color3);
-      localStorage.setItem('userSettingsTheme', JSON.stringify(theme.name));
+      this.documentCssRoot.style.setProperty('--color1', _theme.color1);
+      this.documentCssRoot.style.setProperty('--color2', _theme.color2);
+      this.documentCssRoot.style.setProperty('--color3', _theme.color3);
+      this.documentCssRoot.style.setProperty('--color3contrast', _theme.color3contrast);
+      localStorage.setItem('userSettingsTheme', JSON.stringify(_theme.name));
     },
 
     UpdateApp() {
@@ -263,18 +267,12 @@ var app = new Vue({
         this.appSettingsModeHardInternalChangeCounterCount++;
         if (!this.appSettingsModes.infinite.isSelected) {
           this.gameCurrentTimer = this.gameCurrentTimer - this.appSettingsModeHardInterval;
-          if (this.gameCurrentNumberOfClears === 0 && this.gameCurrentTimer <= this.gameCurrentStartingTime - 10000 && !this.gameCurrentHasAnyPieceEverBeenSelected) {
-            this.appVisualStateShowElementHint = this.userSettingsUseHints;
-          }
         } else {
           this.gameCurrentTimer = parseInt(this.gameCurrentTimer) + parseInt(this.appSettingsModeHardInterval);
-          if (this.gameCurrentNumberOfClears === 0 && this.gameCurrentTimer >= 10000 && !this.gameCurrentHasAnyPieceEverBeenSelected) {
-            this.appVisualStateShowElementHint = this.userSettingsUseHints;
-          }
         }
       } else {
         if (!this.gameCurrentIsGameOver) {
-          this.EndGame(false);
+          this.EndGame();
         }
       }
       if (this.appSettingsModeHardInternalChangeCounterCount >= this.appSettingsModeHardIntervalChangeCounterLimit) {
@@ -305,37 +303,34 @@ var app = new Vue({
       var hrs = (s - mins) / 60;
 
       var secstring = mins != 0 || hrs != 0 ? ('0' + secs).slice(-2) : secs;
-      var minstring = mins != 0 ? mins + '∶' : '';
-      var hrsstring = hrs != 0 ? hrs + '∶' : '';
+      var minstring = mins != 0 ? mins + ':' : '';
+      var hrsstring = hrs != 0 ? hrs + ':' : '';
       return this.appSettingsModes.infinite.isSelected ? hrsstring + minstring + secstring : minstring + secstring;
     },
 
-    EndGame(challenge = true) {
+    EndGame() {
       log('this.EndGame() called');
-      var _confirm = false;
-      if (challenge) {
-        _confirm = window.confirm('Are you sure you want to quit?');
-      }
-      if (_confirm || !challenge) {
-        this.gameCurrentIsGameOver = true;
-        let _score = new ScoreObject({
-          value: this.gameCurrentTotalScore,
-        });
-        if (this.appSettingsModes.easy.isSelected) {
-          this.userHighScoresEasy.push(_score);
-          if (_score === this.userScoresHighEasyByValue[0]) {
-            this.appVisualStateShowNewHighScoreElement = true;
-          }
-          localStorage.setItem('userHighScoresEasy', JSON.stringify(this.userHighScoresEasy));
-        } else if (this.appSettingsModes.hard.isSelected) {
-          this.userHighScoresHard.push(_score);
-          localStorage.setItem('userHighScoresHard', JSON.stringify(this.userHighScoresHard));
-        } else if (this.appSettingsModes.infinite.isSelected) {
-          this.userHighScoresInfinite.push(_score);
-          localStorage.setItem('userHighScoresInfinite', JSON.stringify(this.userHighScoresInfinite));
+
+      this.gameCurrentIsGameOver = true;
+      this.appVisualStateShowPageChallenge = false;
+      this.appVisualStateShowPageGameOver = true;
+      let _score = new ScoreObject({
+        value: this.gameCurrentTotalScore,
+      });
+      if (this.appSettingsModes.easy.isSelected) {
+        this.userHighScoresEasy.push(_score);
+        if (_score === this.userScoresHighEasyByValue[0]) {
+          this.appVisualStateShowNewHighScoreElement = true;
         }
-        _score.isCurrent = true;
+        localStorage.setItem('userHighScoresEasy', JSON.stringify(this.userHighScoresEasy));
+      } else if (this.appSettingsModes.hard.isSelected) {
+        this.userHighScoresHard.push(_score);
+        localStorage.setItem('userHighScoresHard', JSON.stringify(this.userHighScoresHard));
+      } else if (this.appSettingsModes.infinite.isSelected) {
+        this.userHighScoresInfinite.push(_score);
+        localStorage.setItem('userHighScoresInfinite', JSON.stringify(this.userHighScoresInfinite));
       }
+      _score.isCurrent = true;
     },
 
     ToggleUsingHints(event) {
@@ -346,25 +341,55 @@ var app = new Vue({
       localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
     },
 
-    ToggleHowToPlay(event, value) {
+    ResetModalContentScrollPositions() {
+      log('this.ResetModalContentScrollPositions() called');
+      let _contentElements = document.getElementsByTagName('content');
+      for (let i = 0; i < _contentElements.length; i++) {
+        const element = _contentElements[i];
+        element.scroll({ top: 0 });
+      }
+    },
+
+    ToggleChallenge(event, _value) {
+      log('this.ToggleHowToPlay(event, value) called');
+      if (event != null) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      this.ResetModalContentScrollPositions();
+      this.appVisualStateShowPageChallenge = _value;
+    },
+
+    ToggleHowToPlay(event, _value) {
       log('this.ToggleHowToPlay(event, value) called');
       event.stopPropagation();
       event.preventDefault();
-      this.appVisualStateShowPageHowToPlay = value;
+      this.ResetModalContentScrollPositions();
+      this.appVisualStateShowPageHowToPlay = _value;
     },
 
-    ToggleHighScores(event, value) {
+    ToggleHighScores(event, _value) {
       log('this.ToggleHighScores(event, value) called');
       event.stopPropagation();
       event.preventDefault();
-      this.appVisualStateShowPageHighScores = value;
+      this.ResetModalContentScrollPositions();
+      this.appVisualStateShowPageHighScores = _value;
     },
 
-    ToggleSettings(event, value) {
+    ToggleSettings(event, _value) {
       log('this.ToggleSettings(event, value) called');
       event.stopPropagation();
       event.preventDefault();
-      this.appVisualStateShowPageSettings = value;
+      this.ResetModalContentScrollPositions();
+      this.appVisualStateShowPageSettings = _value;
+    },
+
+    ToggleCredits(event, _value) {
+      log('this.ToggleCredits(event, value) called');
+      event.stopPropagation();
+      event.preventDefault();
+      this.ResetModalContentScrollPositions();
+      this.appVisualStateShowPageCredits = _value;
     },
 
     GetUserSettings() {
@@ -492,6 +517,16 @@ var app = new Vue({
         }
       } catch (error) {
         log('_appSettingsTotalNumberOfBoardPieces error: ' + error);
+        _gameDataCorrupt = true;
+      }
+
+      let _appSettingsBoardGridSize = localStorage.getItem('appSettingsBoardGridSize');
+      try {
+        if (_appSettingsBoardGridSize !== undefined && _appSettingsBoardGridSize !== null) {
+          this.appSettingsBoardGridSize = _appSettingsBoardGridSize;
+        }
+      } catch (error) {
+        log('_appSettingsBoardGridSize error: ' + error);
         _gameDataCorrupt = true;
       }
 
@@ -650,6 +685,16 @@ var app = new Vue({
         _gameDataCorrupt = true;
       }
 
+      let _gameCurrentTotalScore = localStorage.getItem('gameCurrentTotalScore');
+      try {
+        if (_gameCurrentTotalScore !== undefined && _gameCurrentTotalScore !== null) {
+          this.gameCurrentTotalScore = parseInt(_gameCurrentTotalScore);
+        }
+      } catch (error) {
+        log('_gameCurrentTotalScore error: ' + error);
+        _gameDataCorrupt = true;
+      }
+
       let _gameCurrentHasAnyPieceEverBeenSelected = localStorage.getItem('gameCurrentHasAnyPieceEverBeenSelected');
       try {
         if (_gameCurrentHasAnyPieceEverBeenSelected !== undefined && _gameCurrentHasAnyPieceEverBeenSelected !== null) {
@@ -691,7 +736,7 @@ var app = new Vue({
       this.GetUserSettings();
 
       log(this.gameCurrentIsGameOver, true, '#00ffff');
-      if (this.currentVersion === this.storedVersion && !this.gameCurrentIsGameOver) {
+      if (!this.gameCurrentIsGameOver) {
         this.RestoreCurrentGame();
       }
 
@@ -699,6 +744,7 @@ var app = new Vue({
     },
 
     HandleOnUnloadEvent() {
+      window.clearInterval(this.updateInterval);
       localStorage.setItem('storedVersion', this.currentVersion);
       localStorage.setItem('appSettingsModes', JSON.stringify(this.appSettingsModes));
       localStorage.setItem('appSettingsModeHardInterval', this.appSettingsModeHardInterval);
@@ -706,6 +752,7 @@ var app = new Vue({
       localStorage.setItem('appSettingsModeHardIntervalChangeCounterLimit', this.appSettingsModeHardIntervalChangeCounterLimit);
       localStorage.setItem('appSettingsPieceSize', this.appSettingsPieceSize);
       localStorage.setItem('appSettingsTotalNumberOfBoardPieces', this.appSettingsTotalNumberOfBoardPieces);
+      localStorage.setItem('appSettingsBoardGridSize', this.appSettingsBoardGridSize);
       localStorage.setItem('appVisualStateShowPageHome', JSON.stringify(this.appVisualStateShowPageHome));
       localStorage.setItem('appVisualStateShowPageHowToPlay', JSON.stringify(this.appVisualStateShowPageHowToPlay));
       localStorage.setItem('appVisualStateShowPageSettings', JSON.stringify(this.appVisualStateShowPageSettings));
@@ -722,14 +769,15 @@ var app = new Vue({
       localStorage.setItem('gameCurrentNumberOfMisses', this.gameCurrentNumberOfMisses);
       localStorage.setItem('gameCurrentHasBonusTimeHintDisplayed', JSON.stringify(this.gameCurrentHasBonusTimeHintDisplayed));
       localStorage.setItem('gameCurrentHintText', this.gameCurrentHintText);
+      localStorage.setItem('gameCurrentTotalScore', this.gameCurrentTotalScore);
       localStorage.setItem('gameCurrentHasAnyPieceEverBeenSelected', JSON.stringify(this.gameCurrentHasAnyPieceEverBeenSelected));
       localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
-      window.clearInterval(this.updateInterval);
     },
 
     AdjustPieceSizeBasedOnViewport() {
-      this.appSettingsPieceSize = window.innerWidth < 440 ? (window.innerWidth - 60) / 4 + 'px' : 440 / 4 + 'px';
+      this.appSettingsPieceSize = window.innerWidth < 500 ? (window.innerWidth - 60) / this.appSettingsBoardGridSize + 'px' : 450 / this.appSettingsBoardGridSize + 'px';
       this.documentCssRoot.style.setProperty('--pieceSize', this.appSettingsPieceSize);
+      this.appSettingsTotalNumberOfBoardPieces = window.innerHeight < 234 ? 12 : 16;
     },
 
     HandleOnResizeEvent() {
@@ -737,16 +785,25 @@ var app = new Vue({
     },
 
     FormatDate(_date) {
-      let _formattedDate = _date.getDay() + '/' + _date.getMonth() + '/' + _date.getFullYear();
-      return _formattedDate;
+      let _newDate = new Date(_date).toLocaleDateString();
+      return _newDate;
     },
 
-    NumberWithCommas(x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    NumberWithCommas(_num) {
+      return _num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    },
+
+    CheckForMobile() {
+      const ua = navigator.userAgent;
+      let check = false;
+      if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua) || /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
+        check = true;
+      }
+      return check;
     },
 
     HandleKeyUp(event) {
-      event.preventDefault();
+      // event.preventDefault();
       log('HandleKeyUp(event) called');
       log("'" + event.key + "'");
       let _currentThemeIndex = -1;
@@ -756,11 +813,11 @@ var app = new Vue({
         }
       });
       switch (event.key) {
-        case 'ArrowRight':
+        case ']':
           _currentThemeIndex = _currentThemeIndex == this.appSettingsThemes.length - 1 ? 0 : _currentThemeIndex + 1;
           this.SelectTheme(this.appSettingsThemes[_currentThemeIndex]);
           break;
-        case 'ArrowLeft':
+        case '[':
           _currentThemeIndex = _currentThemeIndex == 0 ? this.appSettingsThemes.length - 1 : _currentThemeIndex - 1;
           this.SelectTheme(this.appSettingsThemes[_currentThemeIndex]);
           break;
@@ -771,20 +828,23 @@ var app = new Vue({
           break;
         case 'Enter':
         case ' ':
-          if (!this.gameCurrentIsGameOver) {
+          if (!this.gameCurrentIsGameOver && !this.appVisualStateShowPageChallenge) {
             this.CheckBoard();
+          } else if (this.appVisualStateShowPageChallenge) {
+            this.EndGame();
           }
           break;
         case 'Escape':
-          if (this.appVisualStateShowPageSettings) {
-            this.appVisualStateShowPageSettings = false;
-          } else if (this.appVisualStateShowPageHighScores) {
-            this.appVisualStateShowPageHighScores = false;
-          } else if (this.appVisualStateShowPageHowToPlay) {
-            this.appVisualStateShowPageHowToPlay = false;
-          } else if (this.gameCurrentIsGameOver) {
+          if (this.gameCurrentIsGameOver) {
             this.appVisualStateShowPageHome = true;
           }
+          this.appVisualStateShowPageSettings = false;
+          this.appVisualStateShowPageHighScores = false;
+          this.appVisualStateShowPageHowToPlay = false;
+          this.appVisualStateShowPageCredits = false;
+          this.appVisualStateShowPageChallenge = false;
+          this.appVisualStateShowElementHint = false;
+          this.appVisualStateShowPageGameOver = false;
           break;
       }
     },

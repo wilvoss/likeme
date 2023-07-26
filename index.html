@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html itemtype="http://schema.org/VideoGame" lang="en">
-
   <head>
     <meta charset="utf-8" />
     <meta content="x-content-type-options=nosniff" />
@@ -11,15 +10,13 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-touch-fullscreen" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover, minimum-scale=1, maximum-scale=1, user-scalable=no" />
-    <meta name="theme-color" content="#f0f0f0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#4f4f4f" />
 
     <meta name="keywords" content="Like Me?, Big Tent Games, Games, Free, FullyFree" />
     <meta name="description" content="What in this whole world is like me?" />
 
-    <meta name="twitter:card" content="summary_large_image">
-    </meta>
+    <meta name="twitter:card" content="summary_large_image" />
     <meta property="og:title" content="Like Me?" />
     <meta property="og:site_name" content="Big Tent Games" />
     <meta property="og:author" content="Wil Voss" />
@@ -30,22 +27,18 @@
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
 
-    <link id="appleicon" rel="apple-touch-icon" sizes="180x180" href="images/icon180.png">
+    <link id="appleicon" rel="apple-touch-icon" sizes="180x180" href="images/icon180.png" />
     <!-- iPhone X (1125px x 2436px) -->
-    <link rel="apple-touch-startup-image"
-      media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
-      href="images/apple-launch-1125x2436.png">
+    <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="images/apple-launch-1125x2436.png" />
     <!-- iPhone 8, 7, 6s, 6 (750px x 1334px) -->
-    <link rel="apple-touch-startup-image"
-      media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"
-      href="images//apple-launch-750x1334.png">
-    <link rel="icon" type="image/png" sizes="48x48" href="favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="images//apple-launch-750x1334.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="favicon.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
 
-    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="manifest" href="manifest.webmanifest" />
 
     <link rel="stylesheet" href="styles/likeme.css" media="screen" />
-    <script src="helpers/console-enhancer.js" type='text/javascript'></script>
+    <script src="helpers/console-enhancer.js" type="text/javascript"></script>
     <script type="text/javascript">
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function () {
@@ -56,195 +49,289 @@
   </head>
 
   <body>
-    <app id="app" v-cloak>
-      <page class="home" :class="{show: appVisualStateShowPageHome}">
-        <section>
-          <h1>Like Me?</h1>
-          <p>A game of matching likenesses.</p>
-        </section>
-        <section>
-          <modes>
-            <mode v-for="mode in appSettingsModes" :class="{selected: mode.isSelected}">
-              <piece :title="'Click to select ' + mode.name + ' mode.'" @click="SelectMode(mode)">
-                <gild
-                  :style="{maskImage: mode.piece.shape, webkitMaskImage: mode.piece.shape, backgroundColor: mode.piece.color, backgroundImage: mode.piece.backgroundImage }" />
-              </piece>
-              <value>{{mode.name}}</value>
-            </mode>
-          </modes>
-        </section>
-        <section>
-          <button class="primary" @click="RestartGame">Play</button>
-          <button class="secondary" @click="ToggleHowToPlay(event, true)">How to play</button>
-          <button class="secondary" @click="ToggleHighScores(event, true)">High scores</button>
-          <button class="secondary" @click="ToggleSettings(event, true)">Settings</button>
-        </section>
-        <section>
-          <version>
-            &copy;2023 <a href="https://bigtentgames.com" target="_blank">Big Tent Games</a> - v{{currentVersion}}
-          </version>
-        </section>
+    <app id="app" v-cloak :class="{challenge: appVisualStateShowPageChallenge}">
+      <notification @pointerdown="appVisualStateShowNotification = false" :class="{show: appVisualStateShowNotification}">
+        <message v-html="appNotificationMessage"></message>
+      </notification>
+      <page class="home" :class="{show: appVisualStateShowPageHome}" @pointerdown="appVisualStateShowNotification = false;">
+        <content>
+          <section>
+            <h1>Like Me?</h1>
+            <p>A game of matching likenesses.</p>
+          </section>
+          <section>
+            <modes>
+              <mode v-for="mode in appSettingsModes" :class="{selected: mode.isSelected}">
+                <piece :title="mode.name + ' mode. ' + mode.description + ' Click to select.'" @click="SelectMode(mode)">
+                  <gild :style="{maskImage: mode.piece.shape, webkitMaskImage: mode.piece.shape, backgroundColor: mode.piece.color, backgroundImage: mode.piece.backgroundImage }" />
+                </piece>
+                <value>{{mode.name}}</value>
+              </mode>
+            </modes>
+            <description v-if="appSettingsModes.infinite.isSelected">{{appSettingsModes.infinite.description}} </description>
+            <description v-if="appSettingsModes.hard.isSelected">{{appSettingsModes.hard.description}}</description>
+            <description v-if="appSettingsModes.easy.isSelected">{{appSettingsModes.easy.description}}</description>
+          </section>
+          <section>
+            <button v-if="storedVersion !== currentVersion" title="There is an update available for Like Me. Click to apply the update." class="tertiary pulse" @click="window.location.reload(true)">New Update!</button>
+            <button title="Click to start a new game" class="primary" @click="RestartGame">Play</button>
+            <button title="Click to learn how to play Like Me?" class="secondary" @click="ToggleHowToPlay(event, true)">How to play</button>
+            <smallbuttons>
+              <button title="Click to share this app with your friends." class="secondary" @click="ShareApp">
+                <icon class="share"></icon>
+              </button>
+              <button title="Click to see your high scores." class="secondary" @click="ToggleHighScores(event, true)">
+                <icon class="trophy"></icon>
+              </button>
+              <button title="Click to adjust the game settings." class="secondary" @click="ToggleSettings(event, true)">
+                <icon class="settings"></icon>
+              </button>
+              <button title="Click to see a list of credits." class="secondary" @click="ToggleCredits(event, true)">
+                <icon class="info"></icon>
+              </button>
+            </smallbuttons>
+          </section>
+          <section>
+            <version> &copy;2023 <a href="https://bigtentgames.com" target="_blank">Big Tent Games</a> - v{{storedVersion === 0 ? currentVersion : storedVersion}}{{window.location.host !== 'likeme.games' ? 'p' : ''}} </version>
+          </section>
+        </content>
       </page>
+      <modal :class="{show: appVisualStateShowPageCredits}">
+        <chrome>
+          <chromebutton @click="ToggleCredits(event, false)">done</chromebutton>
+        </chrome>
+        <content>
+          <header>
+            <h1>Information</h1>
+          </header>
+          <section>
+            <h2>Credits</h2>
+            <h3>Feedback and ideas</h3>
+            <credit>Melinda Voss</credit>
+            <credit>Danielle Siler</credit>
+            <credit>Alex Barbieri</credit>
+            <credit>Gretchen Voss</credit>
+            <credit>Jerry Hoffmeister</credit>
+            <credit>Rebecca Hoffmeister</credit>
+          </section>
+          <section>
+            <h2>Licensing</h2>
+            <h3>The Noun Project</h3>
+            <credit><a href="https://thenounproject.com/icon/information-2119887/" target="_blank">SELicon - information icon</a></credit>
+            <credit><a href="https://thenounproject.com/icon/settings-2650515/" target="_blank">i cons - settings icon</a></credit>
+            <credit><a href="https://thenounproject.com/icon/trophy-4942454/" target="_blank">Meko - trophy icon</a></credit>
+          </section>
+        </content>
+        <!-- <section>
+          <h1>Version History</h1>
+          <p>v1.0 initial release</p>
+        </section> -->
+      </modal>
       <modal :class="{show: appVisualStateShowPageHighScores}">
-        <header>
-          <chrome>
-            <chromebutton @click="ToggleHighScores(event, false)">done</chromebutton>
-          </chrome>
-          <h1>High Scores</h1>
-        </header>
-        <section>
-          <h2>Hard</h2>
-          <score v-for="score in userScoresHighHardByValue" :class="{current: score.isCurrent}">
-            <date>{{FormatDate(score.date)}}</date>
-            <value>{{NumberWithCommas(score.value)}}</value>
-          </score>
-          <score v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighHardByValue.length">
-            <date></date>–<value></value>
-          </score>
-        </section>
-        <section>
-          <h2>Normal</h2>
-          <score v-for="score in userScoresHighEasyByValue" :class="{current: score.isCurrent}">
-            <date>{{FormatDate(score.date)}}</date>
-            <value>{{NumberWithCommas(score.value)}}</value>
-          </score>
-          <score v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighEasyByValue.length">
-            <date></date>–<value></value>
-          </score>
-        </section>
-        <section>
-          <p>Infinite mode isn't scored.</p>
-        </section>
-        <section>
-          <button :class="{disabled: userScoresHighEasyByValue.length === 0 && userScoresHighHardByValue.length === 0}"
-            class="tertiary" @click="ClearAllUserScores">Clear</button>
-        </section>
+        <chrome>
+          <chromebutton @click="ToggleHighScores(event, false)">done</chromebutton>
+        </chrome>
+        <content>
+          <header>
+            <h1>High Scores</h1>
+          </header>
+          <section>
+            <h2>Easy</h2>
+            <leftright class="real" v-for="score in userScoresHighEasyByValue" :class="{current: score.isCurrent}">
+              <left>{{FormatDate(score.date)}}</left>
+              <right>{{NumberWithCommas(score.value)}}</right>
+            </leftright>
+            <leftright v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighEasyByValue.length"> <left></left>&nbsp;<right></right> </leftright>
+          </section>
+          <section>
+            <h2>Hard</h2>
+            <leftright v-for="score in userScoresHighHardByValue" :class="{current: score.isCurrent}">
+              <left>{{FormatDate(score.date)}}</left>
+              <right>{{NumberWithCommas(score.value)}}</right>
+            </leftright>
+            <leftright v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighHardByValue.length"> <left></left>&nbsp;<right></right> </leftright>
+          </section>
+          <section v-if="userScoresHighEasyByValue.length > 0 || userScoresHighHardByValue.length > 0">
+            <button class="danger" @click="ClearAllUserScores">Clear All Scores</button>
+          </section>
+          <section>
+            <p>Infinite mode isn't scored.</p>
+          </section>
+        </content>
       </modal>
       <modal :class="{show: appVisualStateShowPageHowToPlay}">
-        <header>
-          <chrome>
-            <chromebutton @click="ToggleHowToPlay(event, false)">done</chromebutton>
-          </chrome>
-          <h1>How to play</h1>
-        </header>
-        <section>
-          <h2>Observe</h2>
-          <p>Notice my shape, color, and pattern.</p>
-          <me>
-            <piece>
-              <gild></gild>
-            </piece>
-          </me>
-        </section>
-        <section>
-          <h2>Select</h2>
-          <p>
-            Select all pieces that share <b>at least two</b> of my attributes (color, shape, pattern).
-          </p>
-          <examples>
-            <piece>
-              <gild
-                style="mask-image: var(--shape4); -webkit-mask-image: var(--shape4); background-color: var(--color2); background-image: var(--bgImage3);">
-              </gild>
-            </piece>
-            <piece>
-              <gild
-                style="mask-image: var(--shape1); -webkit-mask-image: var(--shape1); background-color: var(--color1); background-image: var(--bgImage2);">
-              </gild>
-            </piece>
-            <piece class="selected">
-              <gild
-                style="mask-image: var(--shape2); -webkit-mask-image: var(--shape2); background-color: var(--color2); background-image: var(--bgImage1);">
-              </gild>
-            </piece>
-            <piece>
-              <gild
-                style="mask-image: var(--shape3); -webkit-mask-image: var(--shape3); background-color: var(--color3); background-image: var(--bgImage1);">
-              </gild>
-            </piece>
-          </examples>
-        </section>
-        <section>
-          <h2>Check</h2>
-          <p>Click me to see if you got them all!</p>
-        </section>
+        <chrome>
+          <chromebutton @click="ToggleHowToPlay(event, false)">done</chromebutton>
+        </chrome>
+        <content>
+          <header>
+            <h1>How to play</h1>
+            <subheader>Find all of the pieces on a board that are similar to the special "Me" piece. Pieces change after each board is cleared. </subheader>
+          </header>
+          <section>
+            <h2>Step 1</h2>
+            <p>Notice me: my shape, color, and pattern.</p>
+            <me>
+              <piece>
+                <gild></gild>
+              </piece>
+            </me>
+          </section>
+          <section>
+            <h2>Step 2</h2>
+            <p>Select all pieces that share <b>at least two</b> of my attributes (color and shape, shape and pattern, or pattern and color).</p>
+            <examples>
+              <piece>
+                <gild style="mask-image: var(--shape4); -webkit-mask-image: var(--shape4); background-color: var(--color2); background-image: var(--bgImage3)"> </gild>
+              </piece>
+              <piece>
+                <gild style="mask-image: var(--shape1); -webkit-mask-image: var(--shape1); background-color: var(--color1); background-image: var(--bgImage2)"> </gild>
+              </piece>
+              <piece class="selected">
+                <gild style="mask-image: var(--shape2); -webkit-mask-image: var(--shape2); background-color: var(--color2); background-image: var(--bgImage1)"> </gild>
+              </piece>
+              <piece>
+                <gild style="mask-image: var(--shape3); -webkit-mask-image: var(--shape3); background-color: var(--color3); background-image: var(--bgImage1)"> </gild>
+              </piece>
+            </examples>
+            <examples>
+              <piece class="selected">
+                <gild style="mask-image: var(--shape1); -webkit-mask-image: var(--shape1); background-color: var(--color1); background-image: var(--bgImage1)"> </gild>
+              </piece>
+              <piece>
+                <gild style="mask-image: var(--shape2); -webkit-mask-image: var(--shape2); background-color: var(--color3); background-image: var(--bgImage4)"> </gild>
+              </piece>
+              <piece>
+                <gild style="mask-image: var(--shape3); -webkit-mask-image: var(--shape3); background-color: var(--color2); background-image: var(--bgImage3)"> </gild>
+              </piece>
+              <piece>
+                <gild style="mask-image: var(--shape1); -webkit-mask-image: var(--shape1); background-color: var(--color1); background-image: var(--bgImage3)"> </gild>
+              </piece>
+            </examples>
+          </section>
+          <section>
+            <h2>Step 3</h2>
+            <p>Click me to see if you got them all!</p>
+            <me class="pushed">
+              <piece>
+                <gild></gild>
+              </piece>
+            </me>
+          </section>
+          <section>
+            <h2>Keyboard shortcuts</h2>
+            <leftright>
+              <left>Check board, Yes</left>
+              <right>'Enter'</right>
+            </leftright>
+            <leftright>
+              <left>Check board, Yes</left>
+              <right>'Space'</right>
+            </leftright>
+            <leftright>
+              <left>Done, Cancel, No</left>
+              <right>'Escape'</right>
+            </leftright>
+            <leftright>
+              <left>Next theme</left>
+              <right>']'</right>
+            </leftright>
+            <leftright>
+              <left>Previous theme</left>
+              <right>'['</right>
+            </leftright>
+          </section>
+        </content>
       </modal>
       <modal :class="{show: appVisualStateShowPageSettings}">
-        <header>
-          <chrome>
-            <chromebutton @click="ToggleSettings(event, false)">done</chromebutton>
-          </chrome>
-          <h1>Settings</h1>
-        </header>
-        <section>
-          <checkbox :class="{on: userSettingsUseHints}" @click="ToggleUsingHints(event)">
-            Show tips
-            <toggle></toggle>
-          </checkbox>
-        </section>
-        <section>
-          <h2>Theme</h2>
-          <themes>
-            <theme v-for="theme in appSettingsThemes" :class="{selected: theme.isSelected}" @click="SelectTheme(theme)">
-              <colors>
-                <color :style="{backgroundColor: theme.color1}"></color>
-                <color :style="{backgroundColor: theme.color2}"></color>
-                <color :style="{backgroundColor: theme.color3}"></color>
-              </colors>
-              <name>{{theme.name}}</name>
-            </theme>
-          </themes>
-        </section>
-      </modal>
-      <stage>
-        <gameover v-if="gameCurrentIsGameOver">
-          <h2 style="margin-bottom: 1em;">Game Over</h2>
-          <newhigh v-if="appVisualStateShowNewHighScoreElement">A NEW high score!</newhigh>
-          <button class="primary" @click="RestartGame">Replay</button>
-          <button class="secondary" @click="appVisualStateShowPageHome = true">Home</button>
-          <button class="secondary"
-            @click="appVisualStateShowPageHighScores = true; appVisualStateShowPageHome = true">High Scores</button>
-        </gameover>
         <chrome>
-          <!-- <clears>{{gameCurrentNumberOfClears}} clears</clears> -->
-          <chromebutton :class="{disabled: gameCurrentIsGameOver}" @click="appVisualStateShowPageSettings = true">
-            Settings</chromebutton>
-          <time>{{gameCurrentIsGameOver ? 'Misses: ' + gameCurrentNumberOfFails : GetMsToTime(gameCurrentTimer)}}</time>
-          <chromebutton :class="{disabled: gameCurrentIsGameOver}" @click="EndGame">Quit</chromebutton>
+          <chromebutton @click="ToggleSettings(event, false)">done</chromebutton>
         </chrome>
+        <content>
+          <header>
+            <h1>Settings</h1>
+          </header>
+          <section>
+            <checkbox :class="{on: userSettingsUseHints}" @click="ToggleUsingHints(event)">
+              Show tips
+              <toggle></toggle>
+            </checkbox>
+          </section>
+          <section>
+            <h2>Theme</h2>
+            <themes>
+              <theme v-for="theme in appSettingsThemes" :class="{selected: theme.isSelected}" @click="SelectTheme(theme)">
+                <colors>
+                  <color :style="{backgroundColor: theme.color1}"></color>
+                  <color :style="{backgroundColor: theme.color2}"></color>
+                  <color :style="{backgroundColor: theme.color3}"></color>
+                </colors>
+                <name>{{theme.name}}</name>
+              </theme>
+            </themes>
+          </section>
+        </content>
+      </modal>
+      <modal :class="{show: appVisualStateShowPageGameOver}" @pointerdown="appVisualStateShowNotification = false;">
+        <content style="justify-content: center">
+          <!-- prettier-ignore -->
+          <section id="copyme">▨ ▲ ◯
+{{ ((!appSettingsModes.infinite.isSelected ? (appSettingsModes.easy.isSelected ? 'Easy score: ' : 'Hard score: ') : 'Boards cleared: ')) + (!appSettingsModes.infinite.isSelected ? NumberWithCommas(gameCurrentTotalScore) :  gameCurrentNumberOfClears)}}
+(https://likeme.games)</section>
+          <section>
+            <header>
+              <h1 style="margin-bottom: 1em">Game Over</h1>
+              <subheader> {{!appSettingsModes.infinite.isSelected ? 'Final score: ' + NumberWithCommas(gameCurrentTotalScore) : 'Total boards cleared: ' + gameCurrentNumberOfClears}} </subheader>
+              <newhigh @click="appVisualStateShowPageGameOver = false, appVisualStateShowPageHighScores = true; appVisualStateShowPageHome = true"> {{appVisualStateShowNewHighScoreElement ? 'A NEW high score!' : ' '}} </newhigh>
+            </header>
+            <button title="Click to start a new game" class="primary" @click="RestartGame">Replay</button>
+            <button title="Click to return to the home screen." class="secondary" @click="appVisualStateShowPageGameOver = false, appVisualStateShowPageHome = true">Home</button>
+            <button title="Click to share your score with your friends." class="secondary" @click="ShareScore">Share Score</button>
+          </section>
+        </content>
+      </modal>
+      <challenge :class="{show: appVisualStateShowPageChallenge}">
+        <section>
+          <h1>Quit for real?</h1>
+        </section>
+        <smallbuttons>
+          <button @click="ToggleChallenge(event, false)">No</button>
+          <button class="secondary" @click="EndGame">Yes</button>
+        </smallbuttons>
+      </challenge>
+      <stage v-if="!appVisualStateShowPageHome">
+        <chrome>
+          <chromebutton @click="appVisualStateShowPageSettings = true"> Settings</chromebutton>
+          <time v-if="!appSettingsModes.infinite.isSelected">{{GetMsToTime(gameCurrentTimer)}}</time>
+          <chromebutton @click="ToggleChallenge(event, true)">Quit</chromebutton>
+        </chrome>
+        <hint @pointerdown="appVisualStateShowElementHint = false" :class="{show: appVisualStateShowElementHint && !gameCurrentIsGameOver && userSettingsUseHints}">
+          <message v-html="gameCurrentHintText"></message>
+        </hint>
         <playarea>
-          <score>
-            {{NumberWithCommas(gameCurrentTotalScore)}}
-          </score>
-          <board :class="{disabled: gameCurrentIsGameOver}">
-            <piece v-for="piece in gameCurrentBoardPieces" @click="TogglePieceSelection(piece)"
-              :class="{selected: piece.isSelected, dropped: piece.hasDropped}">
-              <gild
-                :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color, backgroundImage: piece.backgroundImage }">
-              </gild>
+          <scorearea>
+            <scoretype>{{appSettingsModes.infinite.isSelected ? 'clears' : 'score'}}</scoretype>
+            <currentscore>{{appSettingsModes.infinite.isSelected ? NumberWithCommas(gameCurrentNumberOfClears) : NumberWithCommas(gameCurrentTotalScore)}}</currentscore>
+          </scorearea>
+          <board>
+            <piece v-for="piece in gameCurrentBoardPieces" @click="TogglePieceSelection(piece)" :class="{selected: piece.isSelected, dropped: piece.hasDropped}">
+              <gild :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color, backgroundImage: piece.backgroundImage }"> </gild>
             </piece>
           </board>
           <addtime :class="{flyaway: appVisualStateShowElementFlyaway}">+3 seconds</addtime>
-          <me :class="{disabled: gameCurrentIsGameOver, nope: gameCurrentIsUserGuessWrong}">
+          <me :class="{nope: gameCurrentIsUserGuessWrong}">
             <piece @click="CheckBoard">
-              <gild
-                :style="{maskImage: gameCurrentMePiece.shape, webkitMaskImage: gameCurrentMePiece.shape, backgroundColor: gameCurrentMePiece.color, backgroundImage: gameCurrentMePiece.backgroundImage }">
-              </gild>
+              <gild :style="{maskImage: gameCurrentMePiece.shape, webkitMaskImage: gameCurrentMePiece.shape, backgroundColor: gameCurrentMePiece.color, backgroundImage: gameCurrentMePiece.backgroundImage }"> </gild>
             </piece>
           </me>
-          <hint
-            :class="{show: appVisualStateShowElementHint && !gameCurrentIsGameOver && userSettingsUseHints, disabled: gameCurrentIsGameOver}"
-            v-html="gameCurrentHintText">
-          </hint>
         </playarea>
       </stage>
     </app>
-    <script id=" vue-framework" src="helpers/vue.min.js" type='text/javascript'></script>
-    <script src="models/ScoreObject.js" type='text/javascript'></script>
-    <script src="models/ThemeObject.js" type='text/javascript'></script>
-    <script src="models/PieceObject.js" type='text/javascript'></script>
-    <script src="models/ModeObject.js" type='text/javascript'></script>
-    <script src="scripts/likeme.js" type='text/javascript'></script>
+    <script id=" vue-framework" src="helpers/vue.min.js" type="text/javascript"></script>
+    <script src="models/ScoreObject.js" type="text/javascript"></script>
+    <script src="models/ThemeObject.js" type="text/javascript"></script>
+    <script src="models/PieceObject.js" type="text/javascript"></script>
+    <script src="models/ModeObject.js" type="text/javascript"></script>
+    <script src="scripts/likeme.js" type="text/javascript"></script>
   </body>
-
 </html>

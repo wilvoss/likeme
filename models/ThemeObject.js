@@ -4,6 +4,7 @@ class ThemeObject {
     this.color1 = spec.color1;
     this.color2 = spec.color2;
     this.color3 = spec.color3;
+    this.color3contrast = spec.color3contrast == undefined ? 'white' : spec.color3contrast;
     this.isSelected = spec.isSelected == undefined ? false : spec.isSelected;
   }
 }
@@ -14,6 +15,7 @@ var Themes = [
     color1: 'hsl(313, 44%, 25%)',
     color2: 'hsl(187, 42%, 46%)',
     color3: 'hsl(64, 60%, 53%)',
+    color3contrast: 'rgb(0, 0, 0)',
     isSelected: true,
   }),
   new ThemeObject({
@@ -21,18 +23,20 @@ var Themes = [
     color1: 'rgb(138 33 115)',
     color2: 'rgb(37 174 193)',
     color3: 'rgb(209 224 0)',
+    color3contrast: 'black',
   }),
   new ThemeObject({
     name: 'Calm',
     color1: 'rgb(117 93 122)',
     color2: 'rgb(68 130 155)',
-    color3: 'rgb(113 150 134)',
+    color3: 'rgb(167, 177, 119)',
   }),
   new ThemeObject({
     name: 'Intent',
     color1: 'hsl(0, 0%, 15%)',
     color2: 'hsl(0, 0%, 46%)',
     color3: 'hsl(0, 0%, 70%)',
+    color3contrast: 'black',
   }),
   new ThemeObject({
     name: 'Keen',
@@ -45,12 +49,14 @@ var Themes = [
     color1: 'rgb(0 202 234)',
     color2: 'rgb(84, 184, 0)',
     color3: 'rgb(184 222 0)',
+    color3contrast: 'rgb(56, 122, 0)',
   }),
   new ThemeObject({
     name: 'Alive',
     color1: 'rgb(0 136 8)',
     color2: 'rgb(0 176 243)',
     color3: 'rgb(239 216 0)',
+    color3contrast: 'rgb(0 136 8)',
   }),
   new ThemeObject({
     name: 'Wise',
@@ -69,9 +75,10 @@ var Themes = [
     color1: 'rgb(58, 93, 66)',
     color2: 'rgb(79, 159, 198)',
     color3: 'rgb(134, 219, 162)',
+    color3contrast: 'rgb(58, 93, 66)',
   }),
   new ThemeObject({
-    name: 'Anxious',
+    name: 'Antsy',
     color1: 'rgb(129, 32, 0)',
     color2: 'rgb(255, 0, 0)',
     color3: 'rgb(255, 159, 0)',
