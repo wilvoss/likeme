@@ -17,7 +17,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.7.85',
+    currentVersion: '3.7.88',
     newVersionAvailable: false,
     appNotificationMessage: '',
     appSettingsModes: Modes,
