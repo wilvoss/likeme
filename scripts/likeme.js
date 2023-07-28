@@ -15,8 +15,10 @@ var app = new Vue({
   el: '#app',
 
   data: {
+    serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.7.1',
+    currentVersion: '3.7.85',
+    newVersionAvailable: false,
     appNotificationMessage: '',
     appSettingsModes: Modes,
     appSettingsModeHardInterval: 100,
@@ -200,7 +202,7 @@ var app = new Vue({
       } else {
         _shareObject = 'https://likeme.games';
         this.appVisualStateShowNotification = true;
-        this.appNotificationMessage = 'Copied results to clipboard.';
+        this.appNotificationMessage = 'Copied app url to clipboard.';
         navigator.clipboard.writeText(_shareObject);
       }
     },
@@ -283,7 +285,6 @@ var app = new Vue({
         }
         if (!this.gameCurrentIsGameOver && this.appSettingsModes.hard.isSelected) {
           let _index = getRandomInt(0, this.gameCurrentBoardPieces.length);
-          log(_index);
           let _rando = this.gameCurrentBoardPieces[_index];
           _rando.shape = Shapes[getRandomInt(0, Shapes.length)];
           _rando.color = Colors[getRandomInt(0, Colors.length)];
@@ -715,6 +716,28 @@ var app = new Vue({
       log('App Initialized', true);
       this.AdjustPieceSizeBasedOnViewport();
 
+      let _onemoretime = localStorage.getItem('onemoretime');
+      try {
+        if (_onemoretime !== undefined && _onemoretime !== null) {
+          _onemoretime = JSON.parse(_onemoretime);
+          if (_onemoretime) {
+            localStorage.setItem('onemoretime', false);
+            window.location.reload(true);
+          }
+        }
+      } catch (error) {
+        log('_onemoretime error: ' + error);
+      }
+
+      let _newVersionAvailable = localStorage.getItem('newVersionAvailable');
+      try {
+        if (_newVersionAvailable !== undefined && _newVersionAvailable !== null) {
+          this.newVersionAvailable = JSON.parse(_newVersionAvailable);
+        }
+      } catch (error) {
+        log('_newVersionAvailable error: ' + error);
+      }
+
       let _storedVersion = localStorage.getItem('storedVersion');
       try {
         if (_storedVersion !== undefined && _storedVersion !== null) {
@@ -735,7 +758,6 @@ var app = new Vue({
 
       this.GetUserSettings();
 
-      log(this.gameCurrentIsGameOver, true, '#00ffff');
       if (!this.gameCurrentIsGameOver) {
         this.RestoreCurrentGame();
       }
@@ -805,7 +827,6 @@ var app = new Vue({
     HandleKeyUp(event) {
       // event.preventDefault();
       log('HandleKeyUp(event) called');
-      log("'" + event.key + "'");
       let _currentThemeIndex = -1;
       this.appSettingsThemes.forEach((theme, i) => {
         if (theme.isSelected) {
@@ -848,13 +869,57 @@ var app = new Vue({
           break;
       }
     },
+
+    HandleUpdateAppButtonClick() {
+      this.newVersionAvailable = false;
+      localStorage.setItem('newVersionAvailable', this.newVersionAvailable);
+      if (this.serviceWorker !== '') {
+        this.serviceWorker.postMessage({ action: 'skipWaiting' });
+      } else {
+        window.location.reload(true);
+      }
+    },
+
+    HandleServiceWorkerRegistration() {
+      log('this.HandleServiceWorkerRegistration() called');
+      if ('serviceWorker' in navigator) {
+        // Register the service worker
+        navigator.serviceWorker.register('/sw.js').then((reg) => {
+          reg.addEventListener('updatefound', () => {
+            // An updated service worker has appeared in reg.installing!
+            this.serviceWorker = reg.installing;
+            this.serviceWorker.addEventListener('statechange', () => {
+              // Has service worker state changed?
+              switch (this.serviceWorker.state) {
+                case 'installed':
+                  // There is a new service worker available, show the notification
+                  if (navigator.serviceWorker.controller) {
+                    this.newVersionAvailable = true;
+                    localStorage.setItem('newVersionAvailable', this.newVersionAvailable);
+                  }
+                  break;
+              }
+            });
+          });
+        });
+      }
+    },
   },
 
   mounted() {
+    this.HandleServiceWorkerRegistration();
     this.InitializeGame();
     window.addEventListener('keyup', this.HandleKeyUp);
     window.addEventListener('unload', this.HandleOnUnloadEvent);
     window.addEventListener('resize', this.HandleOnResizeEvent);
+    navigator.serviceWorker.addEventListener('message', this.HandleServiceWorkerWaiting);
+    let refreshing;
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (refreshing) return;
+      localStorage.setItem('onemoretime', true);
+      window.location.reload();
+      refreshing = true;
+    });
   },
 
   computed: {

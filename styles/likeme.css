@@ -166,29 +166,26 @@ app {
 }
 
 stage {
+  touch-action: none;
   display: flex;
-  /* position: absolute; */
   background: var(--appBackground);
   height: 100%;
   max-height: var(--appMaxHeight);
   max-width: var(--appMaxWidth);
-  /* margin: 0px auto; */
-  /* margin-left: calc((1024px - var(--appMaxWidth)) / 2); */
   flex-direction: column;
   justify-content: stretch;
-  /* box-shadow: 0px 0px 40px black; */
 }
 
 page,
 modal,
 challenge {
-  display: none;
+  opacity: 0;
+  pointer-events: none;
+  display: flex;
   max-width: var(--appMaxWidth);
   max-height: var(--appMaxHeight);
   width: 100%;
   height: 100%;
-  /* margin: 0px auto; */
-  /* margin-left: calc((1024px - 500px) / 2); */
   position: absolute;
   z-index: 1000;
   background: var(--appBackground);
@@ -204,9 +201,6 @@ modal.reversecolor {
 }
 
 challenge {
-  display: flex;
-  opacity: 0;
-  pointer-events: none;
   align-items: center;
   justify-content: center;
   height: 100%;
@@ -246,9 +240,20 @@ content {
   overflow-y: scroll;
 }
 
+content::-webkit-scrollbar {
+  display: none;
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  touch-action: auto;
+  scroll-behavior: smooth;
+}
+
 page content {
   padding-bottom: var(--defaultGap);
   justify-content: space-between;
+  overflow: hidden;
 }
 
 stage playarea {
@@ -277,126 +282,13 @@ modal {
 
 page.show,
 modal.show {
-  display: flex;
+  opacity: 1;
+  pointer-events: all;
 }
 
 challenge.show {
   opacity: 1;
   pointer-events: all;
-}
-
-header {
-  display: flez;
-  width: 100%;
-}
-
-chrome {
-  height: var(--chromeHeight);
-  width: 100%;
-  max-width: var(--appMaxWidth);
-  padding: 0px;
-  display: flex;
-  position: fixed;
-  z-index: 100;
-  background: rgba(240, 240, 240, 0.95);
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  line-height: 100%;
-  flex-basis: auto;
-  background-color: var(--appBackground);
-  color: var(--appForeground);
-  font-size: 0.9em;
-}
-
-chromebutton {
-  height: 40px;
-  display: flex;
-  text-transform: capitalize;
-  z-index: 1;
-  cursor: pointer;
-  align-items: center;
-  padding: 0px 20px;
-  width: 80px;
-}
-
-chromebutton:last-of-type {
-  justify-content: flex-end;
-}
-
-modal chrome {
-  justify-content: flex-end;
-}
-
-modal img {
-  width: 80%;
-}
-
-leftright {
-  display: flex;
-  width: calc(70%);
-  flex-direction: row;
-  justify-content: space-between;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  margin: 0px;
-  font-size: 0.9em;
-  padding: 1px 9px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: var(--borderRadius);
-  margin-bottom: 4px;
-}
-
-leftright right {
-  font-weight: 600;
-}
-
-leftright:first-of-type {
-  margin-top: 10px;
-}
-
-leftright.current {
-  background: rgba(255, 255, 255, 1);
-  border-color: rgba(255, 255, 255, 1);
-  color: var(--color2);
-}
-
-leftright.current left {
-  color: transparent;
-}
-
-leftright.current:before {
-  content: 'NEW!';
-  font-weight: bold;
-}
-
-scorearea {
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* width: 100%; */
-  flex-direction: column;
-}
-
-currentscore {
-  width: 100%;
-  padding-top: 2px;
-  letter-spacing: 2px;
-  font-size: 3em;
-  font-family: 'Bangers';
-  color: black;
-  justify-content: center;
-  line-height: 100%;
-}
-
-scoretype {
-  font-size: 0.5em;
-  width: 100%;
-  padding: 1px 0px;
-  font-weight: bold;
-  text-transform: uppercase;
-  line-height: 100%;
-  color: var(--color1);
 }
 
 button {
@@ -436,7 +328,7 @@ button.tertiary {
   box-shadow: none;
 }
 
-.pulse {
+.show button.pulse {
   animation: pulse 1s ease-in-out 0s infinite;
   -webkit-animation: pulse 1s ease-in-out 0s infinite;
 }
@@ -550,6 +442,165 @@ icon.reel {
   -webkit-mask-image: url(../images/icon_reel2.svg);
 }
 
+.show button,
+.show button.primary,
+.show button.secondary,
+.show button.tertiary {
+  animation: interactable 0.5s forwards;
+  -webkit-animation: interactable 0.5s forwards;
+}
+
+button.update {
+  position: absolute;
+  margin-top: var(--defaultGap);
+}
+
+@keyframes interactable {
+  0% {
+    pointer-events: none;
+  }
+  50% {
+    pointer-events: none;
+  }
+  100% {
+    pointer-events: all;
+  }
+}
+
+@-webkit-keyframes interactable {
+  0% {
+    pointer-events: none;
+  }
+  50% {
+    pointer-events: none;
+  }
+  100% {
+    pointer-events: all;
+  }
+}
+
+header {
+  display: flez;
+  width: 100%;
+}
+
+chrome {
+  height: var(--chromeHeight);
+  width: 100%;
+  max-width: var(--appMaxWidth);
+  padding: 0px;
+  display: flex;
+  position: fixed;
+  z-index: 100;
+  background: rgba(240, 240, 240, 0.95);
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  line-height: 100%;
+  flex-basis: auto;
+  background-color: var(--appBackground);
+  color: var(--appForeground);
+  font-size: 0.9em;
+  transition: 0s ease-in-out all;
+}
+
+chrome button {
+  font-size: 1em;
+  font-family: -apple-system, Verdana, sans-serif;
+  background: var(--appBackground);
+  color: var(--appForeground);
+  border: 1px solid var(--appBackground);
+  border-color: var(--appBackground);
+  letter-spacing: 0px;
+  height: 40px;
+  display: flex;
+  text-transform: capitalize;
+  z-index: 1;
+  cursor: pointer;
+  align-items: center;
+  padding: 0px 20px;
+  margin: 0;
+}
+
+chrome button:last-of-type {
+  justify-content: flex-end;
+}
+
+modal chrome {
+  justify-content: flex-end;
+}
+
+modal img {
+  width: 80%;
+}
+
+leftright {
+  display: flex;
+  width: calc(70%);
+  flex-direction: row;
+  justify-content: space-between;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  margin: 0px;
+  font-size: 0.9em;
+  padding: 1px 9px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: var(--borderRadius);
+  margin-bottom: 4px;
+}
+
+leftright right {
+  font-weight: 600;
+}
+
+leftright:first-of-type {
+  margin-top: 10px;
+}
+
+leftright.current {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(255, 255, 255, 1);
+  color: var(--color2);
+}
+
+leftright.current left {
+  color: transparent;
+}
+
+leftright.current:before {
+  content: 'NEW!';
+  font-weight: bold;
+}
+
+scorearea {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* width: 100%; */
+  flex-direction: column;
+}
+
+currentscore {
+  width: 100%;
+  padding-top: 2px;
+  letter-spacing: 2px;
+  font-size: 3em;
+  font-family: 'Bangers';
+  color: black;
+  justify-content: center;
+  line-height: 100%;
+}
+
+scoretype {
+  font-size: 0.5em;
+  width: 100%;
+  padding: 1px 0px;
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 100%;
+  color: var(--color1);
+}
+
 credit {
   font-size: 0.8em;
 }
@@ -617,6 +668,24 @@ time {
   pointer-events: none;
   display: block;
   text-align: center;
+}
+
+.bigpulse {
+  color: red;
+  animation: bigpulse 0.75s ease-in-out 0s infinite;
+  -webkit-animation: bigpulse 0.75s ease-in-out 0s infinite;
+}
+
+@keyframes bigpulse {
+  50% {
+    transform: scale(1.3);
+  }
+}
+
+@-webkit-keyframes bigpulse {
+  50% {
+    transform: scale(1.3);
+  }
 }
 
 addtime {
@@ -1015,15 +1084,6 @@ gameover h2 {
 }
 
 @media only screen and (max-width: 500px) {
-  chrome {
-    color: var(--appBackground);
-    background-color: var(--appForeground);
-  }
-
-  quit {
-    align-items: center;
-  }
-
   currentscore {
     margin: 0px;
   }
@@ -1069,5 +1129,9 @@ gameover h2 {
   challenge {
     margin-top: var(--chromeHeight);
     height: calc(100% - var(--chromeHeight));
+  }
+
+  time.alert {
+    color: white;
   }
 }

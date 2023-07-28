@@ -1,5 +1,5 @@
 // the cache version gets updated every time there is a new deployment
-const CACHE_VERSION = '3.7.1';
+const CACHE_VERSION = '3.7.85';
 const CURRENT_CACHE = `main-${CACHE_VERSION}`;
 
 // prettier-ignore
@@ -52,6 +52,13 @@ self.addEventListener('install', (evt) =>
   ),
 );
 
+// update app if new service worker version has been loaded but is waiting
+self.addEventListener('message', function (event) {
+  if (event.data.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
+});
+
 // fetch cache first, but use network if cache fails
 self.addEventListener('fetch', (event) => {
   event.respondWith(
@@ -66,7 +73,7 @@ self.addEventListener('fetch', (event) => {
         // Otherwise, hit the network
         return fetch(event.request).then((fetchedResponse) => {
           // Add the network response to the cache for later visits
-          cache.put(event.request, fetchedResponse.clone());
+          cache.put(event.request.url, fetchedResponse.clone());
 
           // Return the network response
           return fetchedResponse;
