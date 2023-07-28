@@ -9,7 +9,7 @@ Vue.config.debug = false;
 Vue.config.silent = true;
 // }
 
-Vue.config.ignoredElements = ['app', 'home', 'modes', 'mode', 'piece', 'glyph', 'gild', 'value', 'checkbox', 'toggle', 'version', 'howto', 'icon', 'chrome', 'quit', 'divider', 'stage', 'gameover', 'clears', 'time', 'playarea', 'addtime', 'board', 'me', 'puzzle', 'hint'];
+Vue.config.ignoredElements = ['app', 'wallpaper', 'home', 'modes', 'mode', 'piece', 'glyph', 'gild', 'value', 'checkbox', 'toggle', 'version', 'howto', 'icon', 'chrome', 'quit', 'divider', 'stage', 'gameover', 'clears', 'time', 'playarea', 'addtime', 'board', 'me', 'puzzle', 'hint'];
 
 var app = new Vue({
   el: '#app',
@@ -17,7 +17,9 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.7.88',
+    currentVersion: '3.7.99',
+    wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
+    currentWallpaper: '',
     newVersionAvailable: false,
     appNotificationMessage: '',
     appSettingsModes: Modes,
@@ -715,6 +717,10 @@ var app = new Vue({
     InitializeGame() {
       log('App Initialized', true);
       this.AdjustPieceSizeBasedOnViewport();
+
+      this.currentWallpaper = this.wallpaperNames[getRandomInt(0, this.wallpaperNames.length)];
+      document.getElementsByTagName('wallpaper')[0].className = this.currentWallpaper;
+      log(this.currentWallpaper);
 
       let _onemoretime = localStorage.getItem('onemoretime');
       try {

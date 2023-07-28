@@ -47,21 +47,50 @@ body {
   background: repeating-linear-gradient(90deg, rgb(80 80 80) 0px, rgb(80 80 80) 40px, rgb(74 74 74) 40px, rgb(74 74 74) 80px);
   user-select: none;
   -webkit-user-select: none;
+  background: var(--color2);
 }
 
 body {
-  max-width: 1024px;
+  /* max-width: 1024px; */
   /* max-width: var(--appMaxWidth); */
   height: 100%;
   margin: 0px auto;
   overflow: visible;
-  background: none;
+  background: transparent;
   line-height: 160%;
   text-align: center;
   user-select: none;
   -webkit-user-select: none;
   cursor: default;
-  /* background: var(--appBackground); */
+}
+
+wallpaper {
+  display: block;
+  position: absolute;
+  width: 300%;
+  height: 300%;
+  translate: -50vw -50vw;
+  z-index: -1;
+  background-color: rgba(0, 0, 0, 0.92);
+  opacity: 0.7;
+  background-size: 170px;
+  rotate: 31deg;
+}
+
+wallpaper.square {
+  background-image: url(../images/background-square.svg);
+}
+
+wallpaper.circle {
+  background-image: url(../images/background-circle.svg);
+}
+
+wallpaper.triangle {
+  background-image: url(../images/background-triangle.svg);
+}
+
+wallpaper.hexagon {
+  background-image: url(../images/background-hexagon.svg);
 }
 
 [v-cloak] {
@@ -162,6 +191,7 @@ app {
   align-items: center;
   height: 100%;
   max-width: var(--appMaxWidth);
+  /* margin: calc((100vh - var(--appMaxHeight)) / 2) auto; */
   margin: 0 auto;
 }
 
@@ -505,12 +535,14 @@ chrome {
   transition: 0s ease-in-out all;
 }
 
+.show chrome button,
 chrome button {
   font-size: 1em;
   font-family: -apple-system, Verdana, sans-serif;
-  background: var(--appBackground);
+  background: none;
+  background-color: var(--appBackground);
   color: var(--appForeground);
-  border: 1px solid var(--appBackground);
+  border: none;
   border-color: var(--appBackground);
   letter-spacing: 0px;
   height: 40px;
@@ -523,6 +555,7 @@ chrome button {
   margin: 0;
 }
 
+.show chrome button:last-of-type,
 chrome button:last-of-type {
   justify-content: flex-end;
 }
@@ -1085,6 +1118,13 @@ gameover h2 {
 }
 
 @media only screen and (max-width: 500px) {
+  app {
+    margin: 0 auto;
+  }
+  wallpaper {
+    display: none;
+  }
+
   currentscore {
     margin: 0px;
   }

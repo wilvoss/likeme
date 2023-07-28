@@ -1,5 +1,5 @@
 // the cache version gets updated every time there is a new deployment
-const CACHE_VERSION = '3.7.88';
+const CACHE_VERSION = '3.7.99';
 const CURRENT_CACHE = `main-${CACHE_VERSION}`;
 
 // prettier-ignore
@@ -20,6 +20,10 @@ const cacheFiles = [
   'images/Infinity.svg',
   'images/Hexagon.svg',
   'images/Circle.svg',
+  'images/background-square.svg',
+  'images/background-triangle.svg',
+  'images/background-circle.svg',
+  'images/background-hexagon.svg',
   'helpers/vue.min.js',
   'helpers/console-enhancer.js',
   'images/pieces.png',
