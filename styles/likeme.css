@@ -51,10 +51,8 @@ body {
 }
 
 body {
-  /* max-width: 1024px; */
-  /* max-width: var(--appMaxWidth); */
   height: 100%;
-  margin: 0px auto;
+  width: 100%;
   overflow: visible;
   background: transparent;
   line-height: 160%;
@@ -62,6 +60,9 @@ body {
   user-select: none;
   -webkit-user-select: none;
   cursor: default;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 wallpaper {
@@ -194,9 +195,10 @@ app {
   justify-content: start;
   align-items: center;
   height: 100%;
+  width: 100%;
   max-width: var(--appMaxWidth);
-  /* margin: calc((100vh - var(--appMaxHeight)) / 2) auto; */
-  margin: 0 auto;
+  max-height: var(--appMaxHeight);
+  box-shadow: 0px 0px 40px black;
 }
 
 stage {
