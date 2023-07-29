@@ -132,6 +132,10 @@ h3 {
   letter-spacing: 0px;
 }
 
+h3 {
+  margin-top: var(--defaultGap);
+}
+
 .reversecolor h1,
 .reversecolor h2,
 .reversecolor h3,
@@ -204,6 +208,7 @@ stage {
   max-width: var(--appMaxWidth);
   flex-direction: column;
   justify-content: stretch;
+  overflow: hidden;
 }
 
 page,
@@ -289,6 +294,7 @@ page content {
 stage playarea {
   padding-bottom: var(--defaultGap);
   justify-content: center;
+  overflow: hidden;
 }
 
 quit {
