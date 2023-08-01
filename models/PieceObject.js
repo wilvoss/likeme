@@ -7,6 +7,9 @@ class PieceObject {
     this.isSelected = spec.isSelected == undefined ? false : spec.isSelected;
     this.hasDropped = spec.hasDropped == undefined ? false : spec.hasDropped;
     this.delay = spec.delay == undefined ? 0 : spec.delay;
+    this.nudge = spec.nudge == undefined ? false : spec.nudge;
+    this.isMatch = spec.isMatch == undefined ? false : spec.isMatch;
+    this.isFullMatch = spec.isFullMatch == undefined ? false : spec.isFullMatch;
   }
 }
 

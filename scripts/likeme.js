@@ -17,7 +17,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.8.14',
+    currentVersion: '3.8.15',
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
     newVersionAvailable: false,
@@ -94,33 +94,16 @@ var app = new Vue({
       if (!this.gameCurrentIsGameOver) {
         let _perfectMatch = true;
         this.gameCurrentBoardPieces.forEach((piece) => {
-          let _likeness = 0;
-          if (piece.color === this.gameCurrentMePiece.color) {
-            _likeness++;
-          }
-          if (piece.shape === this.gameCurrentMePiece.shape) {
-            _likeness++;
-          }
-          if (piece.backgroundImage === this.gameCurrentMePiece.backgroundImage) {
-            _likeness++;
-          }
-          if ((_likeness >= 2 && !piece.isSelected) || (_likeness < 2 && piece.isSelected)) {
+          if ((piece.isMatch && !piece.isSelected) || (!piece.isMatch && piece.isSelected)) {
             _perfectMatch = false;
           }
-          if (_likeness >= 2) {
+          if (piece.isMatch) {
             _totalPossibleLikePieces++;
-          }
-          switch (_likeness) {
-            case 0:
-              break;
-            case 2:
-              _totalBoardScore = _totalBoardScore + this.appSettingsScoreSiblingIncrement * parseInt(this.appSettingsModes.hard.isSelected ? this.appSettingsScoreModeHardMultiplier : 1);
-              break;
-            case 3:
+            if (piece.isFullMatch) {
               _totalBoardScore = _totalBoardScore + this.appSettingsScoreTwinIncrement * parseInt(this.appSettingsModes.hard.isSelected ? this.appSettingsScoreModeHardMultiplier : 1);
-              break;
-            default:
-              break;
+            } else {
+              _totalBoardScore = _totalBoardScore + this.appSettingsScoreSiblingIncrement * parseInt(this.appSettingsModes.hard.isSelected ? this.appSettingsScoreModeHardMultiplier : 1);
+            }
           }
         });
         if (_totalPossibleLikePieces == 0) {
@@ -152,6 +135,14 @@ var app = new Vue({
             } else {
               this.gameCurrentHintText = _totalPossibleLikePieces === 1 ? 'There is only <b>' + _totalPossibleLikePieces + '</b> piece like me.' : 'There are a total of <b>' + _totalPossibleLikePieces + '</b> pieces like me.';
             }
+            let _mismatchFound = false;
+            this.gameCurrentBoardPieces.forEach((piece) => {
+              piece.nudge = false;
+              if (!_mismatchFound && ((piece.isMatch && !piece.isSelected) || (!piece.isMatch && piece.isSelected))) {
+                piece.nudge = true;
+                _mismatchFound = true;
+              }
+            });
           }
           this.gameCurrentNumberOfMisses++;
           this.gameCurrentNumberOfFails++;
@@ -168,6 +159,8 @@ var app = new Vue({
       this.gameCurrentBoardPieces = [];
       this.gameCurrentBoardScore = 0;
       this.gameCurrentNumberOfMisses = 0;
+      this.gameCurrentMePiece = new PieceObject({ shape: Shapes[getRandomInt(0, Shapes.length)], color: Colors[getRandomInt(0, Colors.length)], backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)] });
+
       for (let x = 0; x < this.appSettingsTotalNumberOfBoardPieces; x++) {
         let _piece = new PieceObject({
           shape: Shapes[getRandomInt(0, Shapes.length)],
@@ -177,17 +170,31 @@ var app = new Vue({
           hasDropped: false,
           delay: (this.appSettingsTotalNumberOfBoardPieces - x) * 15,
         });
+
+        let _likeness = 0;
+        if (_piece.color === this.gameCurrentMePiece.color) {
+          _likeness++;
+        }
+        if (_piece.shape === this.gameCurrentMePiece.shape) {
+          _likeness++;
+        }
+        if (_piece.backgroundImage === this.gameCurrentMePiece.backgroundImage) {
+          _likeness++;
+        }
+        _piece.isMatch = _likeness > 1;
+        _piece.isFullMatch = _likeness === 3;
+
         this.gameCurrentBoardPieces.push(_piece);
         window.setTimeout(function () {
           _piece.hasDropped = true;
         }, _piece.delay);
       }
-      this.gameCurrentMePiece = new PieceObject({ shape: Shapes[getRandomInt(0, Shapes.length)], color: Colors[getRandomInt(0, Colors.length)], backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)] });
     },
 
     TogglePieceSelection(_piece) {
       log('this.TogglePieceSelection() called for: " this.gameCurrentBoardPieces[' + this.gameCurrentBoardPieces.indexOf(_piece) + ']"');
       this.appVisualStateShowElementHint = false;
+      _piece.nudge = false;
       if (!this.gameCurrentIsGameOver) {
         _piece.isSelected = !_piece.isSelected;
         this.gameCurrentHasAnyPieceEverBeenSelected = true;
@@ -342,13 +349,20 @@ var app = new Vue({
       event.stopPropagation();
       event.preventDefault();
       this.userSettingsUseHints = !this.userSettingsUseHints;
+      if (!this.userSettingsUseHints) {
+        this.gameCurrentBoardPieces.forEach((_piece) => {
+          _piece.nudge = false;
+        });
+      }
       localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
     },
 
     ToggleUsingDarkMode(event) {
       log('this.ToggleUsingDarkMode(event) called');
-      event.stopPropagation();
-      event.preventDefault();
+      if (event != undefined) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
       this.userSettingsUseDarkMode = !this.userSettingsUseDarkMode;
       localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
     },
@@ -852,6 +866,9 @@ var app = new Vue({
         case '[':
           _currentThemeIndex = _currentThemeIndex == 0 ? this.appSettingsThemes.length - 1 : _currentThemeIndex - 1;
           this.SelectTheme(this.appSettingsThemes[_currentThemeIndex]);
+          break;
+        case '/':
+          this.ToggleUsingDarkMode();
           break;
         case '1':
         case '2':

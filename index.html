@@ -257,7 +257,7 @@
           </header>
           <section>
             <checkbox :class="{on: userSettingsUseHints}" @click="ToggleUsingHints(event)">
-              Show tips
+              Show tips and hints
               <toggle></toggle>
             </checkbox>
             <checkbox :class="{on: userSettingsUseDarkMode}" @click="ToggleUsingDarkMode(event)">
@@ -322,7 +322,7 @@
             <currentscore>{{appSettingsModes.infinite.isSelected ? NumberWithCommas(gameCurrentNumberOfClears) : NumberWithCommas(gameCurrentTotalScore)}}</currentscore>
           </scorearea>
           <board>
-            <piece v-for="piece in gameCurrentBoardPieces" @click="TogglePieceSelection(piece)" :class="{selected: piece.isSelected, dropped: piece.hasDropped}">
+            <piece v-for="piece in gameCurrentBoardPieces" @click="TogglePieceSelection(piece)" :class="{wrong: piece.nudge && userSettingsUseHints, selected: piece.isSelected, dropped: piece.hasDropped}">
               <gild :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color, backgroundImage: piece.backgroundImage }"> </gild>
             </piece>
           </board>
