@@ -322,7 +322,7 @@
             <currentscore>{{appSettingsModes.infinite.isSelected ? NumberWithCommas(gameCurrentNumberOfClears) : NumberWithCommas(gameCurrentTotalScore)}}</currentscore>
           </scorearea>
           <board>
-            <piece v-for="piece in gameCurrentBoardPieces" @click="TogglePieceSelection(piece)" :class="{wrong: piece.nudge && userSettingsUseHints, selected: piece.isSelected, dropped: piece.hasDropped}">
+            <piece v-for="piece in gameCurrentBoardPieces" @click="TogglePieceSelection(piece)" :class="{include:  piece.nudge && userSettingsUseHints && piece.isMatch, exclude: piece.nudge && userSettingsUseHints && !piece.isMatch, selected: piece.isSelected, dropped: piece.hasDropped}">
               <gild :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color, backgroundImage: piece.backgroundImage }"> </gild>
             </piece>
           </board>

@@ -9,13 +9,29 @@
   --appForegroundStrongest: 0, 0%, calc(100% - 0%);
   --appForegroundWeak: 0, 0%, calc(100% - 39%);
 
-  /* --appBackground: 0, 0%, 94%;
-  --appBackgroundStrong: 0, 0%, 96%;
-  --appBackgroundStrongest: 0, 0%, 100%;
-  --appBackgroundWeak: 0, 0%, 89%;
-  --appBackgroundWeakest: 0, 0%, 80%;
-  --appForeground: 0, 0%, 31%;
-  --appForegroundStrong: 0, 0%, 10%;
-  --appForegroundStrongest: 0, 0%, 0%;
-  --appForegroundWeak: 0, 0%, 39%; */
+  --bgImage1: repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.4) 0px, rgba(0, 0, 0, 0.4) 10%, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0) 20%);
+  --bgImage2: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.4) 0px, rgba(0, 0, 0, 0.4) 1.1%, rgba(0, 0, 0, 0) 1.1%, rgba(0, 0, 0, 0) 4.5%);
+  --bgImage3: repeating-radial-gradient(circle, rgba(0, 0, 0, 0.4) 0px, rgba(0, 0, 0, 0.4) 15%, rgba(0, 0, 0, 0) 15%, rgba(0, 0, 0, 0) 30%);
+}
+
+mode.selected piece,
+piece.selected {
+  box-shadow: inset 0px 0px 4px hsla(var(--appForeground), 0.7);
+  background: hsl(var(--appBackgroundStrong));
+}
+
+me piece {
+  box-shadow: inset 0px 5px 5px hsla(var(--appForeground), 0.5);
+  background: hsl(var(--appBackgroundStrong));
+}
+
+me.pushed piece,
+me piece:focus,
+me piece:active {
+  box-shadow: inset 0px 2px 2px hsla(var(--appForeground), 0.7);
+  background: hsl(var(--appBackgroundStrong));
+}
+
+scoretype {
+  color: var(--color3);
 }

@@ -41,7 +41,7 @@
   --infinity: url(/images/Infinity.svg);
 
   --bgImage1: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.5) 10%, rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 0) 20%);
-  --bgImage2: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.7) 0px, rgba(255, 255, 255, 0.7) 1.1%, rgba(255, 255, 255, 0) 1.1%, rgba(255, 255, 255, 0) 4.4%);
+  --bgImage2: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.7) 0px, rgba(255, 255, 255, 0.7) 1.1%, rgba(255, 255, 255, 0) 1.1%, rgba(255, 255, 255, 0) 4.5%);
   --bgImage3: repeating-radial-gradient(circle, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.5) 14.5%, rgba(255, 255, 255, 0) 14.5%, rgba(255, 255, 255, 0) 29%);
   --bgImage4: none;
 }
@@ -178,7 +178,7 @@ a:visited,
 a:focus,
 a:active {
   text-decoration: none;
-  color: hsl(var(--appForegroundStrongest));
+  color: hsl(var(--appForegroundStrong));
 }
 
 divider {
@@ -680,7 +680,7 @@ description {
   padding: 0px 40px;
   margin: 10px 0px 30px;
   height: 1.5em;
-  color: var(--color1);
+  color: var(--appBackgroundStrong);
 }
 
 version {
@@ -788,28 +788,12 @@ modal me piece {
   border-radius: var(--borderRadius);
 }
 
-piece.wrong {
-  animation: wrong 0.2s linear 0s infinite;
-  -webkit-animation: wrong 0.2s linear 0s infinite;
+piece.include {
+  animation: include 0.3s ease-in-out 0s infinite;
+  -webkit-animation: include 0.3s ease-in-out 0s infinite;
 }
 
-@keyframes wrong {
-  25% {
-    rotate: 3deg;
-  }
-  50% {
-    rotate: 0deg;
-    transform: translateY(-3px);
-  }
-  75% {
-    rotate: -3deg;
-  }
-  100% {
-    rotate: 0deg;
-  }
-}
-
-@-webkit-keyframes wrong {
+@keyframes include {
   25% {
     /* rotate: 3deg; */
     transform: rotate(3deg);
@@ -823,6 +807,50 @@ piece.wrong {
   }
   100% {
     transform: rotate(0deg);
+  }
+}
+
+@-webkit-keyframes include {
+  25% {
+    /* rotate: 3deg; */
+    transform: translateY(-2px) rotate(3deg);
+  }
+  50% {
+    /* rotate: 0deg; */
+    transform: translateY(-4px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-2px) rotate(-3deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+piece.exclude {
+  animation: exclude 0.2s linear 0s infinite;
+  -webkit-animation: exclude 0.2s linear 0s infinite;
+}
+
+@keyframes exclude {
+  33% {
+    /* rotate: 3deg; */
+    transform: translateX(-4px);
+  }
+  66% {
+    /* rotate: 0deg; */
+    transform: translateX(4px);
+  }
+}
+
+@-webkit-keyframes exclude {
+  33% {
+    /* rotate: 3deg; */
+    transform: translateX(-2px);
+  }
+  66% {
+    /* rotate: 0deg; */
+    transform: translateX(2px);
   }
 }
 
