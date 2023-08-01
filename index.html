@@ -5,9 +5,6 @@
     <meta content="x-content-type-options=nosniff" />
 
     <title>Like Me?</title>
-    <link rel="dns-prefetch" href="https://www.googletagmanager.com/" />
-    <link rel="preconnect" href="https://www.googletagmanager.com/" crossorigin />
-
     <meta name="apple-mobile-web-app-title" content="Like Me?" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-touch-fullscreen" content="yes" />
@@ -46,6 +43,7 @@
   <body>
     <wallpaper></wallpaper>
     <app id="app" v-cloak :class="{challenge: appVisualStateShowPageChallenge}">
+      <link v-if="userSettingsUseDarkMode" rel="stylesheet" href="styles/likeme-darkmode.css" media="screen" />
       <notification @pointerdown="appVisualStateShowNotification = false" :class="{show: appVisualStateShowNotification}">
         <message v-html="appNotificationMessage"></message>
       </notification>
@@ -260,6 +258,10 @@
           <section>
             <checkbox :class="{on: userSettingsUseHints}" @click="ToggleUsingHints(event)">
               Show tips
+              <toggle></toggle>
+            </checkbox>
+            <checkbox :class="{on: userSettingsUseDarkMode}" @click="ToggleUsingDarkMode(event)">
+              Dark mode
               <toggle></toggle>
             </checkbox>
           </section>

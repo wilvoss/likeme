@@ -1,0 +1,21 @@
+:root {
+  --appBackground: 0, 0%, calc(100% - 98%);
+  --appBackgroundStrong: 0, 0%, calc(100% - 96%);
+  --appBackgroundStrongest: 0, 0%, calc(100% - 90%);
+  --appBackgroundWeak: 0, 0%, calc(100% - 89%);
+  --appBackgroundWeakest: 0, 0%, calc(100% - 80%);
+  --appForeground: 0, 0%, calc(100% - 31%);
+  --appForegroundStrong: 0, 0%, calc(100% - 10%);
+  --appForegroundStrongest: 0, 0%, calc(100% - 0%);
+  --appForegroundWeak: 0, 0%, calc(100% - 39%);
+
+  /* --appBackground: 0, 0%, 94%;
+  --appBackgroundStrong: 0, 0%, 96%;
+  --appBackgroundStrongest: 0, 0%, 100%;
+  --appBackgroundWeak: 0, 0%, 89%;
+  --appBackgroundWeakest: 0, 0%, 80%;
+  --appForeground: 0, 0%, 31%;
+  --appForegroundStrong: 0, 0%, 10%;
+  --appForegroundStrongest: 0, 0%, 0%;
+  --appForegroundWeak: 0, 0%, 39%; */
+}

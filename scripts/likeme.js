@@ -17,7 +17,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.8.10',
+    currentVersion: '3.8.14',
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
     newVersionAvailable: false,
@@ -63,6 +63,7 @@ var app = new Vue({
     userHighScoresEasy: [],
     userHighScoresHard: [],
     userSettingsUseHints: true,
+    userSettingsUseDarkMode: false,
     documentCssRoot: document.querySelector(':root'),
   },
 
@@ -344,6 +345,14 @@ var app = new Vue({
       localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
     },
 
+    ToggleUsingDarkMode(event) {
+      log('this.ToggleUsingDarkMode(event) called');
+      event.stopPropagation();
+      event.preventDefault();
+      this.userSettingsUseDarkMode = !this.userSettingsUseDarkMode;
+      localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
+    },
+
     ResetModalContentScrollPositions() {
       log('this.ResetModalContentScrollPositions() called');
       let _contentElements = document.getElementsByTagName('content');
@@ -409,6 +418,12 @@ var app = new Vue({
       if (_hints !== undefined && _hints !== null) {
         _hints = JSON.parse(_hints);
         this.userSettingsUseHints = _hints;
+      }
+
+      let _darkmode = localStorage.getItem('userSettingsUseDarkMode');
+      if (_darkmode !== undefined && _darkmode !== null) {
+        _darkmode = JSON.parse(_darkmode);
+        this.userSettingsUseDarkMode = _darkmode;
       }
 
       let _userSettingsTheme = localStorage.getItem('userSettingsTheme');
@@ -668,16 +683,6 @@ var app = new Vue({
         _gameDataCorrupt = true;
       }
 
-      let _gameCurrentHasBonusTimeHintDisplayed = localStorage.getItem('gameCurrentHasBonusTimeHintDisplayed');
-      try {
-        if (_gameCurrentHasBonusTimeHintDisplayed !== undefined && _gameCurrentHasBonusTimeHintDisplayed !== null) {
-          this.gameCurrentHasBonusTimeHintDisplayed = JSON.parse(_gameCurrentHasBonusTimeHintDisplayed);
-        }
-      } catch (error) {
-        log('_gameCurrentHasBonusTimeHintDisplayed error: ' + error);
-        _gameDataCorrupt = true;
-      }
-
       let _gameCurrentHintText = localStorage.getItem('gameCurrentHintText');
       try {
         if (_gameCurrentHintText !== undefined && _gameCurrentHintText !== null) {
@@ -795,11 +800,11 @@ var app = new Vue({
       localStorage.setItem('gameCurrentIsUserGuessWrong', JSON.stringify(this.gameCurrentIsUserGuessWrong));
       localStorage.setItem('gameCurrentNumberOfFails', this.gameCurrentNumberOfFails);
       localStorage.setItem('gameCurrentNumberOfMisses', this.gameCurrentNumberOfMisses);
-      localStorage.setItem('gameCurrentHasBonusTimeHintDisplayed', JSON.stringify(this.gameCurrentHasBonusTimeHintDisplayed));
       localStorage.setItem('gameCurrentHintText', this.gameCurrentHintText);
       localStorage.setItem('gameCurrentTotalScore', this.gameCurrentTotalScore);
       localStorage.setItem('gameCurrentHasAnyPieceEverBeenSelected', JSON.stringify(this.gameCurrentHasAnyPieceEverBeenSelected));
       localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
+      localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
     },
 
     AdjustPieceSizeBasedOnViewport() {
@@ -918,14 +923,16 @@ var app = new Vue({
     window.addEventListener('keyup', this.HandleKeyUp);
     window.addEventListener('unload', this.HandleOnUnloadEvent);
     window.addEventListener('resize', this.HandleOnResizeEvent);
-    navigator.serviceWorker.addEventListener('message', this.HandleServiceWorkerWaiting);
-    let refreshing;
-    navigator.serviceWorker.addEventListener('controllerchange', function () {
-      if (refreshing) return;
-      localStorage.setItem('onemoretime', true);
-      window.location.reload();
-      refreshing = true;
-    });
+    if (navigator.serviceWorker != undefined) {
+      navigator.serviceWorker.addEventListener('message', this.HandleServiceWorkerWaiting);
+      let refreshing;
+      navigator.serviceWorker.addEventListener('controllerchange', function () {
+        if (refreshing) return;
+        localStorage.setItem('onemoretime', true);
+        window.location.reload();
+        refreshing = true;
+      });
+    }
   },
 
   computed: {
