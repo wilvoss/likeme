@@ -17,7 +17,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.8.18',
+    currentVersion: '3.8.20',
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
     newVersionAvailable: false,
@@ -364,6 +364,7 @@ var app = new Vue({
         event.preventDefault();
       }
       this.userSettingsUseDarkMode = !this.userSettingsUseDarkMode;
+      document.getElementById('themeColor').content = this.userSettingsUseDarkMode ? '#000000' : '#f0f0f0';
       localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
     },
 
@@ -438,6 +439,7 @@ var app = new Vue({
       if (_darkmode !== undefined && _darkmode !== null) {
         _darkmode = JSON.parse(_darkmode);
         this.userSettingsUseDarkMode = _darkmode;
+        document.getElementById('themeColor').content = this.userSettingsUseDarkMode ? '#000000' : '#f0f0f0';
       }
 
       let _userSettingsTheme = localStorage.getItem('userSettingsTheme');

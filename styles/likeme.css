@@ -1192,6 +1192,12 @@ gameover h2 {
     display: none;
   }
 
+  button.danger {
+    background: hsl(var(--appBackground));
+    background-color: hsl(var(--appBackground));
+    border-color: hsl(var(--appBackground));
+  }
+
   currentscore {
     margin: 0px;
   }
