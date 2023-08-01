@@ -79,19 +79,19 @@ wallpaper {
 }
 
 wallpaper.square {
-  background-image: url(../images/background-square.svg);
+  background-image: url(../images/square.svg);
 }
 
 wallpaper.circle {
-  background-image: url(../images/background-circle.svg);
+  background-image: url(../images/circle.svg);
 }
 
 wallpaper.triangle {
-  background-image: url(../images/background-triangle.svg);
+  background-image: url(../images/triangle.svg);
 }
 
 wallpaper.hexagon {
-  background-image: url(../images/background-hexagon.svg);
+  background-image: url(../images/hexagon.svg);
 }
 
 [v-cloak] {
