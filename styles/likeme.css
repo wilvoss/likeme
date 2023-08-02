@@ -159,7 +159,7 @@ oobe h1 {
 
 page h1 {
   margin: var(--defaultGap) 0px 0px 0px;
-  font-size: 4em;
+  font-size: 4.2em;
 }
 
 p,
@@ -384,7 +384,7 @@ button.tertiary {
   box-shadow: none;
 }
 
-.show button.pulse {
+.show button.tertiary.pulse {
   animation: pulse 1s ease-in-out 0s infinite;
   -webkit-animation: pulse 1s ease-in-out 0s infinite;
 }
@@ -653,7 +653,7 @@ currentscore {
   line-height: 100%;
 }
 
-scoretype {
+labelsmall {
   font-size: 0.5em;
   width: 100%;
   padding: 1px 0px;
@@ -676,7 +676,8 @@ page img {
 modes {
   display: flex;
   column-gap: 10px;
-  margin: 20px 0px 0px;
+  margin: 4px 0px 0px;
+  font-size: 0.6em;
 }
 
 mode {
@@ -690,9 +691,14 @@ mode.selected {
 }
 
 mode value {
-  text-transform: capitalize;
-  margin-top: 4px;
+  /* text-transform: capitalize; */
+  margin-top: 6px;
   display: block;
+  width: 100%;
+  padding: 1px 0px;
+  text-transform: uppercase;
+  line-height: 100%;
+  /* color: var(--color1); */
 }
 
 description {
@@ -702,7 +708,7 @@ description {
   padding: 0px 40px;
   margin: 10px 0px 30px;
   height: 1.5em;
-  color: var(--appBackgroundStrong);
+  color: var(--color2);
 }
 
 version {

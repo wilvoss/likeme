@@ -68,7 +68,6 @@
             <description v-if="appSettingsModes.easy.isSelected">{{appSettingsModes.easy.description}}</description>
           </section>
           <section>
-            <!-- <button class="tertiary pulse">New Update!</button> -->
             <button id="button_newGame" title="Click to start a new game" class="primary" @click="RestartGame">Play</button>
             <button id="button_howto" title="Click to learn how to play Like Me?" class="secondary" @click="ToggleHowToPlay(event, true)">How to play</button>
             <smallbuttons>
@@ -104,12 +103,12 @@
             <h3>Created by</h3>
             <credit>Wil Voss</credit>
             <h3>Feedback and ideas</h3>
-            <credit>Melinda Voss</credit>
-            <credit>Danielle Siler</credit>
             <credit>Alex Barbieri</credit>
-            <credit>Gretchen Voss</credit>
             <credit>Jerry Hoffmeister</credit>
             <credit>Rebecca Hoffmeister</credit>
+            <credit>Danielle Siler</credit>
+            <credit>Gretchen Voss</credit>
+            <credit>Melinda Voss</credit>
           </section>
           <section>
             <h2>Licensing</h2>
@@ -118,11 +117,10 @@
             <credit><a href="https://thenounproject.com/icon/settings-2650515/" target="_blank">i cons - settings icon</a></credit>
             <credit><a href="https://thenounproject.com/icon/trophy-4942454/" target="_blank">Meko - trophy icon</a></credit>
           </section>
+          <section>
+            <button class="danger" @click="{window.location.reload(true)}">Force refresh</button>
+          </section>
         </content>
-        <!-- <section>
-          <h1>Version History</h1>
-          <p>v1.0 initial release</p>
-        </section> -->
       </modal>
       <modal :class="{show: appVisualStateShowPageHighScores}">
         <chrome>
@@ -215,7 +213,7 @@
               </piece>
             </me>
           </section>
-          <section>
+          <section v-if="!deviceHasTouch">
             <h2>Keyboard shortcuts</h2>
             <leftright>
               <left>Check board, Yes</left>
@@ -230,6 +228,10 @@
               <right>'Escape'</right>
             </leftright>
             <leftright>
+              <left>Dark/light mode</left>
+              <right>'/'</right>
+            </leftright>
+            <leftright>
               <left>Next theme</left>
               <right>']'</right>
             </leftright>
@@ -237,13 +239,6 @@
               <left>Previous theme</left>
               <right>'['</right>
             </leftright>
-          </section>
-          <section>
-            <h2>Troubleshooting</h2>
-            <p>If you recently updated the app, but it didn't take, click below to force refresh the app.</p>
-            <p>
-              <a href="#" @click="{window.location.reload(true)}">Force refresh</a>
-            </p>
           </section>
         </content>
       </modal>
@@ -351,7 +346,7 @@
         </hint>
         <playarea>
           <scorearea>
-            <scoretype>{{appSettingsModes.infinite.isSelected ? 'clears' : 'score'}}</scoretype>
+            <labelsmall>{{appSettingsModes.infinite.isSelected ? 'clears' : 'score'}}</labelsmall>
             <currentscore>{{appSettingsModes.infinite.isSelected ? NumberWithCommas(gameCurrentNumberOfClears) : NumberWithCommas(gameCurrentTotalScore)}}</currentscore>
           </scorearea>
           <board>

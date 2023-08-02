@@ -17,7 +17,8 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.8.23',
+    currentVersion: '3.8.34',
+    deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
     newVersionAvailable: false,
@@ -771,6 +772,7 @@ var app = new Vue({
     InitializeGame() {
       log('App Initialized', true);
       this.AdjustPieceSizeBasedOnViewport();
+      this.CheckForMobile();
 
       this.currentWallpaper = this.wallpaperNames[getRandomInt(0, this.wallpaperNames.length)];
       document.getElementsByTagName('wallpaper')[0].className = this.currentWallpaper;
@@ -878,12 +880,9 @@ var app = new Vue({
     },
 
     CheckForMobile() {
-      const ua = navigator.userAgent;
-      let check = false;
-      if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua) || /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
-        check = true;
-      }
-      return check;
+      let _check = 'ontouchstart' in document.documentElement;
+      this.deviceHasTouch = _check;
+      return _check;
     },
 
     HandleKeyUp(event) {
