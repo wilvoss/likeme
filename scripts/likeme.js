@@ -2,6 +2,7 @@
 /// <reference path="../models/PieceObject.js" />
 /// <reference path="../models/ModeObject.js" />
 /// <reference path="../helpers/console-enhancer.js" />
+/// <reference path="../helpers/howler.js" />
 
 // if (!UseDebug) {
 Vue.config.devtools = false;
@@ -17,13 +18,14 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.8.55',
+    currentVersion: '3.8.61',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
     newVersionAvailable: false,
     appNotificationMessage: '',
     appSettingsModes: Modes,
+    appSettingsSoundFX: new Howl({ src: '../audio/phft4.mp3', volume: 0.5 }),
     appSettingsSaveSettings: true,
     appSettingsModeHardInterval: 100,
     appSettingsModeHardInternalChangeCounterCount: 0,
@@ -66,6 +68,7 @@ var app = new Vue({
     userHighScoresEasy: [],
     userHighScoresHard: [],
     userSettingsUseHints: true,
+    userSettingsUseSoundFX: true,
     userSettingsUseDarkMode: false,
     documentCssRoot: document.querySelector(':root'),
   },
@@ -171,7 +174,7 @@ var app = new Vue({
           backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)],
           isSelected: false,
           hasDropped: false,
-          delay: (this.appSettingsTotalNumberOfBoardPieces - x) * 15,
+          delay: (this.appSettingsTotalNumberOfBoardPieces - x) * 50,
         });
 
         let _likeness = 0;
@@ -190,6 +193,9 @@ var app = new Vue({
         this.gameCurrentBoardPieces.push(_piece);
         window.setTimeout(function () {
           _piece.hasDropped = true;
+          if (app.userSettingsUseSoundFX) {
+            app.appSettingsSoundFX.play();
+          }
         }, _piece.delay);
       }
     },
@@ -376,6 +382,14 @@ var app = new Vue({
       localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
     },
 
+    ToggleUsingSound(event) {
+      log('this.ToggleUsingSound(event) called');
+      event.stopPropagation();
+      event.preventDefault();
+      this.userSettingsUseSoundFX = !this.userSettingsUseSoundFX;
+      localStorage.setItem('userSettingsUseSoundFX', this.userSettingsUseSoundFX);
+    },
+
     ToggleUsingDarkMode(event) {
       log('this.ToggleUsingDarkMode(event) called');
       if (event != undefined) {
@@ -467,6 +481,12 @@ var app = new Vue({
       if (_hints !== undefined && _hints !== null) {
         _hints = JSON.parse(_hints);
         this.userSettingsUseHints = _hints;
+      }
+
+      let _sounds = localStorage.getItem('userSettingsUseSoundFX');
+      if (_sounds !== undefined && _sounds !== null) {
+        _sounds = JSON.parse(_sounds);
+        this.userSettingsUseSoundFX = _sounds;
       }
 
       let _darkmode = localStorage.getItem('userSettingsUseDarkMode');
@@ -856,6 +876,7 @@ var app = new Vue({
         localStorage.setItem('gameCurrentTotalScore', this.gameCurrentTotalScore);
         localStorage.setItem('gameCurrentHasAnyPieceEverBeenSelected', JSON.stringify(this.gameCurrentHasAnyPieceEverBeenSelected));
         localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
+        localStorage.setItem('userSettingsUseSoundFX', this.userSettingsUseSoundFX);
         localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
       }
     },

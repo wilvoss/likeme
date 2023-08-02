@@ -1,5 +1,5 @@
 // the cache version gets updated every time there is a new deployment
-const CACHE_VERSION = '3.8.55';
+const CACHE_VERSION = '3.8.61';
 const CURRENT_CACHE = `main-${CACHE_VERSION}`;
 
 // prettier-ignore
@@ -7,6 +7,7 @@ const CURRENT_CACHE = `main-${CACHE_VERSION}`;
 const cacheFiles = [
   '/',
   '',
+  'audio/phft4.mp3',
   'models/ModeObject.js',
   'models/PieceObject.js',
   'models/ScoreObject.js',
@@ -23,6 +24,7 @@ const cacheFiles = [
   'images/Circle.svg',
   'helpers/vue.min.js',
   'helpers/console-enhancer.js',
+  'helpers/howler.js',
   'images/pieces.png',
   'styles/likeme.css',
   'styles/likeme-darkmode.css',

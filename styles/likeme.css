@@ -801,7 +801,7 @@ board {
 }
 
 piece {
-  transform: translateY(-600px);
+  transform: translateY(-640px);
   transition: 00ms ease-out transform;
   cursor: pointer;
 }
@@ -977,8 +977,8 @@ checkbox {
   line-height: 140%;
   flex-direction: row;
   justify-content: space-between;
-  padding: 10px 6px 10px 14px;
-  margin-top: 10px;
+  padding: 9px 6px 9px 14px;
+  margin-top: 6px;
   cursor: pointer;
   width: calc(100% - 20px);
   border-radius: var(--borderRadius);
