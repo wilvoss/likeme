@@ -17,7 +17,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.8.22',
+    currentVersion: '3.8.23',
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
     newVersionAvailable: false,
@@ -351,6 +351,9 @@ var app = new Vue({
         localStorage.setItem('userHighScoresEasy', JSON.stringify(this.userHighScoresEasy));
       } else if (this.appSettingsModes.hard.isSelected) {
         this.userHighScoresHard.push(_score);
+        if (_score === this.userScoresHighHardByValue[0]) {
+          this.appVisualStateShowNewHighScoreElement = true;
+        }
         localStorage.setItem('userHighScoresHard', JSON.stringify(this.userHighScoresHard));
       } else if (this.appSettingsModes.infinite.isSelected) {
         this.userHighScoresInfinite.push(_score);
