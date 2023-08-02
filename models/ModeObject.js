@@ -11,8 +11,8 @@ class ModeObject {
 
 var Modes = {
   infinite: new ModeObject({
-    name: 'Infinite',
-    description: 'Untimed zen mode with no pressure.',
+    name: 'Zen',
+    description: 'Untimed matching with no pressure.',
     piece: new PieceObject({
       shape: 'var(--infinity)',
       color: Colors[getRandomInt(0, Colors.length)],

@@ -153,6 +153,10 @@ h3 {
   line-height: 160%;
 }
 
+oobe h1 {
+  font-size: 3.3em;
+}
+
 page h1 {
   margin: var(--defaultGap) 0px 0px 0px;
   font-size: 4em;
@@ -202,6 +206,8 @@ app {
   max-width: var(--appMaxWidth);
   max-height: var(--appMaxHeight);
   box-shadow: 0px 0px 40px hsl(0, 0%, 0%);
+  position: absolute;
+  overflow: hidden;
 }
 
 stage {
@@ -216,6 +222,7 @@ stage {
   overflow: hidden;
 }
 
+oobe,
 page,
 modal,
 challenge {
@@ -233,6 +240,12 @@ challenge {
   align-content: center;
   justify-content: space-between;
   flex-direction: column;
+}
+
+oobe {
+  opacity: 1;
+  transform: translateY(100%);
+  transition: 200ms ease-in-out all;
 }
 
 challenge {
@@ -253,6 +266,8 @@ section {
   flex-basis: auto;
 }
 
+oobe header,
+oobe section,
 modal header,
 modal section,
 challenge section {
@@ -291,6 +306,7 @@ page content {
   overflow: hidden;
 }
 
+oobe content,
 stage playarea {
   padding-bottom: var(--defaultGap);
   justify-content: center;
@@ -316,10 +332,16 @@ modal {
   justify-content: start;
 }
 
+oobe.show,
 page.show,
 modal.show {
   opacity: 1;
   pointer-events: all;
+  transform: translateY(0px);
+}
+
+oobe.show {
+  transition: 0s linear all;
 }
 
 challenge.show {
@@ -863,6 +885,7 @@ stage me piece {
   transform: translateY(0) scale(1.1);
 }
 
+oobe me piece gild,
 modal me piece gild {
   mask-image: var(--shape1);
   -webkit-mask-image: var(--shape1);
@@ -870,28 +893,32 @@ modal me piece gild {
   background-image: var(--bgImage1);
 }
 
-modal examples {
+examples {
   display: flex;
   flex-direction: row;
   /* transform: scale(0.8); */
   column-gap: 8px;
 }
 
-modal examples:last-of-type {
+examples:last-of-type {
   margin-top: 8px;
 }
 
-modal examples piece {
+examples piece {
   cursor: default;
   transform: translateY(0px);
 }
 
-modal examples piece,
-modal examples piece gild {
+examples piece,
+examples piece gild {
   width: calc(var(--pieceSize) * 0.8);
   height: calc(var(--pieceSize) * 0.8);
   mask-size: calc(var(--pieceSize) * 0.8);
   -webkit-mask-size: calc(var(--pieceSize) * 0.8);
+}
+
+oobe examples {
+  transform: scale(0.8);
 }
 
 hint,
@@ -1106,6 +1133,11 @@ me piece:focus,
 me piece:active {
   transform: translateY(2px) scale(1);
   box-shadow: 0px 2px 2px hsla(var(--appForeground), 0.7);
+}
+
+oobe me piece {
+  background: none;
+  box-shadow: none;
 }
 
 stage me piece:focus,

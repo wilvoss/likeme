@@ -9,7 +9,7 @@ Vue.config.debug = false;
 Vue.config.silent = true;
 // }
 
-Vue.config.ignoredElements = ['app', 'wallpaper', 'home', 'modes', 'mode', 'piece', 'glyph', 'gild', 'value', 'checkbox', 'toggle', 'version', 'howto', 'icon', 'chrome', 'quit', 'divider', 'stage', 'gameover', 'clears', 'time', 'playarea', 'addtime', 'board', 'me', 'puzzle', 'hint'];
+Vue.config.ignoredElements = ['app', 'oobe', 'wallpaper', 'home', 'modes', 'mode', 'piece', 'glyph', 'gild', 'value', 'checkbox', 'toggle', 'version', 'howto', 'icon', 'chrome', 'quit', 'divider', 'stage', 'gameover', 'clears', 'time', 'playarea', 'addtime', 'board', 'me', 'puzzle', 'hint'];
 
 var app = new Vue({
   el: '#app',
@@ -17,12 +17,13 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.8.20',
+    currentVersion: '3.8.22',
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
     newVersionAvailable: false,
     appNotificationMessage: '',
     appSettingsModes: Modes,
+    appSettingsSaveSettings: true,
     appSettingsModeHardInterval: 100,
     appSettingsModeHardInternalChangeCounterCount: 0,
     appSettingsModeHardIntervalChangeCounterLimit: 10,
@@ -39,6 +40,7 @@ var app = new Vue({
     appVisualStateShowPageCredits: false,
     appVisualStateShowPageGameOver: false,
     appVisualStateShowPageHome: true,
+    appVisualStateShowPageOOBE: false,
     appVisualStateShowPageHowToPlay: false,
     appVisualStateShowPageSettings: false,
     appVisualStateShowElementHint: false,
@@ -299,6 +301,19 @@ var app = new Vue({
           _rando.shape = Shapes[getRandomInt(0, Shapes.length)];
           _rando.color = Colors[getRandomInt(0, Colors.length)];
           _rando.backgroundImage = BackgroundImages[getRandomInt(0, BackgroundImages.length)];
+
+          let _likeness = 0;
+          if (_rando.color === this.gameCurrentMePiece.color) {
+            _likeness++;
+          }
+          if (_rando.shape === this.gameCurrentMePiece.shape) {
+            _likeness++;
+          }
+          if (_rando.backgroundImage === this.gameCurrentMePiece.backgroundImage) {
+            _likeness++;
+          }
+          _rando.isMatch = _likeness > 1;
+          _rando.isFullMatch = _likeness === 3;
         }
 
         this.appSettingsModeHardInternalChangeCounterCount = 0;
@@ -395,6 +410,16 @@ var app = new Vue({
       this.appVisualStateShowPageHowToPlay = _value;
     },
 
+    ToggleOOBE(event, _value) {
+      log('this.ToggleOOBE(event, value) called');
+      if (event != null) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      this.ResetModalContentScrollPositions();
+      this.appVisualStateShowPageOOBE = _value;
+    },
+
     ToggleHighScores(event, _value) {
       log('this.ToggleHighScores(event, value) called');
       event.stopPropagation();
@@ -421,6 +446,11 @@ var app = new Vue({
 
     GetUserSettings() {
       log('this.GetUserSettings() called');
+
+      if (localStorage.length === 0) {
+        this.ToggleOOBE(null, true);
+      }
+
       let _modes = localStorage.getItem('appSettingsModes');
       if (_modes !== undefined && _modes !== null) {
         _modes = JSON.parse(_modes);
@@ -794,33 +824,35 @@ var app = new Vue({
 
     HandleOnUnloadEvent() {
       window.clearInterval(this.updateInterval);
-      localStorage.setItem('storedVersion', this.currentVersion);
-      localStorage.setItem('appSettingsModes', JSON.stringify(this.appSettingsModes));
-      localStorage.setItem('appSettingsModeHardInterval', this.appSettingsModeHardInterval);
-      localStorage.setItem('appSettingsModeHardInternalChangeCounterCount', this.appSettingsModeHardInternalChangeCounterCount);
-      localStorage.setItem('appSettingsModeHardIntervalChangeCounterLimit', this.appSettingsModeHardIntervalChangeCounterLimit);
-      localStorage.setItem('appSettingsPieceSize', this.appSettingsPieceSize);
-      localStorage.setItem('appSettingsTotalNumberOfBoardPieces', this.appSettingsTotalNumberOfBoardPieces);
-      localStorage.setItem('appSettingsBoardGridSize', this.appSettingsBoardGridSize);
-      localStorage.setItem('appVisualStateShowPageHome', JSON.stringify(this.appVisualStateShowPageHome));
-      localStorage.setItem('appVisualStateShowPageHowToPlay', JSON.stringify(this.appVisualStateShowPageHowToPlay));
-      localStorage.setItem('appVisualStateShowPageSettings', JSON.stringify(this.appVisualStateShowPageSettings));
-      localStorage.setItem('appVisualStateShowElementHint', JSON.stringify(this.appVisualStateShowElementHint));
-      localStorage.setItem('appVisualStateShowElementFlyaway', JSON.stringify(this.appVisualStateShowElementFlyaway));
-      localStorage.setItem('gameCurrentIsGameOver', JSON.stringify(this.gameCurrentIsGameOver));
-      localStorage.setItem('gameCurrentMePiece', JSON.stringify(this.gameCurrentMePiece));
-      localStorage.setItem('gameCurrentBoardPieces', JSON.stringify(this.gameCurrentBoardPieces));
-      localStorage.setItem('gameCurrentStartingTime', this.gameCurrentStartingTime);
-      localStorage.setItem('gameCurrentTimer', this.gameCurrentTimer);
-      localStorage.setItem('gameCurrentNumberOfClears', this.gameCurrentNumberOfClears);
-      localStorage.setItem('gameCurrentIsUserGuessWrong', JSON.stringify(this.gameCurrentIsUserGuessWrong));
-      localStorage.setItem('gameCurrentNumberOfFails', this.gameCurrentNumberOfFails);
-      localStorage.setItem('gameCurrentNumberOfMisses', this.gameCurrentNumberOfMisses);
-      localStorage.setItem('gameCurrentHintText', this.gameCurrentHintText);
-      localStorage.setItem('gameCurrentTotalScore', this.gameCurrentTotalScore);
-      localStorage.setItem('gameCurrentHasAnyPieceEverBeenSelected', JSON.stringify(this.gameCurrentHasAnyPieceEverBeenSelected));
-      localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
-      localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
+      if (this.appSettingsSaveSettings) {
+        localStorage.setItem('storedVersion', this.currentVersion);
+        localStorage.setItem('appSettingsModes', JSON.stringify(this.appSettingsModes));
+        localStorage.setItem('appSettingsModeHardInterval', this.appSettingsModeHardInterval);
+        localStorage.setItem('appSettingsModeHardInternalChangeCounterCount', this.appSettingsModeHardInternalChangeCounterCount);
+        localStorage.setItem('appSettingsModeHardIntervalChangeCounterLimit', this.appSettingsModeHardIntervalChangeCounterLimit);
+        localStorage.setItem('appSettingsPieceSize', this.appSettingsPieceSize);
+        localStorage.setItem('appSettingsTotalNumberOfBoardPieces', this.appSettingsTotalNumberOfBoardPieces);
+        localStorage.setItem('appSettingsBoardGridSize', this.appSettingsBoardGridSize);
+        localStorage.setItem('appVisualStateShowPageHome', JSON.stringify(this.appVisualStateShowPageHome));
+        localStorage.setItem('appVisualStateShowPageHowToPlay', JSON.stringify(this.appVisualStateShowPageHowToPlay));
+        localStorage.setItem('appVisualStateShowPageSettings', JSON.stringify(this.appVisualStateShowPageSettings));
+        localStorage.setItem('appVisualStateShowElementHint', JSON.stringify(this.appVisualStateShowElementHint));
+        localStorage.setItem('appVisualStateShowElementFlyaway', JSON.stringify(this.appVisualStateShowElementFlyaway));
+        localStorage.setItem('gameCurrentIsGameOver', JSON.stringify(this.gameCurrentIsGameOver));
+        localStorage.setItem('gameCurrentMePiece', JSON.stringify(this.gameCurrentMePiece));
+        localStorage.setItem('gameCurrentBoardPieces', JSON.stringify(this.gameCurrentBoardPieces));
+        localStorage.setItem('gameCurrentStartingTime', this.gameCurrentStartingTime);
+        localStorage.setItem('gameCurrentTimer', this.gameCurrentTimer);
+        localStorage.setItem('gameCurrentNumberOfClears', this.gameCurrentNumberOfClears);
+        localStorage.setItem('gameCurrentIsUserGuessWrong', JSON.stringify(this.gameCurrentIsUserGuessWrong));
+        localStorage.setItem('gameCurrentNumberOfFails', this.gameCurrentNumberOfFails);
+        localStorage.setItem('gameCurrentNumberOfMisses', this.gameCurrentNumberOfMisses);
+        localStorage.setItem('gameCurrentHintText', this.gameCurrentHintText);
+        localStorage.setItem('gameCurrentTotalScore', this.gameCurrentTotalScore);
+        localStorage.setItem('gameCurrentHasAnyPieceEverBeenSelected', JSON.stringify(this.gameCurrentHasAnyPieceEverBeenSelected));
+        localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
+        localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
+      }
     },
 
     AdjustPieceSizeBasedOnViewport() {

@@ -60,7 +60,7 @@
                 <piece :title="mode.name + ' mode. ' + mode.description + ' Click to select.'" @click="SelectMode(mode)">
                   <gild :style="{maskImage: mode.piece.shape, webkitMaskImage: mode.piece.shape, backgroundColor: mode.piece.color, backgroundImage: mode.piece.backgroundImage }" />
                 </piece>
-                <value>{{mode.name}}</value>
+                <value>{{mode.name}} mode</value>
               </mode>
             </modes>
             <description v-if="appSettingsModes.infinite.isSelected">{{appSettingsModes.infinite.description}} </description>
@@ -72,17 +72,17 @@
             <button id="button_newGame" title="Click to start a new game" class="primary" @click="RestartGame">Play</button>
             <button id="button_howto" title="Click to learn how to play Like Me?" class="secondary" @click="ToggleHowToPlay(event, true)">How to play</button>
             <smallbuttons>
-              <button id="button_share_app" title="Click to share this app with your friends." class="secondary" @click="ShareApp">
-                <icon class="share"></icon>
+              <button id="button_settings" title="Click to adjust the game settings." class="secondary" @click="ToggleSettings(event, true)">
+                <icon class="settings"></icon>
               </button>
               <button id="button_scores" title="Click to see your high scores." class="secondary" @click="ToggleHighScores(event, true)">
                 <icon class="trophy"></icon>
               </button>
-              <button id="button_settings" title="Click to adjust the game settings." class="secondary" @click="ToggleSettings(event, true)">
-                <icon class="settings"></icon>
-              </button>
               <button id="button_credits" title="Click to see a list of credits." class="secondary" @click="ToggleCredits(event, true)">
                 <icon class="info"></icon>
+              </button>
+              <button id="button_share_app" title="Click to share this app with your friends." class="secondary" @click="ShareApp">
+                <icon class="share"></icon>
               </button>
             </smallbuttons>
           </section>
@@ -298,6 +298,39 @@
           </section>
         </content>
       </modal>
+      <oobe :class="{show: appVisualStateShowPageOOBE}">
+        <content>
+          <section>
+            <h1>Welcome!</h1>
+            <examples>
+              <piece>
+                <gild style="transform: translate(20px, 0px) scale(0.7); mask-image: var(--shape3); -webkit-mask-image: var(--shape3); background-color: var(--color1); background-image: var(--bgImage4)"> </gild>
+              </piece>
+              <piece>
+                <gild style="mask-image: var(--shape4); -webkit-mask-image: var(--shape4); background-color: var(--color2); background-image: var(--bgImage2)"> </gild>
+              </piece>
+              <piece>
+                <gild style="transform: translateY(-0px) scale(1.3); mask-image: var(--shape2); -webkit-mask-image: var(--shape2); background-color: var(--color3); background-image: var(--bgImage1)"> </gild>
+              </piece>
+              <piece>
+                <gild style="mask-image: var(--shape1); -webkit-mask-image: var(--shape1); background-color: var(--color1); background-image: var(--bgImage3)"> </gild>
+              </piece>
+              <piece>
+                <gild style="transform: translate(-20px, 0px) scale(0.7); mask-image: var(--shape2); -webkit-mask-image: var(--shape2); background-color: var(--color2); background-image: var(--bgImage4)"> </gild>
+              </piece>
+            </examples>
+          </section>
+
+          <section>
+            <p>Come in, have a look around. <br />There's a match here for everyone.</p>
+            <!-- <p><b>Like Me?</b> is a game about matching pieces that share attributes (shape, color, and pattern).</p> -->
+          </section>
+          <section>
+            <button class="secondary" @click="ToggleOOBE(event, false)">let's go!</button>
+          </section>
+          <section></section>
+        </content>
+      </oobe>
       <challenge :class="{show: appVisualStateShowPageChallenge}">
         <section>
           <h1>Quit for real?</h1>
