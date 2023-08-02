@@ -1234,6 +1234,22 @@ gameover h2 {
     display: none;
   }
 
+  wallpaper.square {
+    background-image: none;
+  }
+
+  wallpaper.circle {
+    background-image: none;
+  }
+
+  wallpaper.triangle {
+    background-image: none;
+  }
+
+  wallpaper.hexagon {
+    background-image: none;
+  }
+
   button.danger {
     background: hsl(var(--appBackground));
     background-color: hsl(var(--appBackground));

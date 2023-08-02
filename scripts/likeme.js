@@ -17,7 +17,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.8.41',
+    currentVersion: '3.8.55',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -827,7 +827,7 @@ var app = new Vue({
       this.updateInterval = window.setInterval(this.UpdateApp, this.appSettingsModeHardInterval);
     },
 
-    HandleOnUnloadEvent() {
+    HandleOnPageHideEvent() {
       window.clearInterval(this.updateInterval);
       if (this.appSettingsSaveSettings) {
         localStorage.setItem('storedVersion', this.currentVersion);
@@ -974,7 +974,7 @@ var app = new Vue({
     this.HandleServiceWorkerRegistration();
     this.InitializeGame();
     window.addEventListener('keyup', this.HandleKeyUp);
-    window.addEventListener('unload', this.HandleOnUnloadEvent);
+    window.addEventListener('pagehide', this.HandleOnPageHideEvent);
     window.addEventListener('resize', this.HandleOnResizeEvent);
     if (navigator.serviceWorker != undefined) {
       navigator.serviceWorker.addEventListener('message', this.HandleServiceWorkerWaiting);
