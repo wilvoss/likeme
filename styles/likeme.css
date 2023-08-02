@@ -55,7 +55,6 @@ body {
   overflow: hidden;
   color: hsl(var(--appForeground));
   font-family: -apple-system, Verdana, sans-serif;
-  background: repeating-linear-gradient(90deg, rgb(80 80 80) 0px, rgb(80 80 80) 40px, rgb(74 74 74) 40px, rgb(74 74 74) 80px);
   user-select: none;
   -webkit-user-select: none;
   background: var(--color2);
@@ -1223,9 +1222,14 @@ gameover h2 {
 }
 
 @media only screen and (max-width: 500px) {
+  html {
+    background: hsl(var(--appBackground));
+  }
+
   app {
     margin: 0 auto;
   }
+
   wallpaper {
     display: none;
   }
