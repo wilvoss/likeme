@@ -18,7 +18,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.8.61',
+    currentVersion: '3.8.62',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -849,6 +849,7 @@ var app = new Vue({
 
     HandleOnPageHideEvent() {
       window.clearInterval(this.updateInterval);
+      this.appSettingsSoundFX.unload();
       if (this.appSettingsSaveSettings) {
         localStorage.setItem('storedVersion', this.currentVersion);
         localStorage.setItem('appSettingsModes', JSON.stringify(this.appSettingsModes));
@@ -879,6 +880,10 @@ var app = new Vue({
         localStorage.setItem('userSettingsUseSoundFX', this.userSettingsUseSoundFX);
         localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
       }
+    },
+
+    HandleOnPageShowEvent() {
+      this.appSettingsSoundFX = new Howl({ src: '../audio/phft4.mp3', volume: 0.5 });
     },
 
     AdjustPieceSizeBasedOnViewport() {
@@ -995,6 +1000,7 @@ var app = new Vue({
     this.HandleServiceWorkerRegistration();
     this.InitializeGame();
     window.addEventListener('keyup', this.HandleKeyUp);
+    window.addEventListener('pageshow', this.HandleOnPageShowEvent);
     window.addEventListener('pagehide', this.HandleOnPageHideEvent);
     window.addEventListener('resize', this.HandleOnResizeEvent);
     if (navigator.serviceWorker != undefined) {
