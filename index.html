@@ -37,8 +37,6 @@
     <link rel="manifest" href="manifest.webmanifest" />
 
     <link rel="stylesheet" href="styles/likeme.css" media="screen" />
-    <script src="helpers/console-enhancer.js" type="text/javascript"></script>
-    <script src="helpers/howler.js" type="text/javascript"></script>
   </head>
 
   <body>
@@ -340,16 +338,16 @@
           <button id="button_challenge_quit_yes" class="secondary" @click="EndGame">Yes</button>
         </smallbuttons>
       </challenge>
-      <stage v-if="!appVisualStateShowPageHome">
+      <stage v-if="!appVisualStateShowPageHome" :class="{paused: gameCurrentIsPaused}">
         <chrome :class="{alert: gameCurrentTimer < 6000 && !appSettingsModes.infinite.isSelected}">
           <button id="button_stage_settings" @click="appVisualStateShowPageSettings = true">Settings</button>
-          <time :class="{bigpulse: gameCurrentTimer < 6000}" v-if="!appSettingsModes.infinite.isSelected">{{GetMsToTime(gameCurrentTimer)}}</time>
+          <time @click="ToggleGamePause(event, !gameCurrentIsPaused)" :class="{bigpulse: gameCurrentTimer < 6000}" v-if="!appSettingsModes.infinite.isSelected">{{GetMsToTime(gameCurrentTimer)}}</time>
           <button id="button_stage_quit" @click="ToggleChallenge(event, true)">Quit</button>
         </chrome>
         <hint @pointerdown="appVisualStateShowElementHint = false" :class="{show: appVisualStateShowElementHint && !gameCurrentIsGameOver && userSettingsUseHints}">
           <message v-html="gameCurrentHintText"></message>
         </hint>
-        <playarea>
+        <playarea @click="ToggleGamePause(event, false)">
           <scorearea>
             <labelsmall>{{appSettingsModes.infinite.isSelected ? 'clears' : 'score'}}</labelsmall>
             <currentscore>{{appSettingsModes.infinite.isSelected ? NumberWithCommas(gameCurrentNumberOfClears) : NumberWithCommas(gameCurrentTotalScore)}}</currentscore>
@@ -368,6 +366,8 @@
         </playarea>
       </stage>
     </app>
+    <script src="helpers/console-enhancer.js" type="text/javascript"></script>
+    <script src="helpers/howler.js" type="text/javascript"></script>
     <script id=" vue-framework" src="helpers/vue.min.js" type="text/javascript"></script>
     <script src="models/ScoreObject.js" type="text/javascript"></script>
     <script src="models/ThemeObject.js" type="text/javascript"></script>

@@ -18,7 +18,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.8.62',
+    currentVersion: '3.8.71',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -50,6 +50,7 @@ var app = new Vue({
     appVisualStateShowNotification: false,
     appVisualStateShowElementFlyaway: false,
     appVisualStateShowNewHighScoreElement: false,
+    gameCurrentIsPaused: false,
     gameCurrentIsGameOver: true,
     gameCurrentMePiece: { shape: 'square' },
     gameCurrentBoardPieces: [],
@@ -249,6 +250,7 @@ var app = new Vue({
       this.appVisualStateShowPageHome = false;
       this.appVisualStateShowPageGameOver = false;
       this.appVisualStateShowElementHint = false;
+      this.gameCurrentIsPaused = false;
       this.gameCurrentHintText = 'Select pieces that share <b>at least two</b> of my attributes (color, shape, pattern).';
       this.gameCurrentHasAnyPieceEverBeenSelected = false;
       this.NewGame();
@@ -284,46 +286,48 @@ var app = new Vue({
     },
 
     UpdateApp() {
-      if (this.gameCurrentTimer > 0 || (this.appSettingsModes.infinite.isSelected && !this.gameCurrentIsGameOver)) {
-        this.appSettingsModeHardInternalChangeCounterCount++;
-        if (!this.appSettingsModes.infinite.isSelected) {
-          this.gameCurrentTimer = this.gameCurrentTimer - this.appSettingsModeHardInterval;
+      if (!this.gameCurrentIsPaused) {
+        if (this.gameCurrentTimer > 0 || (this.appSettingsModes.infinite.isSelected && !this.gameCurrentIsGameOver)) {
+          this.appSettingsModeHardInternalChangeCounterCount++;
+          if (!this.appSettingsModes.infinite.isSelected) {
+            this.gameCurrentTimer = this.gameCurrentTimer - this.appSettingsModeHardInterval;
+          } else {
+            this.gameCurrentTimer = parseInt(this.gameCurrentTimer) + parseInt(this.appSettingsModeHardInterval);
+          }
         } else {
-          this.gameCurrentTimer = parseInt(this.gameCurrentTimer) + parseInt(this.appSettingsModeHardInterval);
+          if (!this.gameCurrentIsGameOver) {
+            this.EndGame();
+          }
         }
-      } else {
-        if (!this.gameCurrentIsGameOver) {
-          this.EndGame();
-        }
-      }
-      if (this.appSettingsModeHardInternalChangeCounterCount >= this.appSettingsModeHardIntervalChangeCounterLimit) {
-        if (this.appVisualStateShowPageHome) {
-          this.appSettingsModes.hard.piece.shape = Shapes[getRandomInt(0, Shapes.length)];
-          this.appSettingsModes.hard.piece.color = Colors[getRandomInt(0, Colors.length)];
-          this.appSettingsModes.hard.piece.backgroundImage = BackgroundImages[getRandomInt(0, BackgroundImages.length)];
-        }
-        if (!this.gameCurrentIsGameOver && this.appSettingsModes.hard.isSelected) {
-          let _index = getRandomInt(0, this.gameCurrentBoardPieces.length);
-          let _rando = this.gameCurrentBoardPieces[_index];
-          _rando.shape = Shapes[getRandomInt(0, Shapes.length)];
-          _rando.color = Colors[getRandomInt(0, Colors.length)];
-          _rando.backgroundImage = BackgroundImages[getRandomInt(0, BackgroundImages.length)];
+        if (this.appSettingsModeHardInternalChangeCounterCount >= this.appSettingsModeHardIntervalChangeCounterLimit) {
+          if (this.appVisualStateShowPageHome) {
+            this.appSettingsModes.hard.piece.shape = Shapes[getRandomInt(0, Shapes.length)];
+            this.appSettingsModes.hard.piece.color = Colors[getRandomInt(0, Colors.length)];
+            this.appSettingsModes.hard.piece.backgroundImage = BackgroundImages[getRandomInt(0, BackgroundImages.length)];
+          }
+          if (!this.gameCurrentIsGameOver && this.appSettingsModes.hard.isSelected) {
+            let _index = getRandomInt(0, this.gameCurrentBoardPieces.length);
+            let _rando = this.gameCurrentBoardPieces[_index];
+            _rando.shape = Shapes[getRandomInt(0, Shapes.length)];
+            _rando.color = Colors[getRandomInt(0, Colors.length)];
+            _rando.backgroundImage = BackgroundImages[getRandomInt(0, BackgroundImages.length)];
 
-          let _likeness = 0;
-          if (_rando.color === this.gameCurrentMePiece.color) {
-            _likeness++;
+            let _likeness = 0;
+            if (_rando.color === this.gameCurrentMePiece.color) {
+              _likeness++;
+            }
+            if (_rando.shape === this.gameCurrentMePiece.shape) {
+              _likeness++;
+            }
+            if (_rando.backgroundImage === this.gameCurrentMePiece.backgroundImage) {
+              _likeness++;
+            }
+            _rando.isMatch = _likeness > 1;
+            _rando.isFullMatch = _likeness === 3;
           }
-          if (_rando.shape === this.gameCurrentMePiece.shape) {
-            _likeness++;
-          }
-          if (_rando.backgroundImage === this.gameCurrentMePiece.backgroundImage) {
-            _likeness++;
-          }
-          _rando.isMatch = _likeness > 1;
-          _rando.isFullMatch = _likeness === 3;
-        }
 
-        this.appSettingsModeHardInternalChangeCounterCount = 0;
+          this.appSettingsModeHardInternalChangeCounterCount = 0;
+        }
       }
     },
 
@@ -399,6 +403,16 @@ var app = new Vue({
       this.userSettingsUseDarkMode = !this.userSettingsUseDarkMode;
       document.getElementById('themeColor').content = this.userSettingsUseDarkMode ? '#000000' : '#f0f0f0';
       localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
+    },
+
+    ToggleGamePause(event, _value) {
+      log('this.ToggleGamePause(event) called');
+      if (event != undefined) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      this.gameCurrentIsPaused = _value;
+      localStorage.setItem('gameCurrentIsPaused', this.gameCurrentIsPaused);
     },
 
     ResetModalContentScrollPositions() {
@@ -665,6 +679,17 @@ var app = new Vue({
         }
       } catch (error) {
         log('_appVisualStateShowElementFlyaway error: ' + error);
+        _gameDataCorrupt = true;
+      }
+
+      let _gameCurrentIsPaused = localStorage.getItem('gameCurrentIsPaused');
+      try {
+        if (_gameCurrentIsPaused !== undefined && _gameCurrentIsPaused !== null) {
+          _gameCurrentIsPaused = JSON.parse(_gameCurrentIsPaused);
+          this.gameCurrentIsPaused = new PieceObject(_gameCurrentIsPaused);
+        }
+      } catch (error) {
+        log('_gameCurrentIsPaused error: ' + error);
         _gameDataCorrupt = true;
       }
 

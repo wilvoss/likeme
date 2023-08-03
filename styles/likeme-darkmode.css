@@ -4,7 +4,7 @@
   --appBackgroundStrongest: 0, 0%, calc(100% - 90%);
   --appBackgroundWeak: 0, 0%, calc(100% - 89%);
   --appBackgroundWeakest: 0, 0%, calc(100% - 80%);
-  --appForeground: 0, 0%, calc(100% - 31%);
+  --appForeground: 0, 0%, calc(100% - 27%);
   --appForegroundStrong: 0, 0%, calc(100% - 10%);
   --appForegroundStrongest: 0, 0%, calc(100% - 0%);
   --appForegroundWeak: 0, 0%, calc(100% - 39%);
@@ -32,6 +32,7 @@ me piece:active {
   background: hsl(var(--appBackgroundStrong));
 }
 
-scoretype {
+description,
+labelsmall {
   color: var(--color3);
 }
