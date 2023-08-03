@@ -18,7 +18,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.8.71',
+    currentVersion: '3.8.72',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -686,7 +686,7 @@ var app = new Vue({
       try {
         if (_gameCurrentIsPaused !== undefined && _gameCurrentIsPaused !== null) {
           _gameCurrentIsPaused = JSON.parse(_gameCurrentIsPaused);
-          this.gameCurrentIsPaused = new PieceObject(_gameCurrentIsPaused);
+          this.gameCurrentIsPaused = _gameCurrentIsPaused;
         }
       } catch (error) {
         log('_gameCurrentIsPaused error: ' + error);
