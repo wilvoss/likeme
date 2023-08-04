@@ -1,6 +1,7 @@
 /// <reference path="../models/ThemeObject.js" />
 /// <reference path="../models/PieceObject.js" />
 /// <reference path="../models/ModeObject.js" />
+/// <reference path="../models/LevelsObject.js" />
 /// <reference path="../helpers/console-enhancer.js" />
 /// <reference path="../helpers/howler.js" />
 
@@ -18,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.8.72',
+    currentVersion: '3.8.76',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -36,8 +37,8 @@ var app = new Vue({
     appSettingsScoreSiblingIncrement: 20,
     appSettingsScoreModeHardMultiplier: 4,
     appSettingsThemes: Themes,
-    appSettingsTotalNumberOfBoardPieces: 16,
-    appSettingsBoardGridSize: 4,
+    appSettingsTotalNumberOfBoardPieces: 16, // never change this
+    appSettingsBoardGridSize: 4, // never change this
     appVisualStateShowPageHighScores: false,
     appVisualStateShowPageChallenge: false,
     appVisualStateShowPageCredits: false,
@@ -52,6 +53,10 @@ var app = new Vue({
     appVisualStateShowNewHighScoreElement: false,
     gameCurrentIsPaused: false,
     gameCurrentIsGameOver: true,
+    gameCurrentDailyToday: null,
+    gameCurrentActiveDaily: null,
+    gameCurrentAllLevels: [],
+    gameCurrentLevel: null,
     gameCurrentMePiece: { shape: 'square' },
     gameCurrentBoardPieces: [],
     gameCurrentBoardScore: 0,
@@ -77,7 +82,10 @@ var app = new Vue({
   methods: {
     NewGame() {
       log('this.NewGame() called');
-      this.NewBoard();
+      if (this.gameCurrentActiveDaily === null) {
+        this.gameCurrentAllLevels = [];
+        this.NewBoard();
+      }
       this.userHighScoresEasy.forEach((s) => {
         s.isCurrent = false;
       });
@@ -114,7 +122,7 @@ var app = new Vue({
           }
         });
         if (_totalPossibleLikePieces == 0) {
-          _totalBoardScore = this.appSettingsTotalNumberOfBoardPieces * (_totalBoardScore + this.appSettingsScoreTwinIncrement * parseInt(this.appSettingsModes.hard.isSelected ? this.appSettingsScoreModeHardMultiplier : 1));
+          _totalBoardScore = (this.appSettingsScoreTwinIncrement + this.appSettingsScoreSiblingIncrement) * parseInt(this.appSettingsModes.hard.isSelected ? this.appSettingsScoreModeHardMultiplier : 1);
         }
         if (_perfectMatch) {
           this.gameCurrentTotalScore = this.gameCurrentTotalScore + _totalBoardScore;
@@ -166,31 +174,15 @@ var app = new Vue({
       this.gameCurrentBoardPieces = [];
       this.gameCurrentBoardScore = 0;
       this.gameCurrentNumberOfMisses = 0;
-      this.gameCurrentMePiece = new PieceObject({ shape: Shapes[getRandomInt(0, Shapes.length)], color: Colors[getRandomInt(0, Colors.length)], backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)] });
 
-      for (let x = 0; x < this.appSettingsTotalNumberOfBoardPieces; x++) {
-        let _piece = new PieceObject({
-          shape: Shapes[getRandomInt(0, Shapes.length)],
-          color: Colors[getRandomInt(0, Colors.length)],
-          backgroundImage: BackgroundImages[getRandomInt(0, BackgroundImages.length)],
-          isSelected: false,
-          hasDropped: false,
-          delay: (this.appSettingsTotalNumberOfBoardPieces - x) * 50,
-        });
+      // let _boardSource = createBoardSource();
+      let _board = constructLevel(createLevelSource(), true);
+      console.log(_board);
 
-        let _likeness = 0;
-        if (_piece.color === this.gameCurrentMePiece.color) {
-          _likeness++;
-        }
-        if (_piece.shape === this.gameCurrentMePiece.shape) {
-          _likeness++;
-        }
-        if (_piece.backgroundImage === this.gameCurrentMePiece.backgroundImage) {
-          _likeness++;
-        }
-        _piece.isMatch = _likeness > 1;
-        _piece.isFullMatch = _likeness === 3;
+      this.gameCurrentMePiece = _board.me;
 
+      _board.board.forEach((_piece, x) => {
+        _piece.delay = (_board.board.length - x) * 40;
         this.gameCurrentBoardPieces.push(_piece);
         window.setTimeout(function () {
           _piece.hasDropped = true;
@@ -198,7 +190,7 @@ var app = new Vue({
             app.appSettingsSoundFX.play();
           }
         }, _piece.delay);
-      }
+      });
     },
 
     TogglePieceSelection(_piece) {
@@ -457,6 +449,8 @@ var app = new Vue({
       event.stopPropagation();
       event.preventDefault();
       this.ResetModalContentScrollPositions();
+      this.appVisualStateShowPageGameOver = false;
+      this.appVisualStateShowPageHome = true;
       this.appVisualStateShowPageHighScores = _value;
     },
 
@@ -821,7 +815,6 @@ var app = new Vue({
 
       this.currentWallpaper = this.wallpaperNames[getRandomInt(0, this.wallpaperNames.length)];
       document.getElementsByTagName('wallpaper')[0].className = this.currentWallpaper;
-      log(this.currentWallpaper);
 
       let _onemoretime = localStorage.getItem('onemoretime');
       try {

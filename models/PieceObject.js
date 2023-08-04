@@ -1,6 +1,5 @@
 class PieceObject {
   constructor(spec) {
-    this.name = spec.name == undefined ? '' : spec.name;
     this.shape = spec.shape == undefined ? 'var(--shape1)' : spec.shape;
     this.color = spec.color == undefined ? 'var(--color1)' : spec.color;
     this.backgroundImage = spec.backgroundImage == undefined ? 'var(--bgImage1)' : spec.backgroundImage;
