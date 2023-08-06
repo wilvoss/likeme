@@ -365,7 +365,7 @@
         </hint>
         <playarea @click="if(gameCurrentIsPaused) ToggleGamePause(event, false)">
           <scorearea :class="{clickable: !appSettingsModes.infinite.isSelected}" @click="ToggleGamePause(event, !gameCurrentIsPaused)">
-            <labelsmall>{{appSettingsModes.infinite.isSelected ? 'clears' : '⏸ pause'}}</labelsmall>
+            <labelsmall><span>{{appSettingsModes.infinite.isSelected ? '' : 'II'}}</span> {{appSettingsModes.infinite.isSelected ? 'clears' : 'pause'}}</labelsmall>
             <currentscore :class="{bigpulse: gameCurrentTimer < 6000 && !appSettingsModes.infinite.isSelected}">{{appSettingsModes.infinite.isSelected ? NumberWithCommas(gameCurrentNumberOfClears) : GetMsToTime(gameCurrentTimer)}}</currentscore>
           </scorearea>
           <board>
