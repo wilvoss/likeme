@@ -410,7 +410,7 @@ button.tertiary {
   box-shadow: none;
 }
 
-.show button.tertiary.pulse {
+.show button.quaternary.pulse {
   animation: pulse 1s ease-in-out 0s infinite;
   -webkit-animation: pulse 1s ease-in-out 0s infinite;
 }
@@ -421,6 +421,14 @@ button.quaternary {
   border-color: var(--color3);
   color: var(--color1);
   box-shadow: 0px 2px 6px var(--color3);
+}
+
+.quaternary icon {
+  background-color: var(--color1);
+}
+
+.tertiary icon {
+  background-color: var(--color3contrast);
 }
 
 .show button.quaternary:active,
@@ -487,9 +495,31 @@ icon {
   pointer-events: none;
 }
 
+button.inline {
+  display: flex;
+  justify-content: center;
+  justify-items: baseline;
+  align-content: baseline;
+  align-items: center;
+  column-gap: 8px;
+}
+
+button.inline icon {
+  mask-size: 20px 20px;
+  -webkit-mask-size: 20px 20px;
+  height: 20px;
+  width: 20px;
+  margin-bottom: 2px;
+}
+
 icon.help {
   mask-image: url(../images/icon_question.svg);
   -webkit-mask-image: url(../images/icon_question.svg);
+}
+
+icon.download {
+  mask-image: url(../images/icon_download.svg);
+  -webkit-mask-image: url(../images/icon_download.svg);
 }
 
 icon.medal {
@@ -1280,7 +1310,7 @@ gameover {
 newhigh {
   cursor: pointer;
   display: block;
-  padding: 20px;
+  padding: var(--defaultGap) 0 0;
   color: var(--color2);
   font-weight: bold;
 }

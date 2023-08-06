@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.8.107',
+    currentVersion: '3.8.110',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -68,6 +68,7 @@ var app = new Vue({
     gameCurrentStartingTime: 180000,
     gameCurrentTimer: 180000,
     gameCurrentNumberOfClears: 0,
+    gameCurrentNumberOfPerfectMatches: 0,
     gameCurrentIsUserGuessWrong: false,
     gameCurrentNumberOfFails: 0,
     gameCurrentNumberOfMisses: 0,
@@ -132,6 +133,7 @@ var app = new Vue({
           this.gameCurrentHasAnyPieceEverBeenSelected = true;
           if (this.gameCurrentNumberOfMisses === 0 && !this.appSettingsModes.infinite.isSelected) {
             if (!this.gameCurrentHasBonusTimeHintDisplayed) {
+              this.gameCurrentNumberOfPerfectMatches++;
               this.appVisualStateShowElementHint = true;
               this.gameCurrentHintText = 'Nice! Matching all pieces on your first attempt adds <b>3 seconds</b> to the clock!';
               this.gameCurrentHasBonusTimeHintDisplayed = true;
@@ -257,6 +259,7 @@ var app = new Vue({
       this.gameCurrentTimer = this.appSettingsModes.infinite.isSelected ? 0 : this.gameCurrentStartingTime;
       this.gameCurrentNumberOfFails = 0;
       this.gameCurrentNumberOfClears = 0;
+      this.gameCurrentNumberOfPerfectMatches = 0;
       this.appVisualStateShowNotification = false;
       this.appVisualStateShowPageHome = false;
       this.appVisualStateShowPageGameOver = false;
@@ -350,8 +353,8 @@ var app = new Vue({
       var mins = s % 60;
       var hrs = (s - mins) / 60;
 
-      var secstring = mins != 0 || hrs != 0 ? ('0' + secs).slice(-2) : secs;
-      var minstring = mins != 0 ? mins + ':' : '';
+      var secstring = ':' + ('0' + secs).slice(-2);
+      var minstring = mins != 0 ? mins : '';
       var hrsstring = hrs != 0 ? hrs + ':' : '';
       return this.appSettingsModes.infinite.isSelected ? hrsstring + minstring + secstring : minstring + secstring;
     },
@@ -391,7 +394,7 @@ var app = new Vue({
       this.appVisualStateShowPageChallenge = false;
       this.appVisualStateShowPageGameOver = true;
       this.gameCurrentIsGameDailyChallenge = false;
-      this.gameDailyChallenge.completed = true;
+      this.gameDailyChallenge.completed = true; // bad, but I don't think it's actually used. fix soon.
     },
 
     CheckIfUserHasScoredDailyChallenge(fromCallback = false) {
@@ -855,6 +858,16 @@ var app = new Vue({
         _gameDataCorrupt = true;
       }
 
+      let _gameCurrentNumberOfPerfectMatches = localStorage.getItem('gameCurrentNumberOfPerfectMatches');
+      try {
+        if (_gameCurrentNumberOfPerfectMatches !== undefined && _gameCurrentNumberOfPerfectMatches !== null) {
+          this.gameCurrentNumberOfPerfectMatches = _gameCurrentNumberOfPerfectMatches;
+        }
+      } catch (error) {
+        log('_gameCurrentNumberOfPerfectMatches error: ' + error);
+        _gameDataCorrupt = true;
+      }
+
       let _gameCurrentIsUserGuessWrong = localStorage.getItem('gameCurrentIsUserGuessWrong');
       try {
         if (_gameCurrentIsUserGuessWrong !== undefined && _gameCurrentIsUserGuessWrong !== null) {
@@ -1010,6 +1023,7 @@ var app = new Vue({
         localStorage.setItem('gameCurrentStartingTime', this.gameCurrentStartingTime);
         localStorage.setItem('gameCurrentTimer', this.gameCurrentTimer);
         localStorage.setItem('gameCurrentNumberOfClears', this.gameCurrentNumberOfClears);
+        localStorage.setItem('gameCurrentNumberOfPerfectMatches', this.gameCurrentNumberOfPerfectMatches);
         localStorage.setItem('gameCurrentIsUserGuessWrong', JSON.stringify(this.gameCurrentIsUserGuessWrong));
         localStorage.setItem('gameCurrentNumberOfFails', this.gameCurrentNumberOfFails);
         localStorage.setItem('gameCurrentNumberOfMisses', this.gameCurrentNumberOfMisses);

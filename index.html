@@ -47,7 +47,7 @@
         <message v-html="appNotificationMessage"></message>
       </notification>
       <page class="home" :class="{show: appVisualStateShowPageHome}" @pointerdown="appVisualStateShowNotification = false;">
-        <button id="button_update" v-if="newVersionAvailable" title="There is an update available for Like Me. Click to apply the update." class="tertiary pulse update" @click="HandleUpdateAppButtonClick">New Update!</button>
+        <button id="button_update" v-if="newVersionAvailable" title="There is an update available for Like Me. Click to apply the update." class="quaternary pulse update inline" @click="HandleUpdateAppButtonClick"><icon class="download"></icon>New Update!</button>
         <content>
           <section>
             <h1>Like Me?</h1>
@@ -86,7 +86,7 @@
             </smallbuttons>
           </section>
           <section>
-            <version> &copy;2023 <a href="https://bigtentgames.com" target="_blank">Big Tent Games</a> - v{{storedVersion === 0 ? currentVersion : storedVersion}}{{window.location.host !== 'likeme.games' ? 'p' : ''}} </version>
+            <version> &copy;{{new Date().getFullYear()}} <a href="https://bigtentgames.com" target="_blank">Big Tent Games</a> - v{{currentVersion + (window.location.host !== 'likeme.games' ? 'p' : '')}} </version>
           </section>
         </content>
       </page>
@@ -104,6 +104,7 @@
             <credit>Wil Voss</credit>
             <h3>Feedback and ideas</h3>
             <credit>Alex Barbieri</credit>
+            <credit>Marianne Geisemann</credit>
             <credit>Jerry Hoffmeister</credit>
             <credit>Rebecca Hoffmeister</credit>
             <credit>Danielle Siler</credit>
@@ -282,24 +283,32 @@
       <modal :class="{show: appVisualStateShowPageGameOver}" @pointerdown="appVisualStateShowNotification = false;">
         <content style="justify-content: center">
           <!-- prettier-ignore -->
-          <section id="copyme">▨ ▲ ◯ 
+          <copyme id="copyme">▨ ▲ ◯ 
 {{((!appSettingsModes.infinite.isSelected ? (appSettingsModes.easy.isSelected ? gameLastHighScore.isDaily ? "Today's score - " + NumberWithCommas(gameCurrentTotalScore) + ' pts' : 'Easy score: ' + NumberWithCommas(gameCurrentTotalScore) : 'Hard score: ' + NumberWithCommas(gameCurrentTotalScore)) : 'Boards cleared: ' + gameCurrentNumberOfClears))}}
-{{window.location.host}}</section>
+{{window.location.host}}</copyme>
+          <h1>{{gameLastHighScore.isDaily ? 'Challenge' : 'Game'}} Over</h1>
+          <newhigh @pointerdown="ToggleHighScores(event, true)"> {{appVisualStateShowNewHighScoreElement ? 'A NEW high score!' : ' '}} </newhigh>
           <section>
-            <header>
-              <h1 style="margin-bottom: 1em">Game Over</h1>
-              <leftright>
-                <left> {{!appSettingsModes.infinite.isSelected ? 'Final score ' : 'Total levels cleared '}} </left>
-                <right> {{!appSettingsModes.infinite.isSelected ? NumberWithCommas(gameCurrentTotalScore) : gameCurrentNumberOfClears}} </right>
-              </leftright>
-              <leftright v-if="!appSettingsModes.infinite.isSelected">
-                <left>Levels cleared</left>
-                <right>{{gameCurrentNumberOfClears}}</right>
-              </leftright>
-              <newhigh @pointerdown="ToggleHighScores(event, true)"> {{appVisualStateShowNewHighScoreElement ? 'A NEW high score!' : ' '}} </newhigh>
-            </header>
-            <button v-if="gameLastHighScore.isDaily" id="button_share_score" title="Click to share your score with your friends." class="tertiary" @click="ShareScore">Share Score!</button>
-            <button id="button_replay" title="Click to start a new game" class="primary" @click="RestartGame">New Game</button>
+            <leftright>
+              <left> {{!appSettingsModes.infinite.isSelected ? 'Final score ' : 'Total levels cleared '}} </left>
+              <right> {{!appSettingsModes.infinite.isSelected ? NumberWithCommas(gameCurrentTotalScore) : gameCurrentNumberOfClears}} </right>
+            </leftright>
+            <leftright v-if="!appSettingsModes.infinite.isSelected">
+              <left>Levels cleared</left>
+              <right>{{gameCurrentNumberOfClears}}</right>
+            </leftright>
+            <leftright v-if="!appSettingsModes.infinite.isSelected">
+              <left>Time remaining</left>
+              <right>{{GetMsToTime(gameCurrentTimer)}}</right>
+            </leftright>
+            <leftright>
+              <left>Bonus time added</left>
+              <right>{{GetMsToTime(gameCurrentNumberOfPerfectMatches * 3000)}}</right>
+            </leftright>
+          </section>
+          <section>
+            <button v-if="gameLastHighScore.isDaily" id="button_share_score" title="Click to share your score with your friends." class="tertiary inline" @click="ShareScore">Share!<icon class="share"></icon></button>
+            <button v-if="!gameLastHighScore.isDaily" id="button_replay" title="Click to start a new game" class="primary" @click="RestartGame">New Game</button>
             <button id="button_home" title="Click to return to the home screen." class="secondary" @click="appVisualStateShowPageGameOver = false, appVisualStateShowPageHome = true">Home</button>
           </section>
         </content>
