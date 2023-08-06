@@ -49,11 +49,12 @@ button.secondary {
 
 .show button.quaternary,
 button.quaternary {
-  background: var(--appBackgroundStrongest);
-  border-color: var(--color3);
-  color: var(--color3);
 }
 
 time {
   color: var(--color3);
+}
+
+.quaternary icon {
+  background-color: var(--color3);
 }
