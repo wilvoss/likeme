@@ -36,3 +36,24 @@ description,
 labelsmall {
   color: var(--color3);
 }
+
+button.primary {
+  background-color: var(--color2);
+  border-color: var(--color2);
+}
+
+button.secondary {
+  background-color: var(--color1);
+  border-color: var(--color1);
+}
+
+.show button.quaternary,
+button.quaternary {
+  background: var(--appBackgroundStrongest);
+  border-color: var(--color3);
+  color: var(--color3);
+}
+
+time {
+  color: var(--color3);
+}

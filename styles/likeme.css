@@ -29,7 +29,7 @@
   --color1: hsl(313, 44%, 25%);
   --color2: hsl(187, 42%, 46%);
   --color3: hsl(64, 60%, 53%);
-  --color3contrast: white;
+  --color3contrast: black;
 
   /* game set values */
   --colorDanger: rgb(224, 0, 0);
@@ -314,7 +314,7 @@ stage playarea {
 
 stage playarea::before {
   content: '⏵';
-  font-size: 4em;
+  font-size: 5em;
   display: flex;
   background: hsl(var(--appBackgroundWeakest)) var(--bgImage1);
   width: 100%;
@@ -413,6 +413,19 @@ button.tertiary {
 .show button.tertiary.pulse {
   animation: pulse 1s ease-in-out 0s infinite;
   -webkit-animation: pulse 1s ease-in-out 0s infinite;
+}
+
+.show button.quaternary,
+button.quaternary {
+  background: var(--appBackgroundStrongest);
+  border-color: var(--color3);
+  color: var(--color1);
+  box-shadow: 0px 2px 6px var(--color3);
+}
+
+.show button.quaternary:active,
+button.quaternary:active {
+  box-shadow: 0px 1px 4px var(--color3);
 }
 
 @keyframes pulse {
@@ -604,6 +617,7 @@ chrome button {
   z-index: 1;
   cursor: pointer;
   align-items: center;
+  width: 100px;
   padding: 0px 20px;
   margin: 0;
   min-height: var(--chromeHeight);
@@ -660,12 +674,18 @@ leftright.current:before {
 }
 
 scorearea {
-  margin: 0;
+  margin: 0 0 16px 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  /* width: 100%; */
+  width: 120px;
+  cursor: pointer;
   flex-direction: column;
+  pointer-events: none;
+}
+
+scorearea.clickable {
+  pointer-events: all;
 }
 
 currentscore {
@@ -677,6 +697,7 @@ currentscore {
   color: hsl(var(--appForegroundStrongest));
   justify-content: center;
   line-height: 100%;
+  cursor: pointer;
 }
 
 labelsmall {
@@ -759,10 +780,11 @@ logo {
 
 time {
   font-weight: bold;
+  word-wrap: nowrap;
   display: block;
   text-align: center;
   padding: 0px 20px;
-  cursor: pointer;
+  color: var(--color1);
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -784,20 +806,20 @@ stage.paused time {
 }
 
 .bigpulse {
-  color: red;
-  animation: bigpulse 0.75s ease-in-out 0s infinite;
-  -webkit-animation: bigpulse 0.75s ease-in-out 0s infinite;
+  color: rgb(211, 0, 0);
+  animation: bigpulse 1s ease-in-out 0s infinite;
+  -webkit-animation: bigpulse 1s ease-in-out 0s infinite;
 }
 
 @keyframes bigpulse {
   50% {
-    transform: scale(1.3);
+    transform: scale(1.2);
   }
 }
 
 @-webkit-keyframes bigpulse {
   50% {
-    transform: scale(1.3);
+    transform: scale(1.2);
   }
 }
 

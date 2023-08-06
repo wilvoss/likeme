@@ -3,7 +3,7 @@
 
 class SingleLevelObject {
   constructor(spec) {
-    this.me = spec.me == undefined ? new PieceObject({ shape: Shapes[(0)[0]], color: Colors[(0)[1]], backgroundImage: BackgroundImages[(0)[2]] }) : spec.me;
+    this.me = spec.me == undefined ? new PieceObject({}) : spec.me;
     this.board = spec.board == undefined ? [] : spec.board;
     this.completed = spec.completed == undefined ? false : spec.completed;
   }
@@ -11,10 +11,11 @@ class SingleLevelObject {
 
 class AllLevelsObject {
   constructor(spec) {
-    this.allLevelsSource = createAllLevelsSource();
+    this.allLevelsSource = spec.allLevelsSource == undefined ? '' : spec.allLevelsSource;
     this.allLevels = spec.level == undefined ? [] : spec.level;
+    this.started = spec.started == undefined ? false : spec.started;
     this.completed = spec.completed == undefined ? false : spec.completed;
-    this.date = new Date();
+    this.date = spec.date == undefined ? new Date() : spec.date;
   }
 }
 
@@ -39,10 +40,9 @@ function createLevelSource() {
   return _levelSource;
 }
 
-function constructAllLevels(_source, _levels) {
+function constructAllLevels(_source, _allLevelsObject) {
+  _allLevelsObject.allLevelsSource = _source;
   var _piecesSources = _source.match(new RegExp('.{1,3}', 'g'));
-  console.log(_piecesSources);
-
   var _levelChunkSize = 17;
   var _levelSources = _piecesSources
     .map(function (e, i) {
@@ -51,9 +51,8 @@ function constructAllLevels(_source, _levels) {
     .filter(function (e) {
       return e;
     });
-
   _levelSources.forEach((_bs, i) => {
-    _levels.push(constructLevel(_bs));
+    _allLevelsObject.allLevels.push(constructLevel(_bs));
   });
 }
 

@@ -1,46 +1,37 @@
 var UseDebug = document.location.href.indexOf('staging') != -1 || document.location.href.indexOf('pp') != -1;
 
-function highlight(text, isolate) {
-  isolate = isolate == undefined ? false : isolate;
-  log(text, isolate, 'color:#97FF90;');
+function announce(text) {
+  console.log('◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦');
+  log(text);
+  console.log('◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦');
 }
 
-function warn(text, isolate) {
-  isolate = isolate == undefined ? false : isolate;
-  log(text, isolate, 'color:orange;');
+function highlight(text) {
+  log(text, 'color:green;');
 }
 
-function error(text, isolate) {
-  isolate = isolate == undefined ? false : isolate;
-  log(text, isolate, 'color:red;');
+function warn(text) {
+  log(text, 'color:orange;');
 }
 
-function note(text, isolate) {
-  isolate = isolate == undefined ? false : isolate;
-  log(text, isolate, 'color:gray;');
+function error(text) {
+  log(text, 'color:red;');
 }
 
-function log(text, isolate, color) {
+function note(text) {
+  log(text, 'color:gray;');
+}
+
+function log(text, color) {
   text = text.toString();
 
   color = color == undefined ? 'black' : color;
 
-  isolate = isolate == undefined ? false : isolate;
   var ms = new Date(Date.now()).getMilliseconds();
   ms = ms < 10 ? ms * 100 : ms;
   ms = ms < 100 ? ms * 10 : ms;
   if (UseDebug) {
-    if (isolate) {
-      console.log('◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦');
-    }
-    if (warn) {
-      console.log('%c' + new Date(Date.now()).toLocaleTimeString('en-US').replace(/ AM/, '').replace(/ PM/, '') + '.' + ms + ' \t%c' + text, 'color:lightgray;', color);
-    } else {
-      console.log('%c' + new Date(Date.now()).toLocaleTimeString('en-US').replace(/ AM/, '').replace(/ PM/, '') + '.' + ms + text + ' \t' + text);
-    }
-    if (isolate) {
-      console.log('◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦');
-    }
+    console.log('%c' + new Date(Date.now()).toLocaleTimeString('en-US').replace(/ AM/, '').replace(/ PM/, '') + '.' + ms + ' \t%c' + text, 'color:lightgray;', color);
   }
 }
 

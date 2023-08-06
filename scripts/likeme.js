@@ -2,6 +2,7 @@
 /// <reference path="../models/PieceObject.js" />
 /// <reference path="../models/ModeObject.js" />
 /// <reference path="../models/LevelsObject.js" />
+/// <reference path="../helpers/getDailyChallenge.js" />
 /// <reference path="../helpers/console-enhancer.js" />
 /// <reference path="../helpers/howler.js" />
 
@@ -19,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.8.76',
+    currentVersion: '3.8.107',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -53,14 +54,17 @@ var app = new Vue({
     appVisualStateShowNewHighScoreElement: false,
     gameCurrentIsPaused: false,
     gameCurrentIsGameOver: true,
-    gameCurrentDailyToday: null,
-    gameCurrentActiveDaily: null,
+    gameDailyChallenge: new AllLevelsObject({}),
+    gameCurrentIsGameDailyChallenge: false,
+    gameDailyChallengeAlreadyScored: false,
+    gameDailyChallengeHasBeenStarted: false,
     gameCurrentAllLevels: [],
-    gameCurrentLevel: null,
+    gameCurrentLevel: new SingleLevelObject({}),
     gameCurrentMePiece: { shape: 'square' },
     gameCurrentBoardPieces: [],
     gameCurrentBoardScore: 0,
     gameCurrentTotalScore: 0,
+    gameLastHighScore: new ScoreObject({}),
     gameCurrentStartingTime: 180000,
     gameCurrentTimer: 180000,
     gameCurrentNumberOfClears: 0,
@@ -81,11 +85,9 @@ var app = new Vue({
 
   methods: {
     NewGame() {
-      log('this.NewGame() called');
-      if (this.gameCurrentActiveDaily === null) {
-        this.gameCurrentAllLevels = [];
-        this.NewBoard();
-      }
+      log('NewGame() called');
+      this.gameCurrentAllLevels = [];
+      this.NewBoard();
       this.userHighScoresEasy.forEach((s) => {
         s.isCurrent = false;
       });
@@ -102,7 +104,7 @@ var app = new Vue({
     },
 
     CheckBoard() {
-      log('this.CheckBoard() called');
+      log('CheckBoard() called');
       this.gameCurrentIsUserGuessWrong = false;
       let _totalPossibleLikePieces = 0;
       let _totalBoardScore = 0;
@@ -141,6 +143,7 @@ var app = new Vue({
             }, 100);
           }
           this.gameCurrentNumberOfClears++;
+          this.gameCurrentLevel.completed = true;
           this.NewBoard();
         } else {
           if (this.gameCurrentNumberOfMisses >= 1) {
@@ -169,17 +172,33 @@ var app = new Vue({
     },
 
     NewBoard() {
-      log('this.NewBoard() called');
+      log('NewBoard() called');
       this.AdjustPieceSizeBasedOnViewport();
       this.gameCurrentBoardPieces = [];
       this.gameCurrentBoardScore = 0;
       this.gameCurrentNumberOfMisses = 0;
 
-      // let _boardSource = createBoardSource();
-      let _board = constructLevel(createLevelSource(), true);
-      console.log(_board);
+      let _board = null;
+      if (this.gameDailyChallengeHasBeenStarted) {
+        console.log(this.gameDailyChallenge.allLevels);
+        this.gameDailyChallenge.allLevels.forEach((level, i) => {
+          if (_board === null && !level.completed) {
+            error(i);
+            _board = level;
+          }
+        });
+      }
 
+      if (_board === null && this.gameDailyChallengeHasBeenStarted) {
+        log('ending game due to no more levels');
+        this.EndGame();
+        return;
+      } else if (_board === null) {
+        _board = constructLevel(createLevelSource(), true);
+      }
+      log('continuing with new board');
       this.gameCurrentMePiece = _board.me;
+      this.gameCurrentLevel = _board;
 
       _board.board.forEach((_piece, x) => {
         _piece.delay = (_board.board.length - x) * 40;
@@ -194,7 +213,7 @@ var app = new Vue({
     },
 
     TogglePieceSelection(_piece) {
-      log('this.TogglePieceSelection() called for: " this.gameCurrentBoardPieces[' + this.gameCurrentBoardPieces.indexOf(_piece) + ']"');
+      log('TogglePieceSelection() called for: " this.gameCurrentBoardPieces[' + this.gameCurrentBoardPieces.indexOf(_piece) + ']"');
       this.appVisualStateShowElementHint = false;
       _piece.nudge = false;
       if (!this.gameCurrentIsGameOver) {
@@ -207,12 +226,12 @@ var app = new Vue({
       let _shareObject = {
         title: 'Like Me?',
         text: 'A game of matching likenesses!',
-        url: 'https://likeme.games',
+        url: 'https://' + window.location.host,
       };
       if (this.CheckForMobile()) {
         navigator.share(_shareObject);
       } else {
-        _shareObject = 'https://likeme.games';
+        _shareObject = 'https://' + window.location.host;
         this.appVisualStateShowNotification = true;
         this.appNotificationMessage = 'Copied app url to clipboard.';
         navigator.clipboard.writeText(_shareObject);
@@ -228,13 +247,13 @@ var app = new Vue({
         navigator.share(_shareObject);
       } else {
         this.appVisualStateShowNotification = true;
-        this.appNotificationMessage = 'Copied results to clipboard.';
+        this.appNotificationMessage = 'Score results copied to clipboard.';
         navigator.clipboard.writeText(_shareText);
       }
     },
 
     RestartGame() {
-      log('this.RestartGame() called');
+      log('RestartGame() called');
       this.gameCurrentTimer = this.appSettingsModes.infinite.isSelected ? 0 : this.gameCurrentStartingTime;
       this.gameCurrentNumberOfFails = 0;
       this.gameCurrentNumberOfClears = 0;
@@ -249,7 +268,7 @@ var app = new Vue({
     },
 
     SelectMode(_mode) {
-      log('this.SelectMode(mode) called for:  "' + _mode.name + '"');
+      log('SelectMode(mode) called for:  "' + _mode.name + '"');
       if (_mode === this.appSettingsModes.hard && !this.appSettingsModes.hard.isSelected) {
         this.appSettingsModes.easy.isSelected = false;
         this.appSettingsModes.hard.isSelected = true;
@@ -266,7 +285,7 @@ var app = new Vue({
     },
 
     SelectTheme(_theme) {
-      log('this.SelectTheme(theme) called for: "' + _theme.name + '"');
+      log('SelectTheme(theme) called for: "' + _theme.name + '"');
       this.appSettingsThemes.forEach((t) => {
         t.isSelected = _theme == t;
       });
@@ -278,7 +297,7 @@ var app = new Vue({
     },
 
     UpdateApp() {
-      if (!this.gameCurrentIsPaused) {
+      if (!this.gameCurrentIsPaused && !this.appVisualStateShowPageGameOver) {
         if (this.gameCurrentTimer > 0 || (this.appSettingsModes.infinite.isSelected && !this.gameCurrentIsGameOver)) {
           this.appSettingsModeHardInternalChangeCounterCount++;
           if (!this.appSettingsModes.infinite.isSelected) {
@@ -338,13 +357,11 @@ var app = new Vue({
     },
 
     EndGame() {
-      log('this.EndGame() called');
+      log('EndGame() called');
 
-      this.gameCurrentIsGameOver = true;
-      this.appVisualStateShowPageChallenge = false;
-      this.appVisualStateShowPageGameOver = true;
       let _score = new ScoreObject({
         value: this.gameCurrentTotalScore,
+        isDaily: this.gameCurrentIsGameDailyChallenge,
       });
       if (this.appSettingsModes.easy.isSelected) {
         this.userHighScoresEasy.push(_score);
@@ -363,10 +380,35 @@ var app = new Vue({
         localStorage.setItem('userHighScoresInfinite', JSON.stringify(this.userHighScoresInfinite));
       }
       _score.isCurrent = true;
+      this.gameLastHighScore = _score;
+
+      this.gameCurrentLevel.completed = true;
+      if (this.gameCurrentIsGameDailyChallenge) {
+        this.GetDailyChallenge();
+      }
+      this.gameCurrentIsGameOver = true;
+      this.gameDailyChallengeHasBeenStarted = false;
+      this.appVisualStateShowPageChallenge = false;
+      this.appVisualStateShowPageGameOver = true;
+      this.gameCurrentIsGameDailyChallenge = false;
+      this.gameDailyChallenge.completed = true;
+    },
+
+    CheckIfUserHasScoredDailyChallenge(fromCallback = false) {
+      log('CheckIfUserHasScoredDailyChallenge() called');
+      this.gameDailyChallengeAlreadyScored = false;
+      _today = this.FormatDate(new Date());
+      this.userHighScoresEasy.forEach((_score) => {
+        if (_score.isDaily && this.FormatDate(_score.date) === _today) {
+          this.gameDailyChallengeAlreadyScored = true;
+          return;
+        }
+      });
+      return this.gameDailyChallengeAlreadyScored;
     },
 
     ToggleUsingHints(event) {
-      log('this.ToggleUsingHints(event) called');
+      log('ToggleUsingHints(event) called');
       event.stopPropagation();
       event.preventDefault();
       this.userSettingsUseHints = !this.userSettingsUseHints;
@@ -379,7 +421,7 @@ var app = new Vue({
     },
 
     ToggleUsingSound(event) {
-      log('this.ToggleUsingSound(event) called');
+      log('ToggleUsingSound(event) called');
       event.stopPropagation();
       event.preventDefault();
       this.userSettingsUseSoundFX = !this.userSettingsUseSoundFX;
@@ -387,7 +429,7 @@ var app = new Vue({
     },
 
     ToggleUsingDarkMode(event) {
-      log('this.ToggleUsingDarkMode(event) called');
+      log('ToggleUsingDarkMode(event) called');
       if (event != undefined) {
         event.stopPropagation();
         event.preventDefault();
@@ -398,17 +440,20 @@ var app = new Vue({
     },
 
     ToggleGamePause(event, _value) {
-      log('this.ToggleGamePause(event) called');
+      log('ToggleGamePause(event) called');
       if (event != undefined) {
         event.stopPropagation();
         event.preventDefault();
       }
       this.gameCurrentIsPaused = _value;
       localStorage.setItem('gameCurrentIsPaused', this.gameCurrentIsPaused);
+      if (_value) {
+        this.appVisualStateShowElementHint = false;
+      }
     },
 
     ResetModalContentScrollPositions() {
-      log('this.ResetModalContentScrollPositions() called');
+      log('ResetModalContentScrollPositions() called');
       let _contentElements = document.getElementsByTagName('content');
       for (let i = 0; i < _contentElements.length; i++) {
         const element = _contentElements[i];
@@ -417,7 +462,7 @@ var app = new Vue({
     },
 
     ToggleChallenge(event, _value) {
-      log('this.ToggleHowToPlay(event, value) called');
+      log('ToggleHowToPlay(event, value) called');
       if (event != null) {
         event.stopPropagation();
         event.preventDefault();
@@ -427,7 +472,7 @@ var app = new Vue({
     },
 
     ToggleHowToPlay(event, _value) {
-      log('this.ToggleHowToPlay(event, value) called');
+      log('ToggleHowToPlay(event, value) called');
       event.stopPropagation();
       event.preventDefault();
       this.ResetModalContentScrollPositions();
@@ -435,7 +480,7 @@ var app = new Vue({
     },
 
     ToggleOOBE(event, _value) {
-      log('this.ToggleOOBE(event, value) called');
+      log('ToggleOOBE(event, value) called');
       if (event != null) {
         event.stopPropagation();
         event.preventDefault();
@@ -445,7 +490,7 @@ var app = new Vue({
     },
 
     ToggleHighScores(event, _value) {
-      log('this.ToggleHighScores(event, value) called');
+      log('ToggleHighScores(event, value) called');
       event.stopPropagation();
       event.preventDefault();
       this.ResetModalContentScrollPositions();
@@ -455,7 +500,7 @@ var app = new Vue({
     },
 
     ToggleSettings(event, _value) {
-      log('this.ToggleSettings(event, value) called');
+      log('ToggleSettings(event, value) called');
       event.stopPropagation();
       event.preventDefault();
       this.ResetModalContentScrollPositions();
@@ -463,7 +508,7 @@ var app = new Vue({
     },
 
     ToggleCredits(event, _value) {
-      log('this.ToggleCredits(event, value) called');
+      log('ToggleCredits(event, value) called');
       event.stopPropagation();
       event.preventDefault();
       this.ResetModalContentScrollPositions();
@@ -471,7 +516,7 @@ var app = new Vue({
     },
 
     GetUserSettings() {
-      log('this.GetUserSettings() called');
+      log('GetUserSettings() called');
 
       if (localStorage.length === 0) {
         this.ToggleOOBE(null, true);
@@ -528,7 +573,7 @@ var app = new Vue({
         if (_userHighScoresEasy !== undefined && _userHighScoresEasy !== '[]' && _userHighScoresEasy !== null) {
           _userHighScoresEasy = JSON.parse(_userHighScoresEasy);
           _userHighScoresEasy.forEach((s) => {
-            this.userHighScoresEasy.push(new ScoreObject({ date: new Date(s.date), value: s.value }));
+            this.userHighScoresEasy.push(new ScoreObject({ date: new Date(s.date), isDaily: s.isDaily, value: s.value }));
           });
         }
       } catch (error) {
@@ -551,6 +596,7 @@ var app = new Vue({
     },
 
     ClearAllUserScores() {
+      log('ClearAllUserScores() called');
       let _confirm = window.confirm('Are you sure you want to clear all of your scores?');
       if (_confirm) {
         this.userHighScoresEasy = [];
@@ -563,7 +609,7 @@ var app = new Vue({
     },
 
     RestoreCurrentGame() {
-      log('this.RestoreCurrentGame() called');
+      log('RestoreCurrentGame() called');
       let _gameDataCorrupt = false;
 
       let _appSettingsModeHardInterval = localStorage.getItem('appSettingsModeHardInterval');
@@ -687,6 +733,73 @@ var app = new Vue({
         _gameDataCorrupt = true;
       }
 
+      let _gameDailyChallenge = localStorage.getItem('gameDailyChallenge');
+      try {
+        if (_gameDailyChallenge !== undefined && _gameDailyChallenge !== null) {
+          _gameDailyChallenge = JSON.parse(_gameDailyChallenge);
+          _letAllLevels = new AllLevelsObject({ date: _gameDailyChallenge.date });
+          _gameDailyChallenge.allLevels.forEach((level) => {
+            let _level = new SingleLevelObject({ me: level.me, completed: level.completed });
+            level.board.forEach((piece) => {
+              _level.board.push(new PieceObject(piece));
+            });
+            _letAllLevels.allLevels.push(_level);
+          });
+          this.gameDailyChallenge = _letAllLevels;
+        }
+      } catch (error) {
+        log('_gameDailyChallenge error: ' + error);
+        _gameDataCorrupt = true;
+      }
+
+      let _gameCurrentIsGameDailyChallenge = localStorage.getItem('gameCurrentIsGameDailyChallenge');
+      try {
+        if (_gameCurrentIsGameDailyChallenge !== undefined && _gameCurrentIsGameDailyChallenge !== null) {
+          _gameCurrentIsGameDailyChallenge = JSON.parse(_gameCurrentIsGameDailyChallenge);
+          this.gameCurrentIsGameDailyChallenge = _gameCurrentIsGameDailyChallenge;
+        }
+      } catch (error) {
+        log('_gameCurrentIsGameDailyChallenge error: ' + error);
+        _gameDataCorrupt = true;
+      }
+
+      let _gameDailyChallengeHasBeenStarted = localStorage.getItem('gameDailyChallengeHasBeenStarted');
+      try {
+        if (_gameDailyChallengeHasBeenStarted !== undefined && _gameDailyChallengeHasBeenStarted !== null) {
+          _gameDailyChallengeHasBeenStarted = JSON.parse(_gameDailyChallengeHasBeenStarted);
+          this.gameDailyChallengeHasBeenStarted = _gameDailyChallengeHasBeenStarted;
+        }
+      } catch (error) {
+        log('_gameDailyChallengeHasBeenStarted error: ' + error);
+        _gameDataCorrupt = true;
+      }
+
+      let _gameCurrentAllLevels = localStorage.getItem('gameCurrentAllLevels');
+      try {
+        if (_gameCurrentAllLevels !== undefined && _gameCurrentAllLevels !== null) {
+          _gameCurrentAllLevels = JSON.parse(_gameCurrentAllLevels);
+          this.gameCurrentAllLevels = _gameCurrentAllLevels;
+        }
+      } catch (error) {
+        log('_gameCurrentAllLevels error: ' + error);
+        _gameDataCorrupt = true;
+      }
+
+      let _gameCurrentLevel = localStorage.getItem('gameCurrentLevel');
+      try {
+        if (_gameCurrentLevel !== undefined && _gameCurrentLevel !== null) {
+          _gameCurrentLevel = JSON.parse(_gameCurrentLevel);
+          let _level = new SingleLevelObject({ me: _gameCurrentLevel.me, completed: _gameCurrentLevel.completed });
+          _gameCurrentLevel.board.forEach((piece) => {
+            _level.board.push(new PieceObject(piece));
+          });
+          this.gameCurrentLevel = _level;
+        }
+      } catch (error) {
+        log('_gameCurrentLevel error: ' + error);
+        _gameDataCorrupt = true;
+      }
+
       let _gameCurrentMePiece = localStorage.getItem('gameCurrentMePiece');
       try {
         if (_gameCurrentMePiece !== undefined && _gameCurrentMePiece !== null) {
@@ -802,6 +915,8 @@ var app = new Vue({
         _gameDataCorrupt = true;
       }
 
+      this.CheckIfUserHasScoredDailyChallenge();
+
       if (_gameDataCorrupt) {
         this.gameCurrentIsGameOver = true;
         this.NewGame();
@@ -809,7 +924,7 @@ var app = new Vue({
     },
 
     InitializeGame() {
-      log('App Initialized', true);
+      announce('App Initialized');
       this.AdjustPieceSizeBasedOnViewport();
       this.CheckForMobile();
 
@@ -860,6 +975,8 @@ var app = new Vue({
 
       if (!this.gameCurrentIsGameOver) {
         this.RestoreCurrentGame();
+      } else {
+        this.GetDailyChallenge();
       }
 
       this.updateInterval = window.setInterval(this.UpdateApp, this.appSettingsModeHardInterval);
@@ -882,6 +999,11 @@ var app = new Vue({
         localStorage.setItem('appVisualStateShowPageSettings', JSON.stringify(this.appVisualStateShowPageSettings));
         localStorage.setItem('appVisualStateShowElementHint', JSON.stringify(this.appVisualStateShowElementHint));
         localStorage.setItem('appVisualStateShowElementFlyaway', JSON.stringify(this.appVisualStateShowElementFlyaway));
+        localStorage.setItem('gameDailyChallenge', JSON.stringify(this.gameDailyChallenge));
+        localStorage.setItem('gameCurrentIsGameDailyChallenge', JSON.stringify(this.gameCurrentIsGameDailyChallenge));
+        localStorage.setItem('gameDailyChallengeHasBeenStarted', JSON.stringify(this.gameDailyChallengeHasBeenStarted));
+        localStorage.setItem('gameCurrentAllLevels', JSON.stringify(this.gameCurrentAllLevels));
+        localStorage.setItem('gameCurrentLevel', JSON.stringify(this.gameCurrentLevel));
         localStorage.setItem('gameCurrentIsGameOver', JSON.stringify(this.gameCurrentIsGameOver));
         localStorage.setItem('gameCurrentMePiece', JSON.stringify(this.gameCurrentMePiece));
         localStorage.setItem('gameCurrentBoardPieces', JSON.stringify(this.gameCurrentBoardPieces));
@@ -908,6 +1030,25 @@ var app = new Vue({
       this.appSettingsPieceSize = window.innerWidth < 500 ? (window.innerWidth - 60) / this.appSettingsBoardGridSize + 'px' : 450 / this.appSettingsBoardGridSize + 'px';
       this.documentCssRoot.style.setProperty('--pieceSize', this.appSettingsPieceSize);
       this.appSettingsTotalNumberOfBoardPieces = window.innerHeight < 234 ? 12 : 16;
+    },
+
+    GetDailyChallenge() {
+      log('GetDailyChallenge() called');
+      readDailyChallengeFile(function (contents, result) {
+        app.gameDailyChallenge = new AllLevelsObject({});
+        if (contents !== null && contents !== undefined) {
+          constructAllLevels(contents, app.gameDailyChallenge);
+          app.CheckIfUserHasScoredDailyChallenge(true);
+        }
+      });
+    },
+
+    StartDailyChallenge() {
+      log('StartDailyChallenge() called');
+      this.SelectMode(this.appSettingsModes.easy);
+      this.gameDailyChallengeHasBeenStarted = true;
+      this.gameCurrentIsGameDailyChallenge = true;
+      this.RestartGame();
     },
 
     HandleOnResizeEvent() {
@@ -979,6 +1120,7 @@ var app = new Vue({
     },
 
     HandleUpdateAppButtonClick() {
+      log('HandleUpdateAppButtonClick() called');
       this.newVersionAvailable = false;
       localStorage.setItem('newVersionAvailable', this.newVersionAvailable);
       if (this.serviceWorker !== '') {
@@ -989,7 +1131,7 @@ var app = new Vue({
     },
 
     HandleServiceWorkerRegistration() {
-      log('this.HandleServiceWorkerRegistration() called');
+      log('HandleServiceWorkerRegistration() called');
       if ('serviceWorker' in navigator) {
         // Register the service worker
         navigator.serviceWorker.register('/sw.js').then((reg) => {

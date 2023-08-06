@@ -1,36 +1,45 @@
 {
-    "name":"Like Me?",
-    "lang":"en-us",
-    "short_name":"Like Me?",
-    "description":"A game of matching likenesses.",
-    "start_url":"/",
-    "scope":"/",
-    "id":"/",
-    "display":"standalone",
-    "theme_color":"#f0f0f0",
-    "background_color":"#f0f0f0",
-    "orientation":"any",
-    "publisher": "Big Tent Games",
-    "icons":[
-        {
-            "src":"images/icon120.png",
-            "sizes":"120x120",
-            "purpose":"any"
-        },
-        {
-            "src":"images/icon180.png",
-            "sizes":"180x180",
-            "purpose":"any"
-        },
-        {
-            "src":"images/icon192.png",
-            "sizes":"192x192",
-            "purpose":"any"
-        },
-        {
-            "src":"images/icon512.png",
-            "sizes":"512x512",
-            "purpose":"any"
-        }
-    ]
- }
+  "name": "Like Me?",
+  "lang": "en-us",
+  "short_name": "Like Me?",
+  "description": "A game of matching likenesses.",
+  "start_url": "/",
+  "scope": "/",
+  "id": "/",
+  "display": "standalone",
+  "theme_color": "#f0f0f0",
+  "background_color": "#f0f0f0",
+  "orientation": "any",
+  "publisher": "Big Tent Games",
+  "icons": [
+    {
+      "src": "images/icon120.png",
+      "sizes": "120x120",
+      "purpose": "any"
+    },
+    {
+      "src": "images/icon180.png",
+      "sizes": "180x180",
+      "purpose": "any"
+    },
+    {
+      "src": "images/icon192.png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "images/icon512.png",
+      "sizes": "512x512",
+      "purpose": "any"
+    }
+  ],
+  "handle_links": "preferred",
+  "url_handlers": [
+    {
+      "origin": "https://likeme.games"
+    },
+    {
+      "origin": "https://*.likeme.games"
+    }
+  ]
+}
