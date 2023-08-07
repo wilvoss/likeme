@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.8.120',
+    currentVersion: '3.8.121',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -133,11 +133,11 @@ var app = new Vue({
           this.gameCurrentHasAnyPieceEverBeenSelected = true;
           if (this.gameCurrentNumberOfMisses === 0 && !this.appSettingsModes.infinite.isSelected) {
             if (!this.gameCurrentHasBonusTimeHintDisplayed) {
-              this.gameCurrentNumberOfPerfectMatches++;
               this.appVisualStateShowElementHint = true;
               this.gameCurrentHintText = 'Nice! Matching all pieces on your first attempt adds <b>3 seconds</b> to the clock!';
               this.gameCurrentHasBonusTimeHintDisplayed = true;
             }
+            this.gameCurrentNumberOfPerfectMatches++;
             this.gameCurrentTimer = this.gameCurrentTimer + 3000;
             this.appVisualStateShowElementFlyaway = true;
             window.setTimeout(function () {
@@ -387,9 +387,7 @@ var app = new Vue({
       this.gameLastHighScore = _score;
 
       this.gameCurrentLevel.completed = true;
-      if (this.gameCurrentIsGameDailyChallenge) {
-        this.GetDailyChallenge();
-      }
+      this.GetDailyChallenge();
       this.gameCurrentIsGameOver = true;
       this.gameDailyChallengeHasBeenStarted = false;
       this.appVisualStateShowPageChallenge = false;
