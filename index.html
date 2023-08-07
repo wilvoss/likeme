@@ -52,8 +52,9 @@
         <button id="button_update" v-if="newVersionAvailable" title="There is an update available for Like Me. Click to apply the update." class="quaternary pulse update inline" @click="HandleUpdateAppButtonClick"><icon class="download"></icon>New Update!</button>
         <content>
           <section>
-            <h1>{{!userSettingsUseCats ? 'Like Me?' : 'Copycats!'}}</h1>
-            <p>A game of matching likenesses.</p>
+            <h1>Like Me?</h1>
+            <p v-if="!userSettingsUseCats">A game of matching likenesses.</p>
+            <p v-if="userSettingsUseCats">A game of matching cat likenesses.</p>
           </section>
           <section>
             <modes>

@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.9.1',
+    currentVersion: '3.9.10',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -1012,8 +1012,6 @@ var app = new Vue({
 
       if (!this.gameCurrentIsGameOver) {
         this.RestoreCurrentGame();
-      } else {
-        this.GetDailyChallenge();
       }
 
       this.updateInterval = window.setInterval(this.UpdateApp, this.appSettingsModeHardInterval);
@@ -1062,6 +1060,7 @@ var app = new Vue({
     },
 
     HandleOnPageShowEvent() {
+      this.GetDailyChallenge();
       this.appSettingsSoundFX = new Howl({ src: '../audio/phft4.mp3', volume: 0.5 });
     },
 
@@ -1071,9 +1070,10 @@ var app = new Vue({
       this.appSettingsTotalNumberOfBoardPieces = window.innerHeight < 234 ? 12 : 16;
     },
 
-    GetDailyChallenge() {
+    async GetDailyChallenge() {
       note('GetDailyChallenge() called');
       readDailyChallengeFile(function (contents, result) {
+        announce(result);
         app.gameDailyChallenge = new AllLevelsObject({});
         if (contents !== null && contents !== undefined) {
           constructAllLevels(contents, app.gameDailyChallenge);
