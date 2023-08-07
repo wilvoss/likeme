@@ -1,0 +1,26 @@
+:root {
+  --shape1: url(/images/CatSquare.svg);
+  --shape2: url(/images/CatCircle.svg);
+  --shape3: url(/images/CatTriangle.svg);
+  --shape4: url(/images/CatHexagon.svg);
+
+  --bgImage1: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.2) 0px, rgba(255, 255, 255, 0.2) 10%, rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 0) 20%);
+  --bgImage2: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 0px, rgba(255, 255, 255, 0.2) 1.1%, rgba(255, 255, 255, 0) 1.1%, rgba(255, 255, 255, 0) 4.5%);
+  --bgImage3: repeating-radial-gradient(circle, rgba(255, 255, 255, 0.2) 0px, rgba(255, 255, 255, 0.2) 14.5%, rgba(255, 255, 255, 0) 14.5%, rgba(255, 255, 255, 0) 29%);
+}
+
+wallpaper.square {
+  background-image: url(../images/CatSquare.svg);
+}
+
+wallpaper.circle {
+  background-image: url(../images/CatCircle.svg);
+}
+
+wallpaper.triangle {
+  background-image: url(../images/CatTriangle.svg);
+}
+
+wallpaper.hexagon {
+  background-image: url(../images/CatHexagon.svg);
+}

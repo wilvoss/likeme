@@ -1,0 +1,5 @@
+:root {
+  --bgImage1: repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.2) 0px, rgba(0, 0, 0, 0.2) 10%, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0) 20%);
+  --bgImage2: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.2) 0px, rgba(0, 0, 0, 0.2) 1.1%, rgba(0, 0, 0, 0) 1.1%, rgba(0, 0, 0, 0) 4.5%);
+  --bgImage3: repeating-radial-gradient(circle, rgba(0, 0, 0, 0.2) 0px, rgba(0, 0, 0, 0.2) 15%, rgba(0, 0, 0, 0) 15%, rgba(0, 0, 0, 0) 30%);
+}

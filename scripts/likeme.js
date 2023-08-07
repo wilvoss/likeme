@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.8.121',
+    currentVersion: '3.9.1',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -75,6 +75,7 @@ var app = new Vue({
     gameCurrentHasBonusTimeHintDisplayed: false,
     gameCurrentHintText: 'Select pieces that share <b>at least two</b> of my attributes (color, shape, pattern).',
     gameCurrentHasAnyPieceEverBeenSelected: false,
+    userSettingsUseCats: false,
     userHighScoresInfinite: [],
     userHighScoresEasy: [],
     userHighScoresHard: [],
@@ -298,6 +299,7 @@ var app = new Vue({
       this.documentCssRoot.style.setProperty('--color3', _theme.color3);
       this.documentCssRoot.style.setProperty('--color3contrast', _theme.color3contrast);
       localStorage.setItem('userSettingsTheme', JSON.stringify(_theme.name));
+      this.GetRandomWallpaper();
     },
 
     UpdateApp() {
@@ -422,6 +424,17 @@ var app = new Vue({
       localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
     },
 
+    ToggleUsingCats(event) {
+      note('ToggleUsingCats(event) called');
+      if (event != undefined) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      this.userSettingsUseCats = !this.userSettingsUseCats;
+      localStorage.setItem('userSettingsUseCats', this.userSettingsUseCats);
+      this.GetRandomWallpaper();
+    },
+
     ToggleUsingSound(event) {
       note('ToggleUsingSound(event) called');
       event.stopPropagation();
@@ -536,6 +549,12 @@ var app = new Vue({
       if (_hints !== undefined && _hints !== null) {
         _hints = JSON.parse(_hints);
         this.userSettingsUseHints = _hints;
+      }
+
+      let _userSettingsUseCats = localStorage.getItem('userSettingsUseCats');
+      if (_userSettingsUseCats !== undefined && _userSettingsUseCats !== null) {
+        _userSettingsUseCats = JSON.parse(_userSettingsUseCats);
+        this.userSettingsUseCats = _userSettingsUseCats;
       }
 
       let _sounds = localStorage.getItem('userSettingsUseSoundFX');
@@ -935,13 +954,19 @@ var app = new Vue({
       }
     },
 
+    GetRandomWallpaper() {
+      note('GetRandomWallpaper() called');
+
+      this.currentWallpaper = this.wallpaperNames[getRandomInt(0, this.wallpaperNames.length)];
+      document.getElementsByTagName('wallpaper')[0].className = this.currentWallpaper;
+    },
+
     InitializeGame() {
       announce('Game Initialized');
       this.AdjustPieceSizeBasedOnViewport();
       this.CheckForMobile();
 
-      this.currentWallpaper = this.wallpaperNames[getRandomInt(0, this.wallpaperNames.length)];
-      document.getElementsByTagName('wallpaper')[0].className = this.currentWallpaper;
+      this.GetRandomWallpaper();
 
       let _onemoretime = localStorage.getItem('onemoretime');
       try {
@@ -1029,6 +1054,7 @@ var app = new Vue({
         localStorage.setItem('gameCurrentHintText', this.gameCurrentHintText);
         localStorage.setItem('gameCurrentTotalScore', this.gameCurrentTotalScore);
         localStorage.setItem('gameCurrentHasAnyPieceEverBeenSelected', JSON.stringify(this.gameCurrentHasAnyPieceEverBeenSelected));
+        localStorage.setItem('userSettingsUseCats', this.userSettingsUseCats);
         localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
         localStorage.setItem('userSettingsUseSoundFX', this.userSettingsUseSoundFX);
         localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
@@ -1103,6 +1129,9 @@ var app = new Vue({
           break;
         case '/':
           this.ToggleUsingDarkMode();
+          break;
+        case 'c':
+          this.ToggleUsingCats();
           break;
         case '1':
         case '2':

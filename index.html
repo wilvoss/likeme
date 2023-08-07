@@ -43,6 +43,8 @@
     <wallpaper></wallpaper>
     <app id="app" v-cloak :class="{challenge: appVisualStateShowPageChallenge}">
       <link v-if="userSettingsUseDarkMode" rel="stylesheet" href="styles/likeme-darkmode.css" media="screen" />
+      <link v-if="userSettingsUseCats" rel="stylesheet" href="styles/cats-likeme.css" media="screen" />
+      <link v-if="userSettingsUseCats && userSettingsUseDarkMode" rel="stylesheet" href="styles/cats-likeme-darkmode.css" media="screen" />
       <notification @pointerdown="appVisualStateShowNotification = false" :class="{show: appVisualStateShowNotification}">
         <message v-html="appNotificationMessage"></message>
       </notification>
@@ -50,7 +52,7 @@
         <button id="button_update" v-if="newVersionAvailable" title="There is an update available for Like Me. Click to apply the update." class="quaternary pulse update inline" @click="HandleUpdateAppButtonClick"><icon class="download"></icon>New Update!</button>
         <content>
           <section>
-            <h1>Like Me?</h1>
+            <h1>{{!userSettingsUseCats ? 'Like Me?' : 'Copycats!'}}</h1>
             <p>A game of matching likenesses.</p>
           </section>
           <section>
@@ -243,7 +245,7 @@
           </section>
           <section>
             <h2>Daily Challenge</h2>
-            <p>The Daily Challenge resets every night at midnight, Hawaii time.</p>
+            <p>Resets at midnight, Hawaii time.</p>
           </section>
         </content>
       </modal>
@@ -262,6 +264,10 @@
             </checkbox>
             <checkbox :class="{on: userSettingsUseSoundFX}" @click="ToggleUsingSound(event)">
               Sound
+              <toggle></toggle>
+            </checkbox>
+            <checkbox :class="{on: userSettingsUseCats}" @click="ToggleUsingCats(event)">
+              Cats
               <toggle></toggle>
             </checkbox>
             <checkbox :class="{on: userSettingsUseDarkMode}" @click="ToggleUsingDarkMode(event)">
