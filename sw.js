@@ -1,5 +1,5 @@
 // the cache version gets updated every time there is a new deployment
-const CACHE_VERSION = '3.9.10';
+const CACHE_VERSION = '3.9.12';
 const CURRENT_CACHE = `main-${CACHE_VERSION}`;
 
 // prettier-ignore
@@ -15,6 +15,7 @@ const cacheFiles = [
   'models/LevelsObject.js',
   'fonts/Bangers-Regular.ttf',
   'images/icon_share.svg',
+  'images/icon_download.svg',
   'images/icon_settings.svg',
   'images/icon_trophy.svg',
   'images/icon_info.svg',
