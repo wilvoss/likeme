@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.9.12',
+    currentVersion: '3.9.17',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -360,6 +360,11 @@ var app = new Vue({
       var minstring = mins != 0 ? mins : '';
       var hrsstring = hrs != 0 ? hrs + ':' : '';
       return this.appSettingsModes.infinite.isSelected ? hrsstring + minstring + secstring : minstring + secstring;
+    },
+
+    DateDiffInDays() {
+      _number = Math.round((new Date() - new Date('8/4/2023')) / (1000 * 60 * 60 * 24));
+      return _number;
     },
 
     EndGame() {

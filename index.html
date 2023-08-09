@@ -102,11 +102,16 @@
             <h1>Information</h1>
           </header>
           <section>
+            <h2>Feedback</h2>
+            <credit><a href="mailto:bigtentgames@icloud.com?subject=Like Me? feedback" target="_blank">bigtentgames@icloud.com</a></credit>
+          </section>
+          <section>
             <h2>Credits</h2>
             <h3>Created by</h3>
             <credit>Wil Voss</credit>
             <h3>Feedback and ideas</h3>
             <credit>Alex Barbieri</credit>
+            <credit>Joe Fogarty</credit>
             <credit>Marianne Geisemann</credit>
             <credit>Jerry Hoffmeister</credit>
             <credit>Rebecca Hoffmeister</credit>
@@ -165,11 +170,11 @@
         <content>
           <header>
             <h1>How to play</h1>
-            <subheader>Find all of the pieces on a board that are similar to the special "Me" piece. Pieces change after each board is cleared. </subheader>
+            <subheader>Find all of the pieces on a board that are similar to the "Me" piece. Pieces change after each board is cleared. </subheader>
           </header>
           <section>
             <h2>Step 1</h2>
-            <p>Notice me: my shape, color, and pattern.</p>
+            <p>Notice Me: my shape, color, and pattern.</p>
             <me>
               <piece>
                 <gild></gild>
@@ -268,7 +273,7 @@
               <toggle></toggle>
             </checkbox>
             <checkbox :class="{on: userSettingsUseCats}" @click="ToggleUsingCats(event)">
-              Cats
+              Cat Mode
               <toggle></toggle>
             </checkbox>
             <checkbox :class="{on: userSettingsUseDarkMode}" @click="ToggleUsingDarkMode(event)">
@@ -295,8 +300,8 @@
         <content style="justify-content: center">
           <!-- prettier-ignore -->
           <copyme id="copyme">▨ ▲ ◯ 
-{{((!appSettingsModes.infinite.isSelected ? (appSettingsModes.easy.isSelected ? gameLastHighScore.isDaily ? "Today's score - " + NumberWithCommas(gameCurrentTotalScore) + ' pts' : 'Easy score: ' + NumberWithCommas(gameCurrentTotalScore) : 'Hard score: ' + NumberWithCommas(gameCurrentTotalScore)) : 'Boards cleared: ' + gameCurrentNumberOfClears))}}
-{{window.location.host}}</copyme>
+Daily #{{DateDiffInDays() + ' - ' + NumberWithCommas(gameCurrentTotalScore) + ' pts'}}
+{{'(https://' + window.location.host + ')'}}</copyme>
           <h1>{{gameLastHighScore.isDaily ? 'Challenge' : 'Game'}} Over</h1>
           <newhigh @pointerdown="ToggleHighScores(event, true)"> {{appVisualStateShowNewHighScoreElement ? 'A NEW high score!' : ' '}} </newhigh>
           <section>
