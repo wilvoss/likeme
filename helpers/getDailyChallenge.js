@@ -9,11 +9,15 @@ async function readDailyChallengeFile(callback) {
   var year = date.getFullYear();
   var filename = 'dailyChallenge' + month + day + year + '.txt';
 
-  await caches.open('my-cache').then(function (cache) {
-    cache.delete('dailyChallenges/' + filename).then(function (response) {
-      note('The cache has been deleted for: ' + filename);
+  try {
+    await caches.open('my-cache').then(function (cache) {
+      cache.delete('dailyChallenges/' + filename).then(function (response) {
+        note('The cache has been deleted for: ' + filename);
+      });
     });
-  });
+  } catch (_error) {
+    error(_error);
+  }
 
   try {
     const response = await fetch('dailyChallenges/' + filename);

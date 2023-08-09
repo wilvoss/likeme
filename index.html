@@ -251,7 +251,7 @@
           </section>
           <section>
             <h2>Daily Challenge</h2>
-            <p>Resets at midnight, Hawaii time.</p>
+            <p>Can you clear all 150 levels?</p>
           </section>
         </content>
       </modal>
@@ -299,8 +299,8 @@
       <modal :class="{show: appVisualStateShowPageGameOver}" @pointerdown="appVisualStateShowNotification = false;">
         <content style="justify-content: center">
           <!-- prettier-ignore -->
-          <copyme id="copyme">▨ ▲ ◯ 
-Daily #{{DateDiffInDays() + ' - ' + NumberWithCommas(gameCurrentTotalScore) + ' pts'}}
+          <copyme id="copyme" v-if="gameLastHighScore.isDaily">▨ ▲ ◯  Daily #{{DateDiffInDays(gameLastHighScore.dailyDate)}}
+{{NumberWithCommas(gameCurrentTotalScore) + ' pts - ' + gameCurrentNumberOfClears + ' levels'}}
 {{'(https://' + window.location.host + ')'}}</copyme>
           <h1>{{gameLastHighScore.isDaily ? 'Challenge' : 'Game'}} Over</h1>
           <newhigh @pointerdown="ToggleHighScores(event, true)"> {{appVisualStateShowNewHighScoreElement ? 'A NEW high score!' : ' '}} </newhigh>
@@ -398,8 +398,8 @@ Daily #{{DateDiffInDays() + ' - ' + NumberWithCommas(gameCurrentTotalScore) + ' 
         </playarea>
       </stage>
     </app>
-    <script src="helpers/getDailyChallenge.js" type="text/javascript"></script>
     <script src="helpers/console-enhancer.js" type="text/javascript"></script>
+    <script src="helpers/getDailyChallenge.js" type="text/javascript"></script>
     <script src="helpers/howler.js" type="text/javascript"></script>
     <script id=" vue-framework" src="helpers/vue.min.js" type="text/javascript"></script>
     <script src="models/ScoreObject.js" type="text/javascript"></script>

@@ -1,0 +1,1 @@
+class ScoreObject{constructor(t){this.date=null==t.date?new Date:t.date,this.dailyDate=null==t.dailyDate?new Date:t.dailyDate,this.isCurrent=null!=t.isCurrent&&t.isCurrent,this.isDaily=null!=t.isDaily&&t.isDaily,this.value=t.value}}
