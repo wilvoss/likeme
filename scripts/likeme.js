@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.9.33',
+    currentVersion: '3.9.42',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -362,7 +362,7 @@ var app = new Vue({
       return this.appSettingsModes.infinite.isSelected ? hrsstring + minstring + secstring : minstring + secstring;
     },
 
-    DateDiffInDays(_date1 = new Date(), _date2 = new Date('8/1/2023')) {
+    DateDiffInDays(_date1 = new Date(), _date2 = new Date('7/30/2023')) {
       _number = Math.round((_date1 - _date2) / (1000 * 60 * 60 * 24));
       return _number;
     },
@@ -400,12 +400,12 @@ var app = new Vue({
       if (this.gameCurrentIsGameDailyChallenge) {
         this.gameDailyChallenge = new AllLevelsObject({});
       }
+      this.gameCurrentIsGameDailyChallenge = false;
       this.GetDailyChallenge();
       this.gameCurrentIsGameOver = true;
       this.gameDailyChallengeHasBeenStarted = false;
       this.appVisualStateShowPageChallenge = false;
       this.appVisualStateShowPageGameOver = true;
-      this.gameCurrentIsGameDailyChallenge = false;
     },
 
     CheckIfUserHasScoredDailyChallenge(fromCallback = false) {
@@ -768,7 +768,7 @@ var app = new Vue({
       try {
         if (_gameDailyChallenge !== undefined && _gameDailyChallenge !== null) {
           _gameDailyChallenge = JSON.parse(_gameDailyChallenge);
-          _letAllLevels = new AllLevelsObject({ date: new Date(_gameDailyChallenge.date), allLevelsSource: _gameDailyChallenge.allLevelsSource });
+          _letAllLevels = new AllLevelsObject({ date: new Date(_gameDailyChallenge.date) });
           _gameDailyChallenge.allLevels.forEach((level) => {
             let _level = new SingleLevelObject({ me: level.me, completed: level.completed });
             level.board.forEach((piece) => {

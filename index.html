@@ -70,7 +70,7 @@
             <description v-if="appSettingsModes.easy.isSelected">{{appSettingsModes.easy.description}}</description>
           </section>
           <section>
-            <button v-if="!gameDailyChallengeAlreadyScored && !gameDailyChallengeHasBeenStarted && gameDailyChallenge.allLevelsSource != ''" title="Click to start try the daily challenge!" class="tertiary" @click="StartDailyChallenge">Daily Challenge!</button>
+            <button v-if="!gameDailyChallengeAlreadyScored && !gameDailyChallengeHasBeenStarted && gameDailyChallenge.allLevelsSource != ''" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="tertiary" @click="StartDailyChallenge">Daily Challenge!</button>
             <button id="button_newGame" title="Click to start a new game" class="primary" @click="RestartGame">Play</button>
             <button id="button_howto" title="Click to learn how to play Like Me?" class="secondary" @click="ToggleHowToPlay(event, true)">How to play</button>
             <smallbuttons>
@@ -141,7 +141,7 @@
           </header>
           <section>
             <h2>Easy</h2>
-            <leftright v-for="score in userScoresHighEasyByValue" :class="{current: score.isCurrent, daily: score.isDaily}">
+            <leftright v-for="score in userScoresHighEasyByValue" :title="score.isDaily ? 'Recorded for the ' + FormatDate(score.dailyDate) + ' daily challange.' : ''" :class="{current: score.isCurrent, daily: score.isDaily}">
               <left>{{FormatDate(score.date)}}</left>
               <right>{{NumberWithCommas(score.value)}}</right>
             </leftright>
@@ -302,6 +302,7 @@
           <copyme id="copyme" v-if="gameLastHighScore.isDaily">▨ ▲ ◯  Daily #{{DateDiffInDays(gameLastHighScore.dailyDate)}}
 {{NumberWithCommas(gameCurrentTotalScore) + ' pts - ' + gameCurrentNumberOfClears + ' levels'}}
 {{'(https://' + window.location.host + ')'}}</copyme>
+          <!-- <labelsmall v-if="gameLastHighScore.isDaily">Daily #{{DateDiffInDays(gameLastHighScore.dailyDate)}}</labelsmall> -->
           <h1>{{gameLastHighScore.isDaily ? 'Challenge' : 'Game'}} Over</h1>
           <newhigh @pointerdown="ToggleHighScores(event, true)"> {{appVisualStateShowNewHighScoreElement ? 'A NEW high score!' : ' '}} </newhigh>
           <section>

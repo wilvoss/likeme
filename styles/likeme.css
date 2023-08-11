@@ -313,7 +313,7 @@ stage playarea {
 }
 
 stage playarea::before {
-  content: '⏵';
+  content: '\23F5';
   font-size: 5em;
   display: flex;
   background: hsl(var(--appBackgroundWeakest)) var(--bgImage1);
