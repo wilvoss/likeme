@@ -299,7 +299,7 @@
       <modal :class="{show: appVisualStateShowPageGameOver}" @pointerdown="appVisualStateShowNotification = false;">
         <content style="justify-content: center">
           <!-- prettier-ignore -->
-          <copyme id="copyme" v-if="gameLastHighScore.isDaily">▨ ▲ ◯  Daily #{{DateDiffInDays(gameLastHighScore.dailyDate)}}
+          <copyme id="copyme" v-if="gameLastHighScore.isDaily">▨ ▲ ◯  Daily - {{GetMonthAndDay(gameLastHighScore.dailyDate)}}
 {{NumberWithCommas(gameCurrentTotalScore) + ' pts - ' + gameCurrentNumberOfClears + ' levels'}}
 {{'(https://' + window.location.host + ')'}}</copyme>
           <!-- <labelsmall v-if="gameLastHighScore.isDaily">Daily #{{DateDiffInDays(gameLastHighScore.dailyDate)}}</labelsmall> -->

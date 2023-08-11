@@ -20,11 +20,14 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.9.42',
+    currentVersion: '3.9.44',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
     newVersionAvailable: false,
+    appGuideMePieceIndicated: false,
+    appGuideMatchPieceIndicated: false,
+    appGuideFullBoardCleard: false,
     appNotificationMessage: '',
     appSettingsModes: Modes,
     appSettingsSoundFX: new Howl({ src: '../audio/phft4.mp3', volume: 0.5 }),
@@ -1130,6 +1133,13 @@ var app = new Vue({
     FormatDate(_date) {
       let _newDate = new Date(_date).toLocaleDateString();
       return _newDate;
+    },
+
+    GetMonthAndDay(_date) {
+      const date = new Date(_date);
+      const month = date.toLocaleString('default', { month: 'short' });
+      const day = date.getDate();
+      return `${month} ${day}`;
     },
 
     NumberWithCommas(_num) {
