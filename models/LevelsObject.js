@@ -12,7 +12,7 @@ class SingleLevelObject {
 class AllLevelsObject {
   constructor(spec) {
     this.allLevelsSource = spec.allLevelsSource == undefined ? '' : spec.allLevelsSource;
-    this.allLevels = spec.level == undefined ? [] : spec.level;
+    this.allLevels = spec.allLevels == undefined ? [] : spec.allLevels;
     this.started = spec.started == undefined ? false : spec.started;
     this.completed = spec.completed == undefined ? false : spec.completed;
     this.date = spec.date == undefined ? new Date() : spec.date;

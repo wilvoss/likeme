@@ -21,7 +21,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.9.69',
+    currentVersion: '3.9.70',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -33,6 +33,7 @@ var app = new Vue({
     appTutorialIsInPlay: false,
     appTutorialMePiece: new PieceObject({ color: 'var(--color2)' }),
     appNotificationMessage: '',
+    appSettingsAddTimeInterval: null,
     appSettingsModes: Modes,
     appSettingsSoundFX: new Howl({ src: '../audio/phft4.mp3', volume: 0.5 }),
     appSettingsSaveSettings: true,
@@ -376,7 +377,6 @@ var app = new Vue({
 
     EndGame() {
       note('EndGame() called');
-
       let _score = new ScoreObject({
         value: this.gameCurrentTotalScore,
         isDaily: this.gameCurrentIsGameDailyChallenge,
@@ -402,6 +402,7 @@ var app = new Vue({
       }
       _score.isCurrent = true;
       this.gameLastHighScore = _score;
+      this.AddBonusToScore();
 
       this.gameCurrentLevel.completed = true;
       if (this.gameCurrentIsGameDailyChallenge) {
@@ -413,6 +414,45 @@ var app = new Vue({
       this.gameDailyChallengeHasBeenStarted = false;
       this.appVisualStateShowPageChallenge = false;
       this.appVisualStateShowPageGameOver = true;
+    },
+
+    // this is for testing purposes and changes frequently
+    SetState() {
+      this.gameDailyChallengeAlreadyScored = false;
+      console.log(this.appTutorialBoardPieces);
+      this.gameDailyChallenge = new AllLevelsObject({
+        allLevelsSource: '010',
+        allLevels: [this.appTutorialBoardPieces],
+      });
+    },
+
+    HandleAppSettingsAddTimeInterval() {
+      let _interval = 1000 / (this.gameCurrentTimer / 1000);
+      _interval = _interval > 100 ? 100 : _interval;
+      this.appSettingsAddTimeInterval = window.setInterval(function () {
+        if (app.gameCurrentTimer > 0) {
+          app.gameCurrentTotalScore++;
+          app.gameLastHighScore.value = app.gameCurrentTotalScore;
+          app.gameCurrentTimer = app.gameCurrentTimer - 1000;
+        } else {
+          if (app.gameLastHighScore === app.userScoresHighEasyByValue[0]) {
+            app.appVisualStateShowNewHighScoreElement = true;
+          }
+          localStorage.setItem('userHighScoresEasy', JSON.stringify(app.userHighScoresEasy));
+          window.clearInterval(app.appSettingsAddTimeInterval);
+        }
+      }, _interval);
+    },
+
+    AddBonusToScore() {
+      note('AddBonusToScore() called');
+      log('gameCurrentTimer = ' + this.gameCurrentTimer);
+      log('gameLastHighScore.isDaily = ' + this.gameLastHighScore.isDaily);
+      log('gameCurrentNumberOfClears = ' + this.gameCurrentNumberOfClears);
+      log('gameDailyChallenge.allLevels.length = ' + this.gameDailyChallenge.allLevels.length);
+      if (this.gameCurrentTimer > 0 && this.gameLastHighScore.isDaily && this.gameCurrentNumberOfClears === this.gameDailyChallenge.allLevels.length) {
+        window.setTimeout(this.HandleAppSettingsAddTimeInterval, 1000);
+      }
     },
 
     CheckIfUserHasScoredDailyChallenge(fromCallback = false) {

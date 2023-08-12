@@ -706,8 +706,18 @@ leftright {
   transition: var(--transitionTime) ease-in-out all;
 }
 
+leftright.impress {
+  font-weight: 800;
+  border: 1px solid hsl(var(--appBackgroundStrongest));
+  background: hsl(var(--appBackgroundStrongest));
+}
+
 leftright right {
   font-weight: 600;
+}
+
+leftright.impress right {
+  font-weight: 800;
 }
 
 leftright:first-of-type {
@@ -942,7 +952,7 @@ tutorial board {
   overflow: hidden;
   align-content: start;
   opacity: 1;
-  height: calc((var(--pieceSize) + 4px) * 4);
+  height: calc((var(--pieceSize) + 4px) * 3);
   transition: 300ms ease-in-out all;
   margin-top: 0px;
   margin-bottom: 0px;
@@ -1436,20 +1446,11 @@ gameover h2 {
   margin-top: var(--defaultGap);
 }
 
-@media only screen and (max-height: 720px) {
-  tutorial board {
-    height: calc((var(--pieceSize) + 4px) * 3);
-  }
-}
-
 @media only screen and (max-height: 600px) {
   page content {
     padding-top: 0;
     margin-top: var(--defaultGap);
     overflow-y: scroll;
-  }
-
-  page content description {
   }
 
   tutorial board {
