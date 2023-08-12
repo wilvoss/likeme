@@ -164,6 +164,9 @@
           </section>
         </content>
       </modal>
+      <modal class="pause" @click="ToggleGamePause(event, false)" :class="{show: gameCurrentIsPaused && !gameCurrentIsGameOver}">
+        <button class="quaternary"><icon class="play"></icon></button>
+      </modal>
       <modal :class="{show: appVisualStateShowPageSettings}">
         <chrome>
           <button @click="ToggleSettings(event, false)">done</button>
@@ -216,7 +219,7 @@
           <section>
             <leftright class="impress">
               <left> {{!appSettingsModes.infinite.isSelected ? 'Final score ' : 'Total levels cleared '}} </left>
-              <right> {{!appSettingsModes.infinite.isSelected ? NumberWithCommas(gameCurrentTotalScore) : gameCurrentNumberOfClears}} </right>
+              <right> {{!appSettingsModes.infinite.isSelected ? NumberWithCommas(gameCurrentTotalScore) + ' pts' : gameCurrentNumberOfClears}} </right>
             </leftright>
             <leftright v-if="!appSettingsModes.infinite.isSelected">
               <left>Time remaining</left>
@@ -224,7 +227,7 @@
             </leftright>
             <leftright v-if="!appSettingsModes.infinite.isSelected">
               <left>Levels cleared</left>
-              <right>{{gameCurrentNumberOfClears}}</right>
+              <right>{{gameCurrentNumberOfClears}}{{gameLastHighScore.isDaily ? '/' + gameDailyChallenge.allLevels.length : ''}}</right>
             </leftright>
             <leftright>
               <left>Bonus time added</left>
@@ -250,7 +253,10 @@
       <stage v-if="!appVisualStateShowPageHome && !appTutorialIsInPlay" :class="{paused: gameCurrentIsPaused}">
         <chrome :class="{alert: gameCurrentTimer < 6000 && !appSettingsModes.infinite.isSelected}">
           <button @click="appVisualStateShowPageSettings = true">Settings</button>
-          <time @click="ToggleGamePause(event, false)" v-if="!appSettingsModes.infinite.isSelected">{{gameCurrentIsPaused ? 'Paused' : 'Score: ' + NumberWithCommas(gameCurrentTotalScore)}}</time>
+          <gameinfo>
+            <labelsmall v-if="gameDailyChallengeHasBeenStarted"> level {{parseInt(gameCurrentNumberOfClears + 1)}} <span>of</span> {{gameDailyChallenge.allLevels.length}} </labelsmall>
+            <time @click="ToggleGamePause(event, false)" v-if="!appSettingsModes.infinite.isSelected">{{gameCurrentIsPaused ? 'Paused' : NumberWithCommas(gameCurrentTotalScore) + ' pts'}}</time>
+          </gameinfo>
           <button @click="ToggleChallenge(event, true)">Quit</button>
         </chrome>
         <hint @pointerdown="appVisualStateShowElementHint = false" :class="{show: appVisualStateShowElementHint && !gameCurrentIsGameOver && userSettingsUseHints}">
@@ -258,7 +264,7 @@
         </hint>
         <playarea @click="if(gameCurrentIsPaused) ToggleGamePause(event, false)">
           <scorearea :class="{clickable: !appSettingsModes.infinite.isSelected}" @click="ToggleGamePause(event, !gameCurrentIsPaused)">
-            <labelsmall><span>{{appSettingsModes.infinite.isSelected ? '' : 'II'}}</span> {{appSettingsModes.infinite.isSelected ? 'clears' : 'pause'}}</labelsmall>
+            <labelsmall>{{appSettingsModes.infinite.isSelected ? '' : 'II'}} {{appSettingsModes.infinite.isSelected ? 'clears' : 'pause'}}</labelsmall>
             <currentscore :class="{bigpulse: gameCurrentTimer < 6000 && !appSettingsModes.infinite.isSelected}">{{appSettingsModes.infinite.isSelected ? NumberWithCommas(gameCurrentNumberOfClears) : GetMsToTime(gameCurrentTimer)}}</currentscore>
           </scorearea>
           <board>

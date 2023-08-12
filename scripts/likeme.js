@@ -21,7 +21,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.9.70',
+    currentVersion: '3.9.74',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -418,12 +418,12 @@ var app = new Vue({
 
     // this is for testing purposes and changes frequently
     SetState() {
-      this.gameDailyChallengeAlreadyScored = false;
-      console.log(this.appTutorialBoardPieces);
-      this.gameDailyChallenge = new AllLevelsObject({
-        allLevelsSource: '010',
-        allLevels: [this.appTutorialBoardPieces],
+      this.gameDailyChallenge.allLevels.forEach((level) => {
+        level.completed = true;
       });
+      this.gameDailyChallengeAlreadyScored = false;
+      this.gameCurrentNumberOfClears = 150;
+      this.EndGame();
     },
 
     HandleAppSettingsAddTimeInterval() {
