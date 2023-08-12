@@ -21,7 +21,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.9.64',
+    currentVersion: '3.9.65',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -1122,6 +1122,10 @@ var app = new Vue({
       note('HandleTutorialCheck() called');
       if (this.appTutorialCurrentStepIndex > 3) {
         if (this.appTutorialBoardPieces.board[0].isSelected && this.appTutorialBoardPieces.board[1].isSelected && this.appTutorialBoardPieces.board[2].isSelected && this.appTutorialBoardPieces.board[3].isSelected) {
+          this.appTutorialBoardPieces.board[0].isSelected = false;
+          this.appTutorialBoardPieces.board[1].isSelected = false;
+          this.appTutorialBoardPieces.board[2].isSelected = false;
+          this.appTutorialBoardPieces.board[3].isSelected = false;
           this.appTutorialCurrentStepIndex = this.appTutorialSteps.length - 2;
 
           this.HandleTutorialNext();
