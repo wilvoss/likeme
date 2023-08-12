@@ -7,6 +7,7 @@
   /* hsl colors */
   --appBackground: 0, 0%, 94%;
   --appBackgroundStrong: 0, 0%, 96%;
+  --appBackgroundStronger: 0, 0%, 98%;
   --appBackgroundStrongest: 0, 0%, 100%;
   --appBackgroundWeak: 0, 0%, 89%;
   --appBackgroundWeakest: 0, 0%, 80%;
@@ -23,6 +24,7 @@
   --defaultGap: 24px;
   --chromeHeight: 40px;
   --appMaxWidth: 500px;
+  --transitionTime: 300ms;
 
   /* game dynamic values */
   --pieceSize: 110px;
@@ -105,7 +107,7 @@ wallpaper.hexagon {
 }
 
 [v-cloak] {
-  transition: 250ms ease-out opacity;
+  transition: var(--transitionTime) ease-out opacity;
   opacity: 0;
 }
 
@@ -243,7 +245,7 @@ tutorial {
   justify-content: space-between;
   flex-direction: column;
   transform: translateY(100%);
-  transition: 350ms ease-in-out all;
+  transition: var(--transitionTime) ease-in-out all;
 }
 
 .notransition {
@@ -252,12 +254,6 @@ tutorial {
 
 tutorial {
   z-index: 10000;
-}
-
-oobe {
-  opacity: 1;
-  transform: translateY(100%);
-  transition: 200ms ease-in-out all;
 }
 
 challenge {
@@ -338,7 +334,7 @@ stage playarea::before {
   justify-content: center;
   color: var(--appForeground);
   align-items: center;
-  transition: 0.2s ease-in-out opacity;
+  transition: var(--transitionTime) ease-in-out opacity;
   pointer-events: none;
 }
 
@@ -645,7 +641,7 @@ chrome {
   background-color: hsl(var(--appBackground));
   color: hsl(var(--appForeground));
   font-size: 0.9em;
-  transition: 0s ease-in-out all;
+  transition: var(--transitionTime) ease-in-out all;
   overflow: hidden;
 }
 
@@ -667,6 +663,7 @@ chrome button {
   align-items: center;
   width: 100px;
   padding: 0px 20px;
+  transition: var(--transitionTime) ease-in-out all;
   margin: 0;
   min-height: var(--chromeHeight);
 }
@@ -699,13 +696,14 @@ leftright {
   width: calc(70%);
   flex-direction: row;
   justify-content: space-between;
-  border: 1px solid hsl(var(--appBackgroundStrong));
+  border: 1px solid hsl(var(--appBackgroundStronger));
   margin: 0px;
   font-size: 0.9em;
   padding: 1px 9px;
-  background: hsl(var(--appBackgroundStrong));
+  background: hsl(var(--appBackgroundStronger));
   border-radius: var(--borderRadius);
   margin-bottom: 4px;
+  transition: var(--transitionTime) ease-in-out all;
 }
 
 leftright right {
@@ -944,7 +942,7 @@ tutorial board {
   overflow: hidden;
   align-content: start;
   opacity: 1;
-  height: calc((var(--pieceSize) + 4px) * 4.2em);
+  height: calc((var(--pieceSize) + 4px) * 4);
   transition: 300ms ease-in-out all;
   margin-top: 0px;
   margin-bottom: 0px;
@@ -953,7 +951,7 @@ tutorial board {
 tutorial h1 {
   position: absolute;
   transform: translateY(-240px);
-  transition: 300ms ease-in-out all;
+  transition: var(--transitionTime) ease-in-out all;
 }
 
 tutorial h1.hide {
@@ -977,6 +975,7 @@ tutorial description {
 tutorial board.unreveal {
   opacity: 0;
   height: 0px;
+  transition: var(--transitionTime) ease-out all;
 }
 
 tutorial board.partial {
@@ -1127,7 +1126,7 @@ notification {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
   flex-direction: row;
   transform: translateY(-10px);
-  transition: 200ms ease-in-out;
+  transition: var(--transitionTime) ease-in-out;
   transition-property: transform, opacity;
   height: 48px;
   border-radius: var(--borderRadius);
@@ -1437,9 +1436,28 @@ gameover h2 {
   margin-top: var(--defaultGap);
 }
 
-@media only screen and (max-height: 800px) {
+@media only screen and (max-height: 720px) {
   tutorial board {
     height: calc((var(--pieceSize) + 4px) * 3);
+  }
+}
+
+@media only screen and (max-height: 600px) {
+  page content {
+    padding-top: 0;
+    margin-top: var(--defaultGap);
+    overflow-y: scroll;
+  }
+
+  page content description {
+  }
+
+  tutorial board {
+    height: calc((var(--pieceSize) + 4px) * 2);
+  }
+
+  tutorial description {
+    height: auto;
   }
 }
 

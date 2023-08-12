@@ -1,6 +1,7 @@
 :root {
   --appBackground: 0, 0%, calc(100% - 98%);
   --appBackgroundStrong: 0, 0%, calc(100% - 96%);
+  --appBackgroundStronger: 0, 0%, calc(100% - 94%);
   --appBackgroundStrongest: 0, 0%, calc(100% - 90%);
   --appBackgroundWeak: 0, 0%, calc(100% - 89%);
   --appBackgroundWeakest: 0, 0%, calc(100% - 80%);
