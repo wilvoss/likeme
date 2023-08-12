@@ -41,7 +41,7 @@
 
   <body>
     <wallpaper></wallpaper>
-    <app id="app" v-cloak :class="{challenge: appVisualStateShowPageChallenge}">
+    <app id="app" v-cloak :class="{challenge: appVisualStateShowPageChallenge, tutorial: appTutorialIsInPlay}">
       <link v-if="userSettingsUseDarkMode" rel="stylesheet" href="styles/likeme-darkmode.css" media="screen" />
       <link v-if="userSettingsUseCats" rel="stylesheet" href="styles/cats-likeme.css" media="screen" />
       <link v-if="userSettingsUseCats && userSettingsUseDarkMode" rel="stylesheet" href="styles/cats-likeme-darkmode.css" media="screen" />
@@ -72,7 +72,7 @@
           <section>
             <button v-if="!gameDailyChallengeAlreadyScored && !gameDailyChallengeHasBeenStarted && gameDailyChallenge.allLevelsSource != ''" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="tertiary" @click="StartDailyChallenge">Daily Challenge!</button>
             <button id="button_newGame" title="Click to start a new game" class="primary" @click="RestartGame">Play</button>
-            <button id="button_howto" title="Click to learn how to play Like Me?" class="secondary" @click="ToggleHowToPlay(event, true)">How to play</button>
+            <button id="button_howto" title="Click to learn how to play Like Me?" class="secondary" @click="ToggleHowToPlay(event, true)">Tutorial</button>
             <smallbuttons>
               <button id="button_settings" title="Click to adjust the game settings." class="secondary" @click="ToggleSettings(event, true)">
                 <icon class="settings"></icon>
@@ -163,7 +163,7 @@
           </section>
         </content>
       </modal>
-      <modal :class="{show: appVisualStateShowPageHowToPlay}">
+      <!-- <modal :class="{show: appVisualStateShowPageHowToPlay}">
         <chrome>
           <button id="button_howto_done" @click="ToggleHowToPlay(event, false)">done</button>
         </chrome>
@@ -254,7 +254,7 @@
             <p>Can you clear all 150 levels?</p>
           </section>
         </content>
-      </modal>
+      </modal> -->
       <modal :class="{show: appVisualStateShowPageSettings}">
         <chrome>
           <button id="button_settings_done" @click="ToggleSettings(event, false)">done</button>
@@ -290,13 +290,13 @@
                   <color :style="{backgroundColor: theme.color2}"></color>
                   <color :style="{backgroundColor: theme.color3}"></color>
                 </colors>
-                <name>{{theme.name}}</name>
+                <labelsmall>{{theme.name}}</labelsmall>
               </theme>
             </themes>
           </section>
         </content>
       </modal>
-      <modal :class="{show: appVisualStateShowPageGameOver}" @pointerdown="appVisualStateShowNotification = false;">
+      <modal class="notransition" :class="{show: appVisualStateShowPageGameOver}" @pointerdown="appVisualStateShowNotification = false;">
         <content style="justify-content: center">
           <!-- prettier-ignore -->
           <copyme id="copyme" v-if="gameLastHighScore.isDaily">▨ ▲ ◯  Daily - {{GetMonthAndDay(gameLastHighScore.dailyDate)}}
@@ -330,7 +330,7 @@
           </section>
         </content>
       </modal>
-      <oobe :class="{show: appVisualStateShowPageOOBE}">
+      <!-- <oobe :class="{show: appVisualStateShowPageOOBE}">
         <content>
           <section>
             <h1>Welcome!</h1>
@@ -361,7 +361,7 @@
           </section>
           <section></section>
         </content>
-      </oobe>
+      </oobe> -->
       <challenge :class="{show: appVisualStateShowPageChallenge}">
         <section>
           <h1>Quit for real?</h1>
@@ -371,7 +371,7 @@
           <button id="button_challenge_quit_yes" class="secondary" @click="EndGame">Yes</button>
         </smallbuttons>
       </challenge>
-      <stage v-if="!appVisualStateShowPageHome" :class="{paused: gameCurrentIsPaused}">
+      <stage v-if="!appVisualStateShowPageHome && !appTutorialIsInPlay" :class="{paused: gameCurrentIsPaused}">
         <chrome :class="{alert: gameCurrentTimer < 6000 && !appSettingsModes.infinite.isSelected}">
           <button id="button_stage_settings" @click="appVisualStateShowPageSettings = true">Settings</button>
           <time @click="ToggleGamePause(event, false)" v-if="!appSettingsModes.infinite.isSelected">{{gameCurrentIsPaused ? 'Paused' : 'Score: ' + NumberWithCommas(gameCurrentTotalScore)}}</time>
@@ -398,11 +398,53 @@
           </me>
         </playarea>
       </stage>
+      <tutorial :class="{show: appTutorialIsInPlay}">
+        <chrome v-if="appTutorialCurrentStepIndex !== appTutorialSteps.length - 1">
+          <button @click="HandleSkipTutorial">{{!appTutorialUserHasSeen ? 'Skip This' : 'Done'}}</button>
+        </chrome>
+        <hint @pointerdown="appVisualStateShowElementHint = false" :class="{show: appVisualStateShowElementHint && !gameCurrentIsGameOver && userSettingsUseHints}">
+          <message v-html="gameCurrentHintText"></message>
+        </hint>
+        <playarea>
+          <h2>{{appTutorialSteps[appTutorialCurrentStepIndex].title}}</h2>
+          <description v-html="appTutorialSteps[appTutorialCurrentStepIndex].description"></description>
+          <board :class="{unreveal: appTutorialCurrentStepIndex < 2 || appTutorialCurrentStepIndex === appTutorialSteps.length - 1, partial: appTutorialCurrentStepIndex === 3   }">
+            <piece :class="{selected: piece.isSelected}" v-for="(piece, index) in appTutorialBoardPieces.board" @click="piece.isSelected = appTutorialCurrentStepIndex > 3 ? !piece.isSelected : piece.isSelected" class="dropped">
+              <gild :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color, backgroundImage: piece.backgroundImage }"> </gild>
+            </piece>
+          </board>
+          <addtime :class="{flyaway: appVisualStateShowElementFlyaway}">+3 seconds</addtime>
+          <me v-if="appTutorialCurrentStepIndex === 0">
+            <piece>
+              <gild :style="{maskImage: 'var(--shape4)', webkitMaskImage: 'var(--shape4)', backgroundColor: 'var(--color1)', backgroundImage: 'var(--bgImage1)' }"> </gild>
+            </piece>
+          </me>
+          <me v-if="appTutorialCurrentStepIndex === appTutorialSteps.length - 1">
+            <piece>
+              <gild :style="{maskImage: 'var(--shape2)', webkitMaskImage: 'var(--shape2)', backgroundColor: 'var(--color3)', backgroundImage: 'var(--bgImage2)' }"> </gild>
+            </piece>
+          </me>
+          <me v-if="appTutorialCurrentStepIndex > 0 && appTutorialCurrentStepIndex < appTutorialSteps.length - 1 " :class="{nope: gameCurrentIsUserGuessWrong}">
+            <piece @click="HandleTutorialCheck">
+              <gild :style="{maskImage: appTutorialMePiece.shape, webkitMaskImage: appTutorialMePiece.shape, backgroundColor: appTutorialMePiece.color, backgroundImage: appTutorialMePiece.backgroundImage }"> </gild>
+            </piece>
+          </me>
+        </playarea>
+        <section>
+          <smallbuttons>
+            <button v-if="appTutorialCurrentStepIndex < appTutorialSteps.length - 1" :class="{disabled: appTutorialCurrentStepIndex === 0}" @click="HandleTutorialBack" class="secondary">Back</button>
+            <button v-if="appTutorialCurrentStepIndex < appTutorialSteps.length - 1" class="secondary" @click="HandleTutorialNext">Next</button>
+            <button v-if="!appTutorialUserHasSeen && appTutorialCurrentStepIndex === appTutorialSteps.length - 1" class="primary" @click="HandleDoneTutorial">Let's Go!</button>
+            <button v-if="appTutorialUserHasSeen && appTutorialCurrentStepIndex === appTutorialSteps.length - 1" class="secondary" @click="HandleSkipTutorial">Done</button>
+          </smallbuttons>
+        </section>
+      </tutorial>
     </app>
     <script src="helpers/console-enhancer.js" type="text/javascript"></script>
     <script src="helpers/getDailyChallenge.js" type="text/javascript"></script>
     <script src="helpers/howler.js" type="text/javascript"></script>
     <script id=" vue-framework" src="helpers/vue.min.js" type="text/javascript"></script>
+    <script src="models/TutorialStepObject.js" type="text/javascript"></script>
     <script src="models/ScoreObject.js" type="text/javascript"></script>
     <script src="models/ThemeObject.js" type="text/javascript"></script>
     <script src="models/PieceObject.js" type="text/javascript"></script>

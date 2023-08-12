@@ -1,3 +1,4 @@
+/// <reference path="../models/TutorialStepObject.js" />
 /// <reference path="../models/ThemeObject.js" />
 /// <reference path="../models/PieceObject.js" />
 /// <reference path="../models/ModeObject.js" />
@@ -12,7 +13,7 @@ Vue.config.debug = false;
 Vue.config.silent = true;
 // }
 
-Vue.config.ignoredElements = ['app', 'oobe', 'wallpaper', 'home', 'modes', 'mode', 'piece', 'glyph', 'gild', 'value', 'checkbox', 'toggle', 'version', 'howto', 'icon', 'chrome', 'quit', 'divider', 'stage', 'gameover', 'clears', 'time', 'playarea', 'addtime', 'board', 'me', 'puzzle', 'hint'];
+Vue.config.ignoredElements = ['app', 'tutorial', 'oobe', 'wallpaper', 'home', 'modes', 'mode', 'piece', 'glyph', 'gild', 'value', 'checkbox', 'toggle', 'version', 'howto', 'icon', 'chrome', 'quit', 'divider', 'stage', 'gameover', 'clears', 'time', 'playarea', 'addtime', 'board', 'me', 'puzzle', 'hint'];
 
 var app = new Vue({
   el: '#app',
@@ -20,14 +21,17 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.9.44',
+    currentVersion: '3.9.59',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
     newVersionAvailable: false,
-    appGuideMePieceIndicated: false,
-    appGuideMatchPieceIndicated: false,
-    appGuideFullBoardCleard: false,
+    appTutorialUserHasSeen: false,
+    appTutorialCurrentStepIndex: 0,
+    appTutorialSteps: TutorialSteps,
+    appTutorialBoardPieces: constructLevel('010020013110010112100220303221213211102001200313120', true),
+    appTutorialIsInPlay: false,
+    appTutorialMePiece: new PieceObject({ color: 'var(--color2)' }),
     appNotificationMessage: '',
     appSettingsModes: Modes,
     appSettingsSoundFX: new Howl({ src: '../audio/phft4.mp3', volume: 0.5 }),
@@ -490,7 +494,7 @@ var app = new Vue({
     },
 
     ToggleChallenge(event, _value) {
-      note('ToggleHowToPlay(event, value) called');
+      note('ToggleChallenge(event, value) called');
       if (event != null) {
         event.stopPropagation();
         event.preventDefault();
@@ -504,7 +508,7 @@ var app = new Vue({
       event.stopPropagation();
       event.preventDefault();
       this.ResetModalContentScrollPositions();
-      this.appVisualStateShowPageHowToPlay = _value;
+      this.appTutorialIsInPlay = true;
     },
 
     ToggleOOBE(event, _value) {
@@ -546,8 +550,13 @@ var app = new Vue({
     GetUserSettings() {
       note('GetUserSettings() called');
 
+      let _defaultsKept = true;
+
       if (localStorage.length === 0) {
-        this.ToggleOOBE(null, true);
+        this.appTutorialUserHasSeen = false;
+        this.appTutorialIsInPlay = true;
+      } else {
+        this.appTutorialUserHasSeen = true;
       }
 
       let _modes = localStorage.getItem('appSettingsModes');
@@ -1079,6 +1088,49 @@ var app = new Vue({
         localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
         localStorage.setItem('userSettingsUseSoundFX', this.userSettingsUseSoundFX);
         localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
+        localStorage.setItem('appTutorialUserHasSeen', JSON.stringify(this.appTutorialUserHasSeen));
+      }
+    },
+
+    HandleSkipTutorial() {
+      note('HandleSkipTutorial() called');
+      this.appTutorialIsInPlay = false;
+      this.appTutorialUserHasSeen = true;
+      this.appTutorialCurrentStepIndex = 0;
+      localStorage.setItem('appTutorialUserHasSeen', true);
+    },
+
+    HandleDoneTutorial() {
+      note('HandleDoneTutorial() called');
+      this.HandleSkipTutorial();
+      this.RestartGame();
+    },
+
+    HandleTutorialNext() {
+      note('HandleTutorialNext() called');
+      this.appTutorialCurrentStepIndex++;
+    },
+
+    HandleTutorialBack() {
+      note('HandleTutorialBack() called');
+      if (this.appTutorialCurrentStepIndex > 0) {
+        this.appTutorialCurrentStepIndex--;
+      }
+    },
+
+    HandleTutorialCheck() {
+      note('HandleTutorialCheck() called');
+      if (this.appTutorialCurrentStepIndex > 3) {
+        if (this.appTutorialBoardPieces.board[0].isSelected && this.appTutorialBoardPieces.board[1].isSelected && this.appTutorialBoardPieces.board[2].isSelected && this.appTutorialBoardPieces.board[3].isSelected) {
+          this.appTutorialCurrentStepIndex = this.appTutorialSteps.length - 2;
+
+          this.HandleTutorialNext();
+        } else {
+          this.gameCurrentIsUserGuessWrong = true;
+          window.setTimeout(function () {
+            app.gameCurrentIsUserGuessWrong = false;
+          }, 500);
+        }
       }
     },
 
@@ -1183,15 +1235,24 @@ var app = new Vue({
           break;
         case 'Enter':
         case ' ':
-          if (!this.gameCurrentIsGameOver && !this.appVisualStateShowPageChallenge) {
+          if (!this.appTutorialIsInPlay && !this.gameCurrentIsGameOver && !this.appVisualStateShowPageChallenge) {
             this.CheckBoard();
           } else if (this.appVisualStateShowPageChallenge) {
             this.EndGame();
+          } else if (this.appTutorialIsInPlay) {
+            if (this.appTutorialCurrentStepIndex < this.appTutorialSteps.length - 1) {
+              this.HandleTutorialNext();
+            } else {
+              this.HandleSkipTutorial();
+            }
           }
           break;
         case 'Escape':
           if (this.gameCurrentIsGameOver) {
             this.appVisualStateShowPageHome = true;
+          }
+          if (this.appTutorialIsInPlay) {
+            this.HandleSkipTutorial();
           }
           this.appVisualStateShowPageSettings = false;
           this.appVisualStateShowPageHighScores = false;

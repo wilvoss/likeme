@@ -59,7 +59,6 @@ function constructAllLevels(_source, _allLevelsObject) {
 // breaks a single string of numbers into me PieceObject and 16 fully realized board PieceObjects
 function constructLevel(_bs, _splice = false) {
   if (_splice) {
-    _bs = createLevelSource();
     _bs = _bs.match(new RegExp('.{1,3}', 'g'));
   }
 

@@ -156,7 +156,8 @@ oobe h1 {
   font-size: 3.3em;
 }
 
-page h1 {
+page h1,
+tutorial h1 {
   margin: var(--defaultGap) 0px 0px 0px;
   font-size: 4.2em;
 }
@@ -214,6 +215,7 @@ stage {
   display: flex;
   background: hsl(var(--appBackground));
   height: 100%;
+  width: 100%;
   max-height: var(--appMaxHeight);
   max-width: var(--appMaxWidth);
   flex-direction: column;
@@ -224,8 +226,9 @@ stage {
 oobe,
 page,
 modal,
-challenge {
-  opacity: 0;
+challenge,
+tutorial {
+  /* opacity: 0; */
   pointer-events: none;
   display: flex;
   max-width: var(--appMaxWidth);
@@ -239,6 +242,16 @@ challenge {
   align-content: center;
   justify-content: space-between;
   flex-direction: column;
+  transform: translateY(100%);
+  transition: 350ms ease-in-out all;
+}
+
+.notransition {
+  transition: 0ms none none;
+}
+
+tutorial {
+  z-index: 10000;
 }
 
 oobe {
@@ -250,9 +263,7 @@ oobe {
 challenge {
   align-items: center;
   justify-content: center;
-  height: 100%;
   background: hsl(var(--appBackground));
-  transition: 200ms ease-in-out all;
 }
 
 header,
@@ -306,7 +317,8 @@ page content {
 }
 
 oobe content,
-stage playarea {
+stage playarea,
+tutorial playarea {
   padding-bottom: var(--defaultGap);
   justify-content: center;
   overflow: hidden;
@@ -360,7 +372,9 @@ modal {
 
 oobe.show,
 page.show,
-modal.show {
+modal.show,
+tutorial.show,
+challenge.show {
   opacity: 1;
   pointer-events: all;
   transform: translateY(0px);
@@ -370,9 +384,9 @@ oobe.show {
   transition: 0s linear all;
 }
 
-challenge.show {
-  opacity: 1;
-  pointer-events: all;
+page.show,
+modal.show.notransition {
+  transition: none;
 }
 
 button {
@@ -662,8 +676,18 @@ chrome button:last-of-type {
   justify-content: flex-end;
 }
 
-modal chrome {
+modal chrome,
+tutorial chrome {
   justify-content: flex-end;
+}
+
+tutorial chrome button,
+tutorial.show chrome button {
+  width: auto;
+}
+
+tutorial smallbuttons {
+  padding-bottom: var(--defaultGap);
 }
 
 modal img {
@@ -744,6 +768,10 @@ labelsmall {
   color: var(--color1);
 }
 
+modal labelsmall {
+  color: hsl(var(--appForeground));
+}
+
 labelsmall span {
   font-family: 'Arial';
   font-weight: bold;
@@ -789,7 +817,7 @@ mode value {
 
 description {
   display: block;
-  font-style: italic;
+  /* font-style: italic; */
   font-size: 0.8em;
   padding: 0px 40px;
   margin: 10px 0px 30px;
@@ -907,6 +935,54 @@ board {
   margin: var(--defaultGap) 10px;
 }
 
+tutorial playarea {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+tutorial board {
+  overflow: hidden;
+  align-content: start;
+  opacity: 1;
+  height: calc((var(--pieceSize) + 4px) * 4.2em);
+  transition: 300ms ease-in-out all;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+tutorial h1 {
+  position: absolute;
+  transform: translateY(-240px);
+  transition: 300ms ease-in-out all;
+}
+
+tutorial h1.hide {
+  transform: translateY(-340px);
+  opacity: 0;
+}
+
+tutorial scorearea {
+  width: auto;
+}
+
+tutorial description {
+  padding-top: 0;
+  padding-bottom: var(--defaultGap);
+  max-width: 340px;
+  height: 4.4em;
+  margin: 0;
+  line-height: 1.5em;
+}
+
+tutorial board.unreveal {
+  opacity: 0;
+  height: 0px;
+}
+
+tutorial board.partial {
+  height: calc(var(--pieceSize) + 4px);
+}
+
 piece {
   transform: translateY(-640px);
   transition: 00ms ease-out transform;
@@ -982,11 +1058,13 @@ piece.selected.exclude {
   }
 }
 
-stage me {
+stage me,
+tutorial me {
   padding: 0px 0px 0px;
 }
 
-stage me piece {
+stage me piece,
+tutorial me piece {
   margin: 20px 0px 0px;
   transform: translateY(0) scale(1.1);
 }
@@ -1153,7 +1231,7 @@ theme {
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  padding: 12px 0px 6px;
+  padding: 8px 0px 8px;
   border-radius: var(--borderRadius);
   row-gap: 0px;
   cursor: pointer;
@@ -1282,11 +1360,13 @@ oobe me piece {
 }
 
 stage me piece:focus,
-stage me piece:active {
+stage me piece:active,
+tutorial me piece:focus,
+tutorial me piece:active {
   transform: translateY(2px) scale(1.1);
 }
 
-stage me.nope piece {
+me.nope piece {
   animation: nope 0.15s linear 0s 3;
   -webkit-animation: nope 0.15s linear 0s 3;
 }
@@ -1355,6 +1435,12 @@ newhigh {
 
 gameover h2 {
   margin-top: var(--defaultGap);
+}
+
+@media only screen and (max-height: 800px) {
+  tutorial board {
+    height: calc((var(--pieceSize) + 4px) * 3);
+  }
 }
 
 @media only screen and (max-width: 500px) {
