@@ -31,6 +31,6 @@ var TutorialSteps = [
   }),
   new TutorialStepObject({
     title: "That's it!",
-    description: "A new level with a new Me starts. Every game you'll get 3 minutes to clear as many levels as possible. Perfect clears add time to the clock.",
+    description: "Then a new level with a new Me will start. Every game you'll get 3 minutes to clear as many levels as possible. Perfect clears add bonus time.",
   }),
 ];
