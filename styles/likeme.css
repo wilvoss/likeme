@@ -509,7 +509,7 @@ controlgroup {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  column-gap: 6px;
+  column-gap: 8px;
   text-align: left;
 }
 
@@ -568,6 +568,21 @@ icon.download {
   -webkit-mask-image: url(../images/icon_download.svg);
 }
 
+.inline icon.gradcap {
+  mask-size: 22px 22px;
+  -webkit-mask-size: 22px 22px;
+  height: 22px;
+  width: 22px;
+  margin-bottom: 2px;
+  mask-image: url(../images/icon_gradcap.svg);
+  -webkit-mask-image: url(../images/icon_gradcap.svg);
+}
+
+icon.feedback {
+  mask-image: url(../images/icon_feedback.svg);
+  -webkit-mask-image: url(../images/icon_feedback.svg);
+}
+
 icon.medal {
   mask-image: url(../images/icon_medal.svg);
   -webkit-mask-image: url(../images/icon_medal.svg);
@@ -588,6 +603,13 @@ icon.info {
   -webkit-mask-image: url(../images/icon_info.svg);
 }
 
+icon.bullhorn {
+  mask-size: 28px 28px;
+  -webkit-mask-size: 28px 28px;
+  mask-image: url(../images/icon_bullhorn.svg);
+  -webkit-mask-image: url(../images/icon_bullhorn.svg);
+}
+
 icon.play {
   mask-image: url(../images/icon_play.svg);
   -webkit-mask-image: url(../images/icon_play.svg);
@@ -599,8 +621,15 @@ icon.share {
 }
 
 icon.trophy {
+  mask-size: 23px 23px;
+  -webkit-mask-size: 23px 23px;
   mask-image: url(../images/icon_trophy.svg);
   -webkit-mask-image: url(../images/icon_trophy.svg);
+}
+
+icon.trophy2 {
+  mask-image: url(../images/icon_trophy2.svg);
+  -webkit-mask-image: url(../images/icon_trophy2.svg);
 }
 
 icon.rating {
@@ -615,8 +644,8 @@ icon.book {
   -webkit-mask-image: url(../images/icon_book.svg);
 }
 icon.reel {
-  mask-image: url(../images/icon_reel2.svg);
-  -webkit-mask-image: url(../images/icon_reel2.svg);
+  mask-image: url(../images/icon_reel.svg);
+  -webkit-mask-image: url(../images/icon_reel.svg);
 }
 
 .show button,

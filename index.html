@@ -69,9 +69,12 @@
             <description v-if="appSettingsModes.easy.isSelected">{{appSettingsModes.easy.description}}</description>
           </section>
           <section>
+            <button title="Click to start a new game." class="primary" @click="RestartGame">Play</button>
             <button v-if="!gameDailyChallengeAlreadyScored && !gameDailyChallengeHasBeenStarted && gameDailyChallenge.allLevelsSource != ''" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="tertiary" @click="StartDailyChallenge">Daily Challenge!</button>
-            <button title="Click to start a new game" class="primary" @click="RestartGame">Play</button>
-            <button title="Click to learn how to play Like Me?" class="secondary" @click="ToggleHowToPlay(event, true)">Tutorial</button>
+            <button title="Click to learn how to play Like Me?" class="secondary inline" @click="ToggleHowToPlay(event, true)">
+              <!-- <icon class="gradcap"></icon> -->
+              Tutorial
+            </button>
             <smallbuttons>
               <button title="Click to adjust the game settings." class="secondary" @click="ToggleSettings(event, true)">
                 <icon class="settings"></icon>
@@ -80,7 +83,7 @@
                 <icon class="trophy"></icon>
               </button>
               <button title="Click to see a list of credits." class="secondary" @click="ToggleCredits(event, true)">
-                <icon class="info"></icon>
+                <icon class="bullhorn"></icon>
               </button>
               <button title="Click to share this app with your friends." class="secondary" @click="ShareApp">
                 <icon class="share"></icon>
@@ -88,7 +91,7 @@
             </smallbuttons>
           </section>
           <section>
-            <version> &copy;{{new Date().getFullYear()}} <a href="https://bigtentgames.com" target="_blank">Big Tent Games</a> - v{{currentVersion + (window.location.host !== 'likeme.games' ? 'p' : '')}} </version>
+            <version> &copy;{{new Date().getFullYear()}} <a href="#" @click="GiveFeedback" target="_blank">Big Tent Games</a> - <a href="#" @click="window.location.reload(true)" target="_blank">v{{currentVersion + (window.location.host !== 'likeme.games' ? 'p' : '')}}</a> </version>
           </section>
         </content>
       </page>
@@ -98,17 +101,14 @@
         </chrome>
         <content>
           <header>
-            <h1>Information</h1>
+            <h1>Credits</h1>
           </header>
           <section>
-            <h2>Feedback</h2>
-            <credit><a href="mailto:bigtentgames@icloud.com?subject=Like Me? feedback" target="_blank">bigtentgames@icloud.com</a></credit>
+            <h2>Created by</h2>
+            <credit>Wil Voss</credit>
           </section>
           <section>
-            <h2>Credits</h2>
-            <h3>Created by</h3>
-            <credit>Wil Voss</credit>
-            <h3>Feedback and ideas</h3>
+            <h2>Feedback and ideas</h2>
             <credit>Alex Barbieri</credit>
             <credit>Melinda Cocolas</credit>
             <credit>Joe Fogarty</credit>
@@ -118,16 +118,11 @@
             <credit>Danielle Siler</credit>
             <credit>Gretchen Voss</credit>
             <credit>Kathleen Voss</credit>
+            <credit>&nbsp;</credit>
+            <credit>Thank you for making this game better!</credit>
           </section>
           <section>
-            <h2>Licensing</h2>
-            <h3>The Noun Project</h3>
-            <credit><a href="https://thenounproject.com/icon/information-2119887/" target="_blank">SELicon - information icon</a></credit>
-            <credit><a href="https://thenounproject.com/icon/settings-2650515/" target="_blank">i cons - settings icon</a></credit>
-            <credit><a href="https://thenounproject.com/icon/trophy-4942454/" target="_blank">Meko - trophy icon</a></credit>
-          </section>
-          <section>
-            <button class="danger" @click="{window.location.reload(true)}">Force refresh</button>
+            <button class="secondary" @click="GiveFeedback">Give feedback</button>
           </section>
         </content>
       </modal>

@@ -21,7 +21,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.9.81',
+    currentVersion: '3.9.84',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -245,7 +245,7 @@ var app = new Vue({
       } else {
         _shareObject = 'https://' + window.location.host;
         this.appVisualStateShowNotification = true;
-        this.appNotificationMessage = 'Copied app url to clipboard.';
+        this.appNotificationMessage = 'Copied game link to the clipboard.';
         navigator.clipboard.writeText(_shareObject);
       }
     },
@@ -259,9 +259,13 @@ var app = new Vue({
         navigator.share(_shareObject);
       } else {
         this.appVisualStateShowNotification = true;
-        this.appNotificationMessage = 'Score results copied to clipboard.';
+        this.appNotificationMessage = 'Daily challenge results copied to the clipboard.';
         navigator.clipboard.writeText(_shareText);
       }
+    },
+
+    GiveFeedback() {
+      window.location = 'mailto:bigtentgames@icloud.com?subject=Feedback - Like Me v' + this.currentVersion;
     },
 
     RestartGame() {
@@ -418,12 +422,15 @@ var app = new Vue({
 
     // this is for testing purposes and changes frequently
     SetState() {
-      this.gameDailyChallenge.allLevels.forEach((level) => {
-        level.completed = true;
-      });
       this.gameDailyChallengeAlreadyScored = false;
-      this.gameCurrentNumberOfClears = 150;
-      this.EndGame();
+      this.gameDailyChallengeHasBeenStarted = false;
+      this.gameDailyChallenge.allLevelsSource = '010';
+      // this.gameDailyChallenge.allLevels.forEach((level) => {
+      //   level.completed = true;
+      // });
+      // this.gameDailyChallengeAlreadyScored = false;
+      // this.gameCurrentNumberOfClears = 150;
+      // this.EndGame();
     },
 
     HandleAppSettingsAddTimeInterval() {
@@ -1292,6 +1299,8 @@ var app = new Vue({
           }
           break;
         case 'Escape':
+          this.appVisualStateShowNotification = false;
+          this.appVisualStateShowElementHint = false;
           if (this.gameCurrentIsGameOver) {
             this.appVisualStateShowPageHome = true;
           }
