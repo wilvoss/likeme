@@ -17,13 +17,13 @@
   --appForegroundWeak: 0, 0%, 39%;
 
   /* app measurements */
-  --appMaxHeight: 918px;
+  --appMaxHeight: 840px;
   --targetX: 50%;
   --borderRadius: 6px;
   --defaultUnit: 8px;
   --defaultGap: 24px;
   --chromeHeight: 40px;
-  --appMaxWidth: 500px;
+  --appMaxWidth: 450px;
   --transitionTime: 250ms;
   --transitionEase: ease-in-out;
 
@@ -57,7 +57,7 @@ body {
   height: 100%;
   overflow: hidden;
   color: hsl(var(--appForeground));
-  font-family: -apple-system, Verdana, sans-serif;
+  font-family: -apple-system, Arial, sans-serif;
   user-select: none;
   -webkit-user-select: none;
   background: var(--color2);
@@ -83,7 +83,7 @@ wallpaper {
   position: absolute;
   width: 300%;
   height: 300%;
-  translate: -50vw -50vw;
+  translate: -40vw -50vw;
   z-index: -1;
   background-color: rgba(0, 0, 0, 0.92);
   opacity: 0.7;
@@ -163,6 +163,7 @@ page h1,
 tutorial h1 {
   margin: var(--defaultGap) 0px 0px 0px;
   font-size: 4.2em;
+  text-shadow: 0px -1px 0px hsl(var(--appBackground)), 0px 0px 20px hsl(var(--appBackground));
 }
 
 p,
@@ -308,6 +309,7 @@ content::-webkit-scrollbar {
 }
 
 page content {
+  gap: var(--defaultGap);
   padding-bottom: var(--defaultGap);
   justify-content: space-between;
   overflow: hidden;
@@ -398,6 +400,12 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
+button.hide {
+  visibility: hidden;
+  /* pointer-events: none;
+  opacity: 0; */
+}
+
 button.primary {
   background-color: var(--color1);
   border-color: var(--color1);
@@ -447,6 +455,23 @@ button.quaternary:active {
   box-shadow: none;
 }
 
+.show button.inline.small {
+  font-size: 12px;
+  font-family: -apple-system, Arial, sans-serif;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 0px;
+}
+
+.show button.inline.small icon {
+  background-color: var(--color2);
+  mask-size: 12px 12px;
+  -webkit-mask-size: 12px 12px;
+  height: 12px;
+  width: 12px;
+  margin-bottom: 2px;
+}
+
 @keyframes pulse {
   50% {
     transform: scale(1.02);
@@ -464,7 +489,7 @@ button.danger {
   border: none;
   background: none;
   box-shadow: none;
-  font-family: -apple-system, Verdana, sans-serif;
+  font-family: -apple-system, Arial, sans-serif;
   font-size: 1em;
   letter-spacing: 0px;
   padding: 0;
@@ -478,12 +503,22 @@ button:active {
   transform: translateY(1px);
 }
 
-smallbuttons {
+smallbuttons,
+controlgroup {
   width: 250px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   column-gap: 6px;
+  text-align: left;
+}
+
+controlgroup {
+  flex-wrap: wrap;
+  gap: 6px;
+  column-gap: 6px;
+  row-gap: 6px;
+  width: 100%;
 }
 
 smallbuttons button {
@@ -594,7 +629,7 @@ icon.reel {
 
 button.update {
   position: absolute;
-  margin-top: var(--defaultGap);
+  margin-top: 6px;
 }
 
 @keyframes interactable {
@@ -650,7 +685,7 @@ chrome {
 .show chrome button,
 chrome button {
   font-size: 1em;
-  font-family: -apple-system, Verdana, sans-serif;
+  font-family: -apple-system, Arial, sans-serif;
   background: none;
   background-color: hsl(var(--appBackground));
   color: hsl(var(--appForeground));
@@ -712,6 +747,7 @@ leftright.impress {
   font-weight: 800;
   border: 1px solid hsl(var(--appBackgroundStrongest));
   background: hsl(var(--appBackgroundStrongest));
+  color: var(--color2);
 }
 
 leftright right {
@@ -1172,7 +1208,7 @@ checkbox {
   flex-direction: row;
   justify-content: space-between;
   padding: 9px 6px 9px 14px;
-  margin-top: 6px;
+  /* margin-top: 6px; */
   cursor: pointer;
   width: calc(100% - 20px);
   border-radius: var(--borderRadius);
@@ -1459,6 +1495,10 @@ gameover h2 {
     overflow-y: scroll;
   }
 
+  button.update {
+    margin-top: -4px;
+  }
+
   tutorial board {
     height: calc((var(--pieceSize) + 4px) * 2);
   }
@@ -1468,9 +1508,14 @@ gameover h2 {
   }
 }
 
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 450px) {
   html {
     background: hsl(var(--appBackground));
+  }
+
+  page content {
+    margin-top: 0;
+    height: calc(100% - var(--defaultGap));
   }
 
   app {

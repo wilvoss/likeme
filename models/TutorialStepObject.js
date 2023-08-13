@@ -11,11 +11,11 @@ class TutorialStepObject {
 var TutorialSteps = [
   new TutorialStepObject({
     title: 'Hi! This is Me.',
-    description: 'I live inside that button.',
+    description: 'I live inside this button.',
   }),
   new TutorialStepObject({
     title: 'This is still Me.',
-    description: 'I like to change every level.',
+    description: 'I change every level.',
   }),
   new TutorialStepObject({
     title: 'This is a level.',

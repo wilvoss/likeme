@@ -21,7 +21,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.9.74',
+    currentVersion: '3.9.80',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -1192,7 +1192,7 @@ var app = new Vue({
     },
 
     AdjustPieceSizeBasedOnViewport() {
-      this.appSettingsPieceSize = window.innerWidth < 500 ? (window.innerWidth - 60) / this.appSettingsBoardGridSize + 'px' : 450 / this.appSettingsBoardGridSize + 'px';
+      this.appSettingsPieceSize = window.innerWidth < 450 ? (window.innerWidth - 60) / this.appSettingsBoardGridSize + 'px' : 400 / this.appSettingsBoardGridSize + 'px';
       this.documentCssRoot.style.setProperty('--pieceSize', this.appSettingsPieceSize);
       this.appSettingsTotalNumberOfBoardPieces = window.innerHeight < 234 ? 12 : 16;
     },
