@@ -21,7 +21,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.9.84',
+    currentVersion: '3.9.85',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -1207,8 +1207,8 @@ var app = new Vue({
     async GetDailyChallenge() {
       note('GetDailyChallenge() called');
       if (!this.gameCurrentIsGameDailyChallenge) {
-        this.gameDailyChallenge = new AllLevelsObject({});
         readDailyChallengeFile(function (contents, result) {
+          this.gameDailyChallenge = new AllLevelsObject({});
           announce(result);
           if (contents !== null && contents !== undefined) {
             if (app.gameDailyChallenge === null || app.gameDailyChallenge === undefined || app.gameDailyChallenge.allLevelsSource === '') {
