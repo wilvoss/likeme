@@ -49,7 +49,7 @@
         <message v-html="appNotificationMessage"></message>
       </notification>
       <page :class="{show: appVisualStateShowPageHome}" @pointerdown="appVisualStateShowNotification = false;">
-        <button v-if="newVersionAvailable" title="There is an update available for Like Me. Click to apply the update." class="quaternary pulse update inline small" @click="HandleUpdateAppButtonClick">New Update<icon class="download"></icon></button>
+        <button v-if="newVersionAvailable" title="There is an update available. Click to apply the update." class="quaternary pulse update inline small" @click="HandleUpdateAppButtonClick">New Update<icon class="download"></icon></button>
         <content>
           <section>
             <h1>Like Me?</h1>
@@ -161,7 +161,7 @@
         </content>
       </modal>
       <modal class="pause" @click="ToggleGamePause(event, false)" :class="{show: gameCurrentIsPaused && !gameCurrentIsGameOver}">
-        <button class="quaternary"><icon class="play"></icon></button>
+        <button title="Click the button to resume playing the game." class="quaternary"><icon class="play"></icon></button>
       </modal>
       <modal :class="{show: appVisualStateShowPageSettings}">
         <chrome>
