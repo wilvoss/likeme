@@ -19,15 +19,15 @@ var TutorialSteps = [
   }),
   new TutorialStepObject({
     title: 'This is a level.',
-    description: 'Some of the pieces on this board are like Me.',
+    description: 'Some of these pieces are "like" Me.',
   }),
   new TutorialStepObject({
-    title: 'These ones!',
+    title: 'These are!',
     description: 'They share <b>at least 2</b> of my attributes: pattern and shape, shape and color, or color and pattern.',
   }),
   new TutorialStepObject({
     title: 'So now what?',
-    description: 'Select all of the pieces like me and then <br >click me to clear the level.',
+    description: 'Select all of the pieces like Me and then <br >click Me to clear the level.',
   }),
   new TutorialStepObject({
     title: "That's it!",
