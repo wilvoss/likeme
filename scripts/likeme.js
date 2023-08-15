@@ -21,7 +21,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.9.88',
+    currentVersion: '3.9.90',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -1188,6 +1188,8 @@ var app = new Vue({
     HandleOnPageShowEvent() {
       note('HandleOnPageShowEvent() called');
       this.appSettingsSoundFX = new Howl({ src: '../audio/phft4.mp3', volume: 0.5 });
+      window.clearInterval(this.updateInterval);
+      this.updateInterval = window.setInterval(this.UpdateApp, this.appSettingsModeHardInterval);
       this.GetDailyChallenge();
     },
 
