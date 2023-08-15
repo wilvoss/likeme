@@ -21,7 +21,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.9.90',
+    currentVersion: '3.9.93',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -1168,19 +1168,23 @@ var app = new Vue({
     HandleTutorialCheck() {
       note('HandleTutorialCheck() called');
       if (this.appTutorialCurrentStepIndex > 3) {
-        if (this.appTutorialBoardPieces.board[0].isSelected && this.appTutorialBoardPieces.board[1].isSelected && this.appTutorialBoardPieces.board[2].isSelected && this.appTutorialBoardPieces.board[3].isSelected) {
-          this.appTutorialBoardPieces.board[0].isSelected = false;
-          this.appTutorialBoardPieces.board[1].isSelected = false;
-          this.appTutorialBoardPieces.board[2].isSelected = false;
-          this.appTutorialBoardPieces.board[3].isSelected = false;
-          this.appTutorialCurrentStepIndex = this.appTutorialSteps.length - 2;
-
-          this.HandleTutorialNext();
+        let _perfectMatch = true;
+        this.appTutorialBoardPieces.board.forEach((piece, i) => {
+          if ((i < 4 && !piece.isSelected) || (i >= 4 && piece.isSelected)) {
+            _perfectMatch = false;
+          }
+        });        
+        if (_perfectMatch) {
+          this.appTutorialBoardPieces.board.forEach((piece, i) => {
+            piece.isSelected = false;
+          });
+           this.appTutorialCurrentStepIndex = this.appTutorialSteps.length - 2;
+           this.HandleTutorialNext();
         } else {
-          this.gameCurrentIsUserGuessWrong = true;
-          window.setTimeout(function () {
-            app.gameCurrentIsUserGuessWrong = false;
-          }, 500);
+           this.gameCurrentIsUserGuessWrong = true;
+           window.setTimeout(function () {
+             app.gameCurrentIsUserGuessWrong = false;
+           }, 500);
         }
       }
     },
