@@ -9,10 +9,6 @@
   --appForegroundStrong: 0, 0%, calc(100% - 10%);
   --appForegroundStrongest: 0, 0%, calc(100% - 0%);
   --appForegroundWeak: 0, 0%, calc(100% - 39%);
-
-  --bgImage1: repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.4) 0px, rgba(0, 0, 0, 0.4) 10%, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0) 20%);
-  --bgImage2: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.4) 0px, rgba(0, 0, 0, 0.4) 1.1%, rgba(0, 0, 0, 0) 1.1%, rgba(0, 0, 0, 0) 4.5%);
-  --bgImage3: repeating-radial-gradient(circle, rgba(0, 0, 0, 0.4) 0px, rgba(0, 0, 0, 0.4) 15%, rgba(0, 0, 0, 0) 15%, rgba(0, 0, 0, 0) 30%);
 }
 
 mode.selected piece,

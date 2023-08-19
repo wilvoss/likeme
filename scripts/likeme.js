@@ -21,7 +21,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.9.98',
+    currentVersion: '4.0.1',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -87,6 +87,7 @@ var app = new Vue({
     userHighScoresInfinite: [],
     userHighScoresEasy: [],
     userHighScoresHard: [],
+    userSettingsUseAltPatterns: false,
     userSettingsUseHints: true,
     userSettingsUseSoundFX: true,
     userSettingsUseDarkMode: false,
@@ -498,6 +499,16 @@ var app = new Vue({
       localStorage.setItem('userSettingsUseCats', this.userSettingsUseCats);
       this.GetRandomWallpaper();
     },
+    
+    ToggleUsingAltPattern(event){
+      note('ToggleUsingAltPattern(event) called');
+      if (event != undefined) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      this.userSettingsUseAltPatterns = !this.userSettingsUseAltPatterns;
+      localStorage.setItem('userSettingsUseAltPatterns', this.userSettingsUseAltPatterns);
+    },
 
     ToggleUsingSound(event) {
       note('ToggleUsingSound(event) called');
@@ -626,6 +637,12 @@ var app = new Vue({
         this.userSettingsUseCats = _userSettingsUseCats;
       }
 
+      let _userSettingsUseAltPatterns = localStorage.getItem('userSettingsUseAltPatterns');
+      if (_userSettingsUseAltPatterns !== undefined && _userSettingsUseAltPatterns !== null) {
+        _userSettingsUseAltPatterns = JSON.parse(_userSettingsUseAltPatterns);
+        this.userSettingsUseAltPatterns = _userSettingsUseAltPatterns;
+      }
+      
       let _sounds = localStorage.getItem('userSettingsUseSoundFX');
       if (_sounds !== undefined && _sounds !== null) {
         _sounds = JSON.parse(_sounds);
@@ -1132,6 +1149,7 @@ var app = new Vue({
         localStorage.setItem('gameCurrentTotalScore', this.gameCurrentTotalScore);
         localStorage.setItem('gameCurrentHasAnyPieceEverBeenSelected', JSON.stringify(this.gameCurrentHasAnyPieceEverBeenSelected));
         localStorage.setItem('userSettingsUseCats', this.userSettingsUseCats);
+        localStorage.setItem('userSettingsUseAltPatterns', this.userSettingsUseAltPatterns);
         localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
         localStorage.setItem('userSettingsUseSoundFX', this.userSettingsUseSoundFX);
         localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
@@ -1285,6 +1303,9 @@ var app = new Vue({
         case 'c':
           this.ToggleUsingCats();
           break;
+        case 'p':
+          this.ToggleUsingAltPattern();
+          break;          
         case '1':
         case '2':
         case '3':

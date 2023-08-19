@@ -1,0 +1,35 @@
+:root{
+  
+  --bgImage1: 
+  linear-gradient(90deg, 
+  hsla(var(--patternHSL), 0) 0%, 
+  hsla(var(--patternHSL), 0) 50%, 
+  hsla(var(--patternHSL), var(--patternOpacity)) 50%,
+  hsla(var(--patternHSL), var(--patternOpacity)) 100% 
+  );
+  --bgImage2: linear-gradient(45deg, 
+  hsla(var(--patternHSL), var(--patternOpacity)) 0%, 
+  hsla(var(--patternHSL), var(--patternOpacity)) 12.5%, 
+  hsla(var(--patternHSL), 0.0) 12.5%, 
+  hsla(var(--patternHSL), 0.0) 25%, 
+  hsla(var(--patternHSL), var(--patternOpacity)) 25%, 
+  hsla(var(--patternHSL), var(--patternOpacity)) 37.5%, 
+  hsla(var(--patternHSL), 0.0) 37.5%, 
+  hsla(var(--patternHSL), 0.0) 50%, 
+  hsla(var(--patternHSL), var(--patternOpacity)) 50%, 
+  hsla(var(--patternHSL), var(--patternOpacity)) 62.5%, 
+  hsla(var(--patternHSL), 0.0) 62.5%, 
+  hsla(var(--patternHSL), 0.0) 75%, 
+  hsla(var(--patternHSL), var(--patternOpacity)) 75%, 
+  hsla(var(--patternHSL), var(--patternOpacity)) 87.5%, 
+  hsla(var(--patternHSL), 0.0) 87.5%, 
+  hsla(var(--patternHSL), 0.0) 100%);
+  --bgImage3: radial-gradient(hsla(var(--patternHSL), var(--patternOpacity)) 30%, hsla(var(--patternHSL), 0) 30%), radial-gradient(hsla(var(--patternHSL), var(--patternOpacity)) 30%, hsla(var(--patternHSL), 0) 30%);
+  --bgImage4: none;
+}
+
+piece gild {
+  background-size: 40% 40%;
+  background-position: 0 0, 100% 100%;
+  background-repeat: repeat;
+}

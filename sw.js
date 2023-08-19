@@ -1,5 +1,5 @@
 // the cache version gets updated every time there is a new deployment
-const CACHE_VERSION = '3.9.98';
+const CACHE_VERSION = '4.0.1';
 const CURRENT_CACHE = `main-${CACHE_VERSION}`;
 
 // prettier-ignore
@@ -40,6 +40,7 @@ const cacheFiles = [
   'styles/likeme-darkmode.css',
   'styles/cats-likeme.css',
   'styles/cats-likeme-darkmode.css',
+  'styles/altpattern1.css',
   'scripts/likeme.js',
   'index.html',
 ];

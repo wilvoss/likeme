@@ -37,16 +37,19 @@
   /* game set values */
   --colorDanger: rgb(224, 0, 0);
 
+  --patternOpacity: .5;
+  --patternHSL: 0, 0%, 100%;
+  
   --shape1: url(./images/Square.svg);
   --shape2: url(./images/Circle.svg);
   --shape3: url(./images/Triangle.svg);
   --shape4: url(./images/Hexagon.svg);
   --infinity: url(./images/Infinity.svg);
 
-  --bgImage1: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.5) 10%, rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 0) 20%);
-  --bgImage2: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.7) 0px, rgba(255, 255, 255, 0.7) 1.1%, rgba(255, 255, 255, 0) 1.1%, rgba(255, 255, 255, 0) 4.5%);
-  --bgImage3: repeating-radial-gradient(circle, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.5) 14.5%, rgba(255, 255, 255, 0) 14.5%, rgba(255, 255, 255, 0) 29%);
-  --bgImage4: none;
+  --bgImage1: repeating-linear-gradient(-45deg, hsla(var(--patternHSL), var(--patternOpacity)) 0px, hsla(var(--patternHSL), var(--patternOpacity)) 10%, hsla(var(--patternHSL), 0) 10%, hsla(var(--patternHSL), 0) 20%);
+  --bgImage2: repeating-linear-gradient(45deg, hsla(var(--patternHSL), var(--patternOpacity)) 0px, hsla(var(--patternHSL), var(--patternOpacity)) 1.1%, hsla(var(--patternHSL), 0) 1.1%, hsla(var(--patternHSL), 0) 4.5%);
+  --bgImage3: repeating-radial-gradient(circle, hsla(var(--patternHSL), var(--patternOpacity)) 0px, hsla(var(--patternHSL), var(--patternOpacity)) 14.5%, hsla(var(--patternHSL), 0) 14.5%, hsla(var(--patternHSL), 0) 29%);
+--bgImage4: none;
 }
 
 html,
