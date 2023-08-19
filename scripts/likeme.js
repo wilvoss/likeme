@@ -21,7 +21,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '3.9.97',
+    currentVersion: '3.9.98',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -1305,23 +1305,27 @@ var app = new Vue({
           }
           break;
         case 'Escape':
-          this.appVisualStateShowNotification = false;
-          this.appVisualStateShowElementHint = false;
-          if (this.gameCurrentIsGameOver) {
-            this.appVisualStateShowPageHome = true;
-          }
-          if (this.appTutorialIsInPlay) {
-            this.HandleSkipTutorial();
-          }
-          this.appVisualStateShowPageSettings = false;
-          this.appVisualStateShowPageHighScores = false;
-          this.appVisualStateShowPageHowToPlay = false;
-          this.appVisualStateShowPageCredits = false;
-          this.appVisualStateShowPageChallenge = false;
-          this.appVisualStateShowElementHint = false;
-          this.appVisualStateShowPageGameOver = false;
+            this.ClearEphemeralVisualStates();
           break;
       }
+    },
+    
+    ClearEphemeralVisualStates(){
+          app.appVisualStateShowNotification = false;
+          app.appVisualStateShowElementHint = false;
+          if (app.gameCurrentIsGameOver) {
+            app.appVisualStateShowPageHome = true;
+          }
+          if (app.appTutorialIsInPlay) {
+            app.HandleSkipTutorial();
+          }
+          app.appVisualStateShowPageSettings = false;
+          app.appVisualStateShowPageHighScores = false;
+          app.appVisualStateShowPageHowToPlay = false;
+          app.appVisualStateShowPageCredits = false;
+          app.appVisualStateShowPageChallenge = false;
+          app.appVisualStateShowElementHint = false;
+          app.appVisualStateShowPageGameOver = false;
     },
 
     HandleUpdateAppButtonClick() {

@@ -40,7 +40,7 @@
   </head>
 
   <body>
-    <wallpaper></wallpaper>
+    <wallpaper onclick="app.ClearEphemeralVisualStates()"></wallpaper>
     <app id="app" v-cloak :class="{challenge: appVisualStateShowPageChallenge, tutorial: appTutorialIsInPlay}">
       <link v-if="userSettingsUseDarkMode" rel="stylesheet" href="styles/likeme-darkmode.css" media="screen" />
       <link v-if="userSettingsUseCats" rel="stylesheet" href="styles/cats-likeme.css" media="screen" />

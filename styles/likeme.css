@@ -37,11 +37,11 @@
   /* game set values */
   --colorDanger: rgb(224, 0, 0);
 
-  --shape1: url(/images/Square.svg);
-  --shape2: url(/images/Circle.svg);
-  --shape3: url(/images/Triangle.svg);
-  --shape4: url(/images/Hexagon.svg);
-  --infinity: url(/images/Infinity.svg);
+  --shape1: url(./images/Square.svg);
+  --shape2: url(./images/Circle.svg);
+  --shape3: url(./images/Triangle.svg);
+  --shape4: url(./images/Hexagon.svg);
+  --infinity: url(./images/Infinity.svg);
 
   --bgImage1: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.5) 10%, rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 0) 20%);
   --bgImage2: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.7) 0px, rgba(255, 255, 255, 0.7) 1.1%, rgba(255, 255, 255, 0) 1.1%, rgba(255, 255, 255, 0) 4.5%);
@@ -84,7 +84,7 @@ wallpaper {
   width: 300%;
   height: 300%;
   translate: -40vw -50vw;
-  z-index: -1;
+  /*z-index: -1;*/
   background-color: rgba(0, 0, 0, 0.92);
   opacity: 0.7;
   background-size: 170px;
