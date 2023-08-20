@@ -21,7 +21,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.0.1',
+    currentVersion: '4.0.4',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -1156,7 +1156,13 @@ var app = new Vue({
         localStorage.setItem('appTutorialUserHasSeen', JSON.stringify(this.appTutorialUserHasSeen));
       }
     },
-
+    
+    ChangeTutorialPiecesToCats(_text){
+      let _outgoing = _text.replace('pieces', 'cats');
+      return this.userSettingsUseCats ? _outgoing : _text;
+    },
+    
+    
     HandleSkipTutorial() {
       note('HandleSkipTutorial() called');
       this.appTutorialIsInPlay = false;
@@ -1433,5 +1439,6 @@ var app = new Vue({
       }
       return this.userHighScoresInfinite.sort(compare).flat().slice(0, this.appSettingsNumberOfHighScoresShown);
     },
+            
   },
 });
