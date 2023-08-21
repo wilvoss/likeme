@@ -58,9 +58,11 @@
           <section>
             <modes>
               <mode v-for="mode in appSettingsModes" :class="{selected: mode.isSelected}">
-                <piece :title="mode.name + ' mode. ' + mode.description + ' Click to select.'" @click="SelectMode(mode)">
-                  <gild :style="{maskImage: mode.piece.shape, webkitMaskImage: mode.piece.shape, backgroundColor: mode.piece.color, backgroundImage: mode.piece.backgroundImage }" />
-                </piece>
+                <container :title="mode.name + ' mode. ' + mode.description + ' Click to select.'" @click="SelectMode(mode)">
+                  <piece :style="{maskImage: mode.piece.shape, webkitMaskImage: mode.piece.shape, backgroundColor: mode.piece.color}">
+                    <gild :style="{backgroundImage: mode.piece.backgroundImage }" />
+                  </piece>
+                </container>
                 <value>{{mode.name}} mode</value>
               </mode>
             </modes>
@@ -269,15 +271,19 @@
             <currentscore :class="{bigpulse: gameCurrentTimer < 6000 && !appSettingsModes.infinite.isSelected}">{{appSettingsModes.infinite.isSelected ? NumberWithCommas(gameCurrentNumberOfClears) : GetMsToTime(gameCurrentTimer)}}</currentscore>
           </scorearea>
           <board>
-            <piece v-for="piece in gameCurrentBoardPieces" @click="TogglePieceSelection(piece)" :class="{include:  piece.nudge && userSettingsUseHints && piece.isMatch, exclude: piece.nudge && userSettingsUseHints && !piece.isMatch, selected: piece.isSelected, dropped: piece.hasDropped}">
-              <gild :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color, backgroundImage: piece.backgroundImage }"> </gild>
-            </piece>
+            <container @click="TogglePieceSelection(piece)" v-for="piece in gameCurrentBoardPieces" :class="{include:  piece.nudge && userSettingsUseHints && piece.isMatch, exclude: piece.nudge && userSettingsUseHints && !piece.isMatch, selected: piece.isSelected, dropped: piece.hasDropped}">
+              <piece :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color}">
+                <gild :style="{backgroundImage: piece.backgroundImage }"> </gild>
+              </piece>
+            </container>
           </board>
           <addtime :class="{flyaway: appVisualStateShowElementFlyaway}">+3 seconds</addtime>
           <me :class="{nope: gameCurrentIsUserGuessWrong}">
-            <piece @click="CheckBoard">
-              <gild :style="{maskImage: gameCurrentMePiece.shape, webkitMaskImage: gameCurrentMePiece.shape, backgroundColor: gameCurrentMePiece.color, backgroundImage: gameCurrentMePiece.backgroundImage }"> </gild>
-            </piece>
+            <container @click="CheckBoard">
+              <piece :style="{maskImage: gameCurrentMePiece.shape, webkitMaskImage: gameCurrentMePiece.shape, backgroundColor: gameCurrentMePiece.color}">
+                <gild :style="{backgroundImage: gameCurrentMePiece.backgroundImage }"> </gild>
+              </piece>
+            </container>
           </me>
         </playarea>
       </stage>
@@ -289,25 +295,33 @@
           <h2>{{ChangeTutorialPiecesToCats(appTutorialSteps[appTutorialCurrentStepIndex].title)}}</h2>
           <description v-html="ChangeTutorialPiecesToCats(appTutorialSteps[appTutorialCurrentStepIndex].description)"></description>
           <board :class="{unreveal: appTutorialCurrentStepIndex < 2 || appTutorialCurrentStepIndex === appTutorialSteps.length - 1, partial: appTutorialCurrentStepIndex === 3   }">
-            <piece :class="{selected: piece.isSelected}" v-for="(piece, index) in appTutorialBoardPieces.board" @click="piece.isSelected = appTutorialCurrentStepIndex > 3 ? !piece.isSelected : piece.isSelected" class="dropped">
-              <gild :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color, backgroundImage: piece.backgroundImage }"> </gild>
-            </piece>
+            <container class="dropped" :class="{selected: piece.isSelected}" v-for="(piece, index) in appTutorialBoardPieces.board" @click="piece.isSelected = appTutorialCurrentStepIndex > 3 ? !piece.isSelected : piece.isSelected">
+              <piece :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color}">
+                <gild :style="{backgroundImage: piece.backgroundImage }"> </gild>
+              </piece>
+            </container>
           </board>
           <addtime :class="{flyaway: appVisualStateShowElementFlyaway}">+3 seconds</addtime>
           <me v-if="appTutorialCurrentStepIndex === 0">
-            <piece>
-              <gild :style="{maskImage: 'var(--shape4)', webkitMaskImage: 'var(--shape4)', backgroundColor: 'var(--color1)', backgroundImage: 'var(--bgImage1)' }"> </gild>
-            </piece>
+            <container>
+              <piece :style="{maskImage: 'var(--shape4)', webkitMaskImage: 'var(--shape4)', backgroundColor: 'var(--color1)'}">
+                <gild :style="{backgroundImage: 'var(--bgImage1)' }"> </gild>
+              </piece>
+            </container>
           </me>
           <me v-if="appTutorialCurrentStepIndex === appTutorialSteps.length - 1">
-            <piece>
-              <gild :style="{maskImage: 'var(--shape2)', webkitMaskImage: 'var(--shape2)', backgroundColor: 'var(--color3)', backgroundImage: 'var(--bgImage2)' }"> </gild>
-            </piece>
+            <container>
+              <piece :style="{maskImage: 'var(--shape2)', webkitMaskImage: 'var(--shape2)', backgroundColor: 'var(--color3)'}">
+                <gild :style="{backgroundImage: 'var(--bgImage2)' }"> </gild>
+              </piece>
+            </container>
           </me>
           <me v-if="appTutorialCurrentStepIndex > 0 && appTutorialCurrentStepIndex < appTutorialSteps.length - 1 " :class="{nope: gameCurrentIsUserGuessWrong}">
-            <piece @click="HandleTutorialCheck">
-              <gild :style="{maskImage: appTutorialMePiece.shape, webkitMaskImage: appTutorialMePiece.shape, backgroundColor: appTutorialMePiece.color, backgroundImage: appTutorialMePiece.backgroundImage }"> </gild>
-            </piece>
+            <container @click="HandleTutorialCheck">
+              <piece :style="{maskImage: appTutorialMePiece.shape, webkitMaskImage: appTutorialMePiece.shape, backgroundColor: appTutorialMePiece.color}">
+                <gild :style="{backgroundImage: appTutorialMePiece.backgroundImage }"> </gild>
+              </piece>
+            </container>
           </me>
         </playarea>
         <section>

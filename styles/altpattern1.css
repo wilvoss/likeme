@@ -2,12 +2,12 @@
   /* prettier-ignore */
   --bgImage1: 
   repeating-linear-gradient(0deg, 
-  hsla(var(--patternHSL), var(--patternOpacity)) 0%, 
-  hsla(var(--patternHSL), var(--patternOpacity)) 25%, 
+  hsla(var(--patternHSL), 1) 0%, 
+  hsla(var(--patternHSL), 1) 25%, 
   hsla(var(--patternHSL), 0) 25%, 
   hsla(var(--patternHSL), 0) 50%, 
-  hsla(var(--patternHSL), var(--patternOpacity)) 50%, 
-  hsla(var(--patternHSL), var(--patternOpacity)) 75%,
+  hsla(var(--patternHSL), 1) 50%, 
+  hsla(var(--patternHSL), 1) 75%,
   hsla(var(--patternHSL), 0) 75%, 
   hsla(var(--patternHSL), 0) 100% 
   );
@@ -15,20 +15,20 @@
   /* prettier-ignore */
   --bgImage2: 
   linear-gradient(45deg, 
-  hsla(var(--patternHSL), var(--patternOpacity)) 0%, 
-  hsla(var(--patternHSL), var(--patternOpacity)) 6.25%, 
+  hsla(var(--patternHSL), 1) 0%, 
+  hsla(var(--patternHSL), 1) 6.25%, 
   hsla(var(--patternHSL), 0) 6.25%,
   hsla(var(--patternHSL), 0) 25%,
-  hsla(var(--patternHSL), var(--patternOpacity)) 25%, 
-  hsla(var(--patternHSL), var(--patternOpacity)) 31.25%, 
+  hsla(var(--patternHSL), 1) 25%, 
+  hsla(var(--patternHSL), 1) 31.25%, 
   hsla(var(--patternHSL), 0) 31.25%,
   hsla(var(--patternHSL), 0) 50%,
-  hsla(var(--patternHSL), var(--patternOpacity)) 50%, 
-  hsla(var(--patternHSL), var(--patternOpacity)) 56.25%, 
+  hsla(var(--patternHSL), 1) 50%, 
+  hsla(var(--patternHSL), 1) 56.25%, 
   hsla(var(--patternHSL), 0) 56.25%,
   hsla(var(--patternHSL), 0) 75%,
-  hsla(var(--patternHSL), var(--patternOpacity)) 75%, 
-  hsla(var(--patternHSL), var(--patternOpacity)) 81.25%, 
+  hsla(var(--patternHSL), 1) 75%, 
+  hsla(var(--patternHSL), 1) 81.25%, 
   hsla(var(--patternHSL), 0) 81.25%,
   hsla(var(--patternHSL), 0) 100%
   );
@@ -36,9 +36,9 @@
   /* prettier-ignore */
   --bgImage3: 
   radial-gradient(
-  hsla(var(--patternHSL), var(--patternOpacity)) 30%, 
+  hsla(var(--patternHSL), 1) 30%, 
   hsla(var(--patternHSL), 0) 30.7%), 
-  radial-gradient(hsla(var(--patternHSL), var(--patternOpacity)) 30%, 
+  radial-gradient(hsla(var(--patternHSL), 1) 30%, 
   hsla(var(--patternHSL), 0) 30.7%);
   --bgImage4: none;
 }

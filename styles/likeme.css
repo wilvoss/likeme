@@ -46,9 +46,9 @@
   --shape4: url(./images/Hexagon.svg);
   --infinity: url(./images/Infinity.svg);
 
-  --bgImage1: repeating-linear-gradient(-45deg, hsla(var(--patternHSL), var(--patternOpacity)) 0px, hsla(var(--patternHSL), var(--patternOpacity)) 10%, hsla(var(--patternHSL), 0) 10%, hsla(var(--patternHSL), 0) 20%);
-  --bgImage2: repeating-linear-gradient(45deg, hsla(var(--patternHSL), var(--patternOpacity)) 0px, hsla(var(--patternHSL), var(--patternOpacity)) 1.1%, hsla(var(--patternHSL), 0) 1.1%, hsla(var(--patternHSL), 0) 4.5%);
-  --bgImage3: repeating-radial-gradient(circle, hsla(var(--patternHSL), var(--patternOpacity)) 0px, hsla(var(--patternHSL), var(--patternOpacity)) 14.5%, hsla(var(--patternHSL), 0) 14.5%, hsla(var(--patternHSL), 0) 29%);
+  --bgImage1: repeating-linear-gradient(-45deg, hsla(var(--patternHSL), 1) 0px, hsla(var(--patternHSL), 1) 10%, hsla(var(--patternHSL), 0) 10%, hsla(var(--patternHSL), 0) 20%);
+  --bgImage2: repeating-linear-gradient(45deg, hsla(var(--patternHSL), 1) 0px, hsla(var(--patternHSL), 1) 1.1%, hsla(var(--patternHSL), 0) 1.1%, hsla(var(--patternHSL), 0) 4.5%);
+  --bgImage3: repeating-radial-gradient(circle, hsla(var(--patternHSL), 1) 0px, hsla(var(--patternHSL), 1) 14.5%, hsla(var(--patternHSL), 0) 14.5%, hsla(var(--patternHSL), 0) 29%);
   --bgImage4: none;
 }
 
@@ -158,10 +158,6 @@ h3 {
   line-height: 160%;
 }
 
-oobe h1 {
-  font-size: 3.3em;
-}
-
 page h1,
 tutorial h1 {
   margin: var(--defaultGap) 0px 0px 0px;
@@ -230,7 +226,6 @@ stage {
   overflow: hidden;
 }
 
-oobe,
 page,
 modal,
 challenge,
@@ -277,8 +272,6 @@ section {
   flex-basis: auto;
 }
 
-oobe header,
-oobe section,
 modal header,
 modal section,
 challenge section {
@@ -318,7 +311,6 @@ page content {
   overflow: hidden;
 }
 
-oobe content,
 stage playarea,
 tutorial playarea {
   padding-bottom: var(--defaultGap);
@@ -368,7 +360,6 @@ modal {
   justify-content: start;
 }
 
-oobe.show,
 page.show,
 modal.show,
 tutorial.show,
@@ -376,10 +367,6 @@ challenge.show {
   opacity: 1;
   pointer-events: all;
   transform: translateY(0px);
-}
-
-oobe.show {
-  transition: 0s linear all;
 }
 
 page.show,
@@ -1071,23 +1058,23 @@ tutorial board.partial {
   height: calc(var(--pieceSize) + 4px);
 }
 
-piece {
+container {
   transform: translateY(-640px);
   transition: 00ms ease-out transform;
   cursor: pointer;
 }
 
-piece.dropped,
-me piece,
-page piece,
-modal me piece {
+container.dropped,
+me container,
+page container,
+modal me container {
   transition: 200ms ease-out transform;
   transform: translateY(0) scale(1);
   border-radius: var(--borderRadius);
 }
 
-piece.include,
-piece.selected.include {
+container.include,
+container.selected.include {
   animation: include 0.3s var(--transitionEase) 0s infinite;
   -webkit-animation: include 0.3s var(--transitionEase) 0s infinite;
 }
@@ -1128,8 +1115,8 @@ piece.selected.include {
   }
 }
 
-piece.exclude,
-piece.selected.exclude {
+container.exclude,
+container.selected.exclude {
   animation: exclude 0.2s linear 0s infinite;
   -webkit-animation: exclude 0.2s linear 0s infinite;
 }
@@ -1159,14 +1146,13 @@ tutorial me {
   padding: 0px 0px 0px;
 }
 
-stage me piece,
-tutorial me piece {
+stage me container,
+tutorial me container {
   margin: 20px 0px 0px;
   transform: translateY(0) scale(1.1);
 }
 
-oobe me piece gild,
-modal me piece gild {
+modal me container piece gild {
   mask-image: var(--shape1);
   -webkit-mask-image: var(--shape1);
   background-color: var(--color2);
@@ -1178,27 +1164,6 @@ examples {
   flex-direction: row;
   /* transform: scale(0.8); */
   column-gap: 8px;
-}
-
-examples:last-of-type {
-  margin-top: 8px;
-}
-
-examples piece {
-  cursor: default;
-  transform: translateY(0px);
-}
-
-examples piece,
-examples piece gild {
-  width: calc(var(--pieceSize) * 0.8);
-  height: calc(var(--pieceSize) * 0.8);
-  mask-size: calc(var(--pieceSize) * 0.8);
-  -webkit-mask-size: calc(var(--pieceSize) * 0.8);
-}
-
-oobe examples {
-  transform: scale(0.8);
 }
 
 hint,
@@ -1375,19 +1340,25 @@ notification.show {
   opacity: 1;
 }
 
-piece,
-piece gild {
+container {
   width: var(--pieceSize);
   height: var(--pieceSize);
+  display: block;
+}
+
+piece,
+piece gild {
+  width: 100%;
+  height: 100%;
   display: block;
   background-size: 100%;
   background-position: center;
   background-repeat: no-repeat;
-  mask-size: var(--pieceSize), var(--pieceSize);
+  mask-size: 100%, 100%;
   mask-position: center;
   mask-repeat: no-repeat;
   mask-origin: fill-box;
-  -webkit-mask-size: var(--pieceSize), var(--pieceSize);
+  -webkit-mask-size: 100%, 100%;
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-position: center;
   -webkit-mask-origin: fill-box;
@@ -1396,15 +1367,19 @@ piece gild {
   -webkit-tap-highlight-color: transparent;
 }
 
-mode.selected piece,
-piece.selected {
+gild {
+  opacity: var(--patternOpacity);
+}
+
+mode.selected container,
+container.selected {
   box-shadow: inset 0px 1px 4px hsla(var(--appForeground), 0.5);
   background: hsl(var(--appBackgroundStrongest));
   border-radius: 6px;
 }
 
-mode.selected piece,
-piece.selected {
+mode.selected container,
+container.selected {
   animation: selected 0.3s var(--transitionEase) 0s 1;
   -webkit-animation: selected 0.3s var(--transitionEase) 0s 1;
 }
@@ -1421,7 +1396,7 @@ piece.selected {
   }
 }
 
-piece {
+container {
   animation: unselected 0.3s var(--transitionEase) 0s 1;
   -webkit-animation: unselected 0.3s var(--transitionEase) 0s 1;
 }
@@ -1438,31 +1413,26 @@ piece {
   }
 }
 
-me piece {
+me container {
   box-shadow: 0px 5px 5px hsla(var(--appForeground), 0.5);
   background: hsl(var(--appBackgroundStrongest));
 }
 
-me.pushed piece,
-me piece:focus,
-me piece:active {
+me.pushed container,
+me container:focus,
+me container:active {
   transform: translateY(2px) scale(1);
   box-shadow: 0px 2px 2px hsla(var(--appForeground), 0.7);
 }
 
-oobe me piece {
-  background: none;
-  box-shadow: none;
-}
-
-stage me piece:focus,
-stage me piece:active,
-tutorial me piece:focus,
-tutorial me piece:active {
+stage me container:focus,
+stage me container:active,
+tutorial me container:focus,
+tutorial me container:active {
   transform: translateY(2px) scale(1.1);
 }
 
-me.nope piece {
+me.nope container {
   animation: nope 0.15s linear 0s 3;
   -webkit-animation: nope 0.15s linear 0s 3;
 }
