@@ -1,5 +1,5 @@
-:root{
-  
+:root {
+  /* prettier-ignore */
   --bgImage1: 
   repeating-linear-gradient(0deg, 
   hsla(var(--patternHSL), var(--patternOpacity)) 0%, 
@@ -11,47 +11,35 @@
   hsla(var(--patternHSL), 0) 75%, 
   hsla(var(--patternHSL), 0) 100% 
   );
+
+  /* prettier-ignore */
   --bgImage2: 
-  linear-gradient(90deg, 
-  hsla(var(--patternHSL), 0) 0%, 
-  hsla(var(--patternHSL), 0) 6.25%, 
-  hsla(var(--patternHSL), var(--patternOpacity)) 6.25%,
-  hsla(var(--patternHSL), var(--patternOpacity)) 12.5%,
-  hsla(var(--patternHSL), 0) 12.5%, 
-  hsla(var(--patternHSL), 0) 18.75%, 
-  hsla(var(--patternHSL), var(--patternOpacity)) 18.75%,
-  hsla(var(--patternHSL), var(--patternOpacity)) 25%,
-  hsla(var(--patternHSL), 0) 25%, 
-  hsla(var(--patternHSL), 0) 31.25%, 
-  hsla(var(--patternHSL), var(--patternOpacity)) 31.25%,
-  hsla(var(--patternHSL), var(--patternOpacity)) 37.5%,
-  hsla(var(--patternHSL), 0) 37.5%, 
-  hsla(var(--patternHSL), 0) 43.75%, 
-  hsla(var(--patternHSL), var(--patternOpacity)) 43.75%,
-  hsla(var(--patternHSL), var(--patternOpacity)) 50%,
-  hsla(var(--patternHSL), 0) 50%, 
-  hsla(var(--patternHSL), 0) 56.25%, 
-  hsla(var(--patternHSL), var(--patternOpacity)) 56.25%,
-  hsla(var(--patternHSL), var(--patternOpacity)) 62.5%,
-  hsla(var(--patternHSL), 0) 62.5%, 
-  hsla(var(--patternHSL), 0) 68.75%, 
-  hsla(var(--patternHSL), var(--patternOpacity)) 68.75%,
-  hsla(var(--patternHSL), var(--patternOpacity)) 75%,
-  hsla(var(--patternHSL), 0) 75%, 
-  hsla(var(--patternHSL), 0) 81.25%, 
-  hsla(var(--patternHSL), var(--patternOpacity)) 81.25%,
-  hsla(var(--patternHSL), var(--patternOpacity)) 87.5%,
-  hsla(var(--patternHSL), 0) 87.5%, 
-  hsla(var(--patternHSL), 0) 93.75%, 
-  hsla(var(--patternHSL), var(--patternOpacity)) 93.75%,
-  hsla(var(--patternHSL), var(--patternOpacity)) 100%
+  linear-gradient(45deg, 
+  hsla(var(--patternHSL), var(--patternOpacity)) 0%, 
+  hsla(var(--patternHSL), var(--patternOpacity)) 6.25%, 
+  hsla(var(--patternHSL), 0) 6.25%,
+  hsla(var(--patternHSL), 0) 25%,
+  hsla(var(--patternHSL), var(--patternOpacity)) 25%, 
+  hsla(var(--patternHSL), var(--patternOpacity)) 31.25%, 
+  hsla(var(--patternHSL), 0) 31.25%,
+  hsla(var(--patternHSL), 0) 50%,
+  hsla(var(--patternHSL), var(--patternOpacity)) 50%, 
+  hsla(var(--patternHSL), var(--patternOpacity)) 56.25%, 
+  hsla(var(--patternHSL), 0) 56.25%,
+  hsla(var(--patternHSL), 0) 75%,
+  hsla(var(--patternHSL), var(--patternOpacity)) 75%, 
+  hsla(var(--patternHSL), var(--patternOpacity)) 81.25%, 
+  hsla(var(--patternHSL), 0) 81.25%,
+  hsla(var(--patternHSL), 0) 100%
   );
+
+  /* prettier-ignore */
   --bgImage3: 
   radial-gradient(
   hsla(var(--patternHSL), var(--patternOpacity)) 30%, 
-  hsla(var(--patternHSL), 0) 30%), 
+  hsla(var(--patternHSL), 0) 30.7%), 
   radial-gradient(hsla(var(--patternHSL), var(--patternOpacity)) 30%, 
-  hsla(var(--patternHSL), 0) 30%);
+  hsla(var(--patternHSL), 0) 30.7%);
   --bgImage4: none;
 }
 

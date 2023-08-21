@@ -21,7 +21,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.0.6',
+    currentVersion: '4.0.8',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -499,8 +499,8 @@ var app = new Vue({
       localStorage.setItem('userSettingsUseCats', this.userSettingsUseCats);
       this.GetRandomWallpaper();
     },
-    
-    ToggleUsingAltPattern(event){
+
+    ToggleUsingAltPattern(event) {
       note('ToggleUsingAltPattern(event) called');
       if (event != undefined) {
         event.stopPropagation();
@@ -642,7 +642,7 @@ var app = new Vue({
         _userSettingsUseAltPatterns = JSON.parse(_userSettingsUseAltPatterns);
         this.userSettingsUseAltPatterns = _userSettingsUseAltPatterns;
       }
-      
+
       let _sounds = localStorage.getItem('userSettingsUseSoundFX');
       if (_sounds !== undefined && _sounds !== null) {
         _sounds = JSON.parse(_sounds);
@@ -1156,13 +1156,12 @@ var app = new Vue({
         localStorage.setItem('appTutorialUserHasSeen', JSON.stringify(this.appTutorialUserHasSeen));
       }
     },
-    
-    ChangeTutorialPiecesToCats(_text){
+
+    ChangeTutorialPiecesToCats(_text) {
       let _outgoing = _text.replace('pieces', 'cats');
       return this.userSettingsUseCats ? _outgoing : _text;
     },
-    
-    
+
     HandleSkipTutorial() {
       note('HandleSkipTutorial() called');
       this.appTutorialIsInPlay = false;
@@ -1197,18 +1196,18 @@ var app = new Vue({
           if ((i < 4 && !piece.isSelected) || (i >= 4 && piece.isSelected)) {
             _perfectMatch = false;
           }
-        });        
+        });
         if (_perfectMatch) {
           this.appTutorialBoardPieces.board.forEach((piece, i) => {
             piece.isSelected = false;
           });
-           this.appTutorialCurrentStepIndex = this.appTutorialSteps.length - 2;
-           this.HandleTutorialNext();
+          this.appTutorialCurrentStepIndex = this.appTutorialSteps.length - 2;
+          this.HandleTutorialNext();
         } else {
-           this.gameCurrentIsUserGuessWrong = true;
-           window.setTimeout(function () {
-             app.gameCurrentIsUserGuessWrong = false;
-           }, 500);
+          this.gameCurrentIsUserGuessWrong = true;
+          window.setTimeout(function () {
+            app.gameCurrentIsUserGuessWrong = false;
+          }, 500);
         }
       }
     },
@@ -1311,7 +1310,7 @@ var app = new Vue({
           break;
         case 'p':
           this.ToggleUsingAltPattern();
-          break;          
+          break;
         case '1':
         case '2':
         case '3':
@@ -1332,27 +1331,27 @@ var app = new Vue({
           }
           break;
         case 'Escape':
-            this.ClearEphemeralVisualStates();
+          this.ClearEphemeralVisualStates();
           break;
       }
     },
-    
-    ClearEphemeralVisualStates(){
-          app.appVisualStateShowNotification = false;
-          app.appVisualStateShowElementHint = false;
-          if (app.gameCurrentIsGameOver) {
-            app.appVisualStateShowPageHome = true;
-          }
-          if (app.appTutorialIsInPlay) {
-            app.HandleSkipTutorial();
-          }
-          app.appVisualStateShowPageSettings = false;
-          app.appVisualStateShowPageHighScores = false;
-          app.appVisualStateShowPageHowToPlay = false;
-          app.appVisualStateShowPageCredits = false;
-          app.appVisualStateShowPageChallenge = false;
-          app.appVisualStateShowElementHint = false;
-          app.appVisualStateShowPageGameOver = false;
+
+    ClearEphemeralVisualStates() {
+      app.appVisualStateShowNotification = false;
+      app.appVisualStateShowElementHint = false;
+      if (app.gameCurrentIsGameOver) {
+        app.appVisualStateShowPageHome = true;
+      }
+      if (app.appTutorialIsInPlay) {
+        app.HandleSkipTutorial();
+      }
+      app.appVisualStateShowPageSettings = false;
+      app.appVisualStateShowPageHighScores = false;
+      app.appVisualStateShowPageHowToPlay = false;
+      app.appVisualStateShowPageCredits = false;
+      app.appVisualStateShowPageChallenge = false;
+      app.appVisualStateShowElementHint = false;
+      app.appVisualStateShowPageGameOver = false;
     },
 
     HandleUpdateAppButtonClick() {
@@ -1439,6 +1438,5 @@ var app = new Vue({
       }
       return this.userHighScoresInfinite.sort(compare).flat().slice(0, this.appSettingsNumberOfHighScoresShown);
     },
-            
   },
 });

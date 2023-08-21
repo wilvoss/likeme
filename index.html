@@ -45,7 +45,6 @@
       <link v-if="userSettingsUseDarkMode" rel="stylesheet" href="styles/likeme-darkmode.css" media="screen" />
       <link v-if="userSettingsUseCats" rel="stylesheet" href="styles/cats-likeme.css" media="screen" />
       <link v-if="userSettingsUseAltPatterns" rel="stylesheet" href="styles/altpattern1.css" media="screen" />
-      <link v-if="userSettingsUseCats && userSettingsUseDarkMode" rel="stylesheet" href="styles/cats-likeme-darkmode.css" media="screen" />
       <notification @pointerdown="appVisualStateShowNotification = false" :class="{show: appVisualStateShowNotification}">
         <message v-html="appNotificationMessage"></message>
       </notification>
@@ -216,7 +215,7 @@
           <copyme id="copyme" v-if="!gameLastHighScore.isDaily && !appSettingsModes.infinite.isSelected">▨ ▲ ◯  {{appSettingsModes.easy.isSelected ? 'Easy Mode' : 'Hard Mode'}} 
 {{NumberWithCommas(gameCurrentTotalScore) + ' pts - ' + gameCurrentNumberOfClears + ' level'}}{{gameCurrentNumberOfClears !== 1 ? 's' : ''}}
 {{'(https://' + window.location.host + ')'}}</copyme>
-<h1>{{gameLastHighScore.isDaily ? 'Challenge' : 'Game'}} Over</h1>
+          <h1>{{gameLastHighScore.isDaily ? 'Challenge' : 'Game'}} Over</h1>
           <newhigh @pointerdown="ToggleHighScores(event, true)"> {{appVisualStateShowNewHighScoreElement ? 'A NEW high score!' : '&nbsp;'}} </newhigh>
           <section>
             <leftright class="impress">
