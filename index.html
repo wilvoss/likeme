@@ -237,7 +237,7 @@
             </leftright>
           </section>
           <section>
-            <button v-if="!appSettingsModes.infinite.isSelected || appVisualStateShowNewHighScoreElement" title="Click to share your score with your friends." class="tertiary inline" @click="ShareScore">Share!<icon class="share"></icon></button>
+            <button v-if="gameLastHighScore.isDaily || (!appSettingsModes.infinite.isSelected && appVisualStateShowNewHighScoreElement)" title="Click to share your score with your friends." class="tertiary inline" @click="ShareScore">Share!<icon class="share"></icon></button>
             <button v-if="!gameLastHighScore.isDaily" title="Click to start a new game" class="primary" @click="RestartGame">New Game</button>
             <button title="Click to return to the home screen." class="secondary" @click="appVisualStateShowPageGameOver = false, appVisualStateShowPageHome = true">Home</button>
           </section>
