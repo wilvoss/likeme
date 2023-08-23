@@ -93,7 +93,7 @@
             </smallbuttons>
           </section>
           <section>
-            <version> &copy;{{new Date().getFullYear()}} <a href="#" @click="GiveFeedback" target="_blank">Big Tent Games</a> - <a href="#" @click="window.location.reload(true)" target="_blank">v{{currentVersion + (window.location.host !== 'likeme.games' ? 'p' : '')}}</a> </version>
+            <version> &copy;{{new Date().getFullYear()}} <a href="#" @click="GiveFeedback" target="_blank">Big Tent Games</a> - <a href="#" @click="window.open('/history.html')" target="_blank">v{{currentVersion + (window.location.host !== 'likeme.games' ? 'p' : '')}}</a> </version>
           </section>
         </content>
       </page>
@@ -128,6 +128,44 @@
           <section>
             <button class="secondary" @click="GiveFeedback">Give feedback</button>
           </section>
+          <section v-if="!deviceHasTouch">
+            <h2>Keyboard shortcuts</h2>
+            <leftright>
+              <left>Yes</left>
+              <right>Enter</right>
+            </leftright>
+            <leftright>
+              <left>Check board</left>
+              <right>Space</right>
+            </leftright>
+            <leftright>
+              <left>Done, Cancel, No</left>
+              <right>Escape</right>
+            </leftright>
+            <leftright>
+              <left>Alt Patterns</left>
+              <right>P</right>
+            </leftright>
+            <leftright>
+              <left>Cat mode</left>
+              <right>C</right>
+            </leftright>
+            <leftright>
+              <left>Dark/light mode</left>
+              <right>/</right>
+            </leftright>
+            <leftright>
+              <left>Next theme</left>
+              <right>]</right>
+            </leftright>
+            <leftright>
+              <left>Previous theme</left>
+              <right>[</right>
+            </leftright>
+          </section>
+          <!-- <section>
+            <button class="quaternary inline small" @click="window.open('/history.html')">Version history</button>
+          </section> -->
         </content>
       </modal>
       <modal :class="{show: appVisualStateShowPageHighScores}">
