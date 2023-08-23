@@ -7,11 +7,9 @@
 /// <reference path="../helpers/console-enhancer.js" />
 /// <reference path="../helpers/howler.js" />
 
-// if (!UseDebug) {
-Vue.config.devtools = false;
-Vue.config.debug = false;
-Vue.config.silent = true;
-// }
+Vue.config.devtools = UseDebug;
+Vue.config.debug = UseDebug;
+Vue.config.silent = !UseDebug;
 
 Vue.config.ignoredElements = ['app', 'tutorial', 'oobe', 'wallpaper', 'home', 'modes', 'mode', 'piece', 'glyph', 'gild', 'value', 'checkbox', 'toggle', 'version', 'howto', 'icon', 'chrome', 'quit', 'divider', 'stage', 'gameover', 'clears', 'time', 'playarea', 'addtime', 'board', 'me', 'puzzle', 'hint'];
 
@@ -21,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.0.9',
+    currentVersion: '4.1.0',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -60,7 +58,7 @@ var app = new Vue({
     appVisualStateShowNotification: false,
     appVisualStateShowElementFlyaway: false,
     appVisualStateShowNewHighScoreElement: false,
-    gameCurrentIsPaused: false,
+    gameCurrentIsPaused: true,
     gameCurrentIsGameOver: true,
     gameDailyChallenge: new AllLevelsObject({}),
     gameCurrentIsGameDailyChallenge: false,
@@ -73,16 +71,18 @@ var app = new Vue({
     gameCurrentBoardScore: 0,
     gameCurrentTotalScore: 0,
     gameLastHighScore: new ScoreObject({}),
-    gameCurrentStartingTime: 180000,
-    gameCurrentTimer: 180000,
+    gameCurrentStartingTime: 181000,
+    gameCurrentTimer: 181000,
     gameCurrentNumberOfClears: 0,
     gameCurrentNumberOfPerfectMatches: 0,
     gameCurrentIsUserGuessWrong: false,
     gameCurrentNumberOfFails: 0,
     gameCurrentNumberOfMisses: 0,
     gameCurrentHasBonusTimeHintDisplayed: false,
-    gameCurrentHintText: 'Select pieces that share <b>at least two</b> of my attributes (color, shape, pattern).',
+    gameCurrentHintText: 'Select pieces that share <b>at least 2</b> of my attributes: color, shape, or pattern.',
     gameCurrentHasAnyPieceEverBeenSelected: false,
+    gameLikenessNudgeHasBeenShown: false,
+    gameClickMeNudgeHasBeenShown: false,
     userSettingsUseCats: false,
     userHighScoresInfinite: [],
     userHighScoresEasy: [],
@@ -116,9 +116,11 @@ var app = new Vue({
 
     CheckBoard() {
       note('CheckBoard() called');
+      this.appVisualStateShowElementHint = false;
       this.gameCurrentIsUserGuessWrong = false;
       let _totalPossibleLikePieces = 0;
       let _totalBoardScore = 0;
+      this.gameClickMeNudgeHasBeenShown = true;
       if (!this.gameCurrentIsGameOver) {
         let _perfectMatch = true;
         this.gameCurrentBoardPieces.forEach((piece) => {
@@ -138,15 +140,11 @@ var app = new Vue({
           _totalBoardScore = (this.appSettingsScoreTwinIncrement + this.appSettingsScoreSiblingIncrement) * parseInt(this.appSettingsModes.hard.isSelected ? this.appSettingsScoreModeHardMultiplier : 1);
         }
         if (_perfectMatch) {
+          this.gameLikenessNudgeHasBeenShown = true;
           this.gameCurrentTotalScore = this.gameCurrentTotalScore + _totalBoardScore;
           this.appVisualStateShowElementHint = false;
           this.gameCurrentHasAnyPieceEverBeenSelected = true;
           if (this.gameCurrentNumberOfMisses === 0 && !this.appSettingsModes.infinite.isSelected) {
-            if (!this.gameCurrentHasBonusTimeHintDisplayed) {
-              this.appVisualStateShowElementHint = true;
-              this.gameCurrentHintText = 'Nice! Matching all pieces on your first attempt adds <b>3 seconds</b> to the clock!';
-              this.gameCurrentHasBonusTimeHintDisplayed = true;
-            }
             this.gameCurrentNumberOfPerfectMatches++;
             this.gameCurrentTimer = this.gameCurrentTimer + 3000;
             this.appVisualStateShowElementFlyaway = true;
@@ -161,7 +159,7 @@ var app = new Vue({
           if (this.gameCurrentNumberOfMisses >= 1) {
             this.appVisualStateShowElementHint = true;
             if (_totalPossibleLikePieces === 0) {
-              this.gameCurrentHintText = 'Some boards have zero matches.';
+              this.gameCurrentHintText = 'Some levels have zero matches.';
             } else {
               this.gameCurrentHintText = _totalPossibleLikePieces === 1 ? 'There is only <b>' + _totalPossibleLikePieces + '</b> piece like me.' : 'There are a total of <b>' + _totalPossibleLikePieces + '</b> pieces like me.';
             }
@@ -192,7 +190,6 @@ var app = new Vue({
 
       let _board = null;
       if (this.gameDailyChallengeHasBeenStarted) {
-        console.log(this.gameDailyChallenge.allLevels);
         this.gameDailyChallenge.allLevels.forEach((level, i) => {
           if (_board === null && !level.completed) {
             error(i);
@@ -226,6 +223,17 @@ var app = new Vue({
       note('TogglePieceSelection() called for: " this.gameCurrentBoardPieces[' + this.gameCurrentBoardPieces.indexOf(_piece) + ']"');
       this.appVisualStateShowElementHint = false;
       _piece.nudge = false;
+      if (!this.gameLikenessNudgeHasBeenShown) {
+        let _likeness = 0;
+        _likeness = _piece.color === this.gameCurrentMePiece.color ? parseInt(_likeness + 1) : _likeness;
+        _likeness = _piece.backgroundImage === this.gameCurrentMePiece.backgroundImage ? parseInt(_likeness + 1) : _likeness;
+        _likeness = _piece.shape === this.gameCurrentMePiece.shape ? parseInt(_likeness + 1) : _likeness;
+        if (_likeness < 2) {
+          this.appVisualStateShowElementHint = true;
+          this.gameCurrentHintText = 'Select pieces that share <b>at least 2</b> of my attributes: color, shape, or pattern.';
+        }
+        this.gameLikenessNudgeHasBeenShown = true;
+      }
       if (navigator.vibrate != undefined) {
         navigator.vibrate(100);
       }
@@ -317,6 +325,27 @@ var app = new Vue({
 
     UpdateApp() {
       if (!this.gameCurrentIsPaused && !this.appVisualStateShowPageGameOver) {
+        if (this.gameCurrentNumberOfClears === 0 && this.userHighScoresEasy.length === 0) {
+          if (!this.appSettingsModes.infinite.isSelected && !this.gameLikenessNudgeHasBeenShown && this.gameCurrentStartingTime - this.gameCurrentTimer === 7000) {
+            this.appVisualStateShowElementHint = true;
+            this.gameCurrentHintText = 'Select pieces that share <b>at least 2</b> of my attributes: color, shape, or pattern.';
+            this.gameLikenessNudgeHasBeenShown = true;
+          } else if (this.appSettingsModes.infinite.isSelected && !this.gameLikenessNudgeHasBeenShown && this.gameCurrentTimer === 7000) {
+            this.appVisualStateShowElementHint = true;
+            this.gameCurrentHintText = 'Select pieces that share <b>at least 2</b> of my attributes: color, shape, or pattern.';
+            this.gameLikenessNudgeHasBeenShown = true;
+          }
+
+          if (!this.appSettingsModes.infinite.isSelected && !this.appVisualStateShowElementHint && !this.gameClickMeNudgeHasBeenShown && this.gameCurrentStartingTime - this.gameCurrentTimer >= 25000 && this.gameCurrentTimer % 1000 === 0) {
+            this.appVisualStateShowElementHint = true;
+            this.gameCurrentHintText = 'Remember to click the Me piece to check your work and move to the next level.';
+            this.gameClickMeNudgeHasBeenShown = true;
+          } else if (this.appSettingsModes.infinite.isSelected && !this.appVisualStateShowElementHint && !this.gameClickMeNudgeHasBeenShown && this.gameCurrentTimer >= 25000 && this.gameCurrentTimer % 10000 === 0) {
+            this.appVisualStateShowElementHint = true;
+            this.gameCurrentHintText = 'Remember to click the Me piece to check your work and move to the next level.';
+            this.gameClickMeNudgeHasBeenShown = true;
+          }
+        }
         if (this.gameCurrentTimer > 0 || (this.appSettingsModes.infinite.isSelected && !this.gameCurrentIsGameOver)) {
           this.appSettingsModeHardInternalChangeCounterCount++;
           if (!this.appSettingsModes.infinite.isSelected) {
@@ -454,10 +483,6 @@ var app = new Vue({
 
     AddBonusToScore() {
       note('AddBonusToScore() called');
-      log('gameCurrentTimer = ' + this.gameCurrentTimer);
-      log('gameLastHighScore.isDaily = ' + this.gameLastHighScore.isDaily);
-      log('gameCurrentNumberOfClears = ' + this.gameCurrentNumberOfClears);
-      log('gameDailyChallenge.allLevels.length = ' + this.gameDailyChallenge.allLevels.length);
       if (this.gameCurrentTimer > 0 && this.gameLastHighScore.isDaily && this.gameCurrentNumberOfClears === this.gameDailyChallenge.allLevels.length) {
         window.setTimeout(this.HandleAppSettingsAddTimeInterval, 1000);
       }
@@ -537,9 +562,6 @@ var app = new Vue({
       }
       this.gameCurrentIsPaused = _value;
       localStorage.setItem('gameCurrentIsPaused', this.gameCurrentIsPaused);
-      if (_value) {
-        this.appVisualStateShowElementHint = false;
-      }
     },
 
     ResetModalContentScrollPositions() {
@@ -698,6 +720,36 @@ var app = new Vue({
         }
       } catch (_error) {
         error('_userHighScoresHard error: ' + _error);
+        _gameDataCorrupt = true;
+      }
+
+      let _gameCurrentHasAnyPieceEverBeenSelected = localStorage.getItem('gameCurrentHasAnyPieceEverBeenSelected');
+      try {
+        if (_gameCurrentHasAnyPieceEverBeenSelected !== undefined && _gameCurrentHasAnyPieceEverBeenSelected !== null) {
+          this.gameCurrentHasAnyPieceEverBeenSelected = JSON.parse(_gameCurrentHasAnyPieceEverBeenSelected);
+        }
+      } catch (_error) {
+        error('_gameCurrentHasAnyPieceEverBeenSelected error: ' + _error);
+        _gameDataCorrupt = true;
+      }
+
+      let _gameLikenessNudgeHasBeenShown = localStorage.getItem('gameLikenessNudgeHasBeenShown');
+      try {
+        if (_gameLikenessNudgeHasBeenShown !== undefined && _gameLikenessNudgeHasBeenShown !== null) {
+          this.gameLikenessNudgeHasBeenShown = JSON.parse(_gameLikenessNudgeHasBeenShown) === true;
+        }
+      } catch (_error) {
+        error('_gameLikenessNudgeHasBeenShown error: ' + _error);
+        _gameDataCorrupt = true;
+      }
+
+      let _gameClickMeNudgeHasBeenShown = localStorage.getItem('gameClickMeNudgeHasBeenShown');
+      try {
+        if (_gameClickMeNudgeHasBeenShown !== undefined && _gameClickMeNudgeHasBeenShown !== null) {
+          this.gameClickMeNudgeHasBeenShown = JSON.parse(_gameClickMeNudgeHasBeenShown) === true;
+        }
+      } catch (_error) {
+        error('_gameClickMeNudgeHasBeenShown error: ' + _error);
         _gameDataCorrupt = true;
       }
     },
@@ -1032,16 +1084,6 @@ var app = new Vue({
         _gameDataCorrupt = true;
       }
 
-      let _gameCurrentHasAnyPieceEverBeenSelected = localStorage.getItem('gameCurrentHasAnyPieceEverBeenSelected');
-      try {
-        if (_gameCurrentHasAnyPieceEverBeenSelected !== undefined && _gameCurrentHasAnyPieceEverBeenSelected !== null) {
-          this.gameCurrentHasAnyPieceEverBeenSelected = JSON.parse(_gameCurrentHasAnyPieceEverBeenSelected);
-        }
-      } catch (_error) {
-        error('_gameCurrentHasAnyPieceEverBeenSelected error: ' + _error);
-        _gameDataCorrupt = true;
-      }
-
       this.CheckIfUserHasScoredDailyChallenge();
 
       if (_gameDataCorrupt) {
@@ -1148,6 +1190,8 @@ var app = new Vue({
         localStorage.setItem('gameCurrentHintText', this.gameCurrentHintText);
         localStorage.setItem('gameCurrentTotalScore', this.gameCurrentTotalScore);
         localStorage.setItem('gameCurrentHasAnyPieceEverBeenSelected', JSON.stringify(this.gameCurrentHasAnyPieceEverBeenSelected));
+        localStorage.setItem('gameLikenessNudgeHasBeenShown', JSON.stringify(this.gameLikenessNudgeHasBeenShown));
+        localStorage.setItem('gameClickMeNudgeHasBeenShown', JSON.stringify(this.gameClickMeNudgeHasBeenShown));
         localStorage.setItem('userSettingsUseCats', this.userSettingsUseCats);
         localStorage.setItem('userSettingsUseAltPatterns', this.userSettingsUseAltPatterns);
         localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
@@ -1285,7 +1329,6 @@ var app = new Vue({
     },
 
     HandleKeyUp(event) {
-      // event.preventDefault();
       note('HandleKeyUp(event) called');
       let _currentThemeIndex = -1;
       this.appSettingsThemes.forEach((theme, i) => {

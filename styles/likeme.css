@@ -966,9 +966,9 @@ stage.paused time {
 
 addtime {
   display: block;
-  transform: translateY(-80px);
+  transform: translateY(calc(-2 * var(--pieceSize) - 88px));
   font-family: 'Bangers';
-  font-size: 1.5em;
+  font-size: 2em;
   transition-delay: 200ms;
   transition: 2000ms var(--transitionEase) all;
   opacity: 0;
@@ -982,12 +982,13 @@ addtime {
   padding: 0;
   margin: 0;
   pointer-events: none;
+  text-shadow: 0px -1px 0px hsl(var(--appBackground));
 }
 
 addtime.flyaway {
   pointer-events: none;
   transition: 0ms linear none;
-  transform: translateY(-20px);
+  transform: translateY(calc(-2 * var(--pieceSize) - 28px));
   opacity: 1;
 }
 

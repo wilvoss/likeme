@@ -157,7 +157,7 @@
           </section>
         </content>
       </modal>
-      <modal class="pause" @click="ToggleGamePause(event, false)" :class="{show: gameCurrentIsPaused && !gameCurrentIsGameOver}">
+      <modal class="pause" @click="if (!app.appVisualStateShowElementHint) ToggleGamePause(event, false)" :class="{show: gameCurrentIsPaused && !gameCurrentIsGameOver}">
         <button title="Click the button to resume playing the game." class="quaternary"><icon class="play"></icon></button>
       </modal>
       <modal :class="{show: appVisualStateShowPageSettings}">
@@ -277,7 +277,7 @@
               </piece>
             </container>
           </board>
-          <addtime :class="{flyaway: appVisualStateShowElementFlyaway}">+3 seconds</addtime>
+          <addtime :class="{flyaway: appVisualStateShowElementFlyaway}">+3 seconds!</addtime>
           <me :class="{nope: gameCurrentIsUserGuessWrong}">
             <container @click="CheckBoard">
               <piece :style="{maskImage: gameCurrentMePiece.shape, webkitMaskImage: gameCurrentMePiece.shape, backgroundColor: gameCurrentMePiece.color}">

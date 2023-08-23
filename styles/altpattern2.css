@@ -26,8 +26,8 @@ piece gild {
   /* background-position: 0 0, 100% 100%; */
   background-repeat: repeat;
   scale: 1.1;
-  animation: rotatinggild 3 3s linear infinite;
-  -webkit-animation: rotatinggild 33s linear infinite;
+  /* animation: rotatinggild 3 3s linear infinite;
+  -webkit-animation: rotatinggild 33s linear infinite; */
 }
 
 @keyframes rotatinggild {
