@@ -1,0 +1,43 @@
+:root {
+  /* prettier-ignore */
+  --bgImage1: 
+  repeating-linear-gradient(0deg, 
+  hsla(var(--patternHSL), 1) 0%, 
+  hsla(var(--patternHSL), 1) 25%, 
+  hsla(var(--patternHSL), 0) 25%, 
+  hsla(var(--patternHSL), 0) 50%, 
+  hsla(var(--patternHSL), 1) 50%, 
+  hsla(var(--patternHSL), 1) 75%,
+  hsla(var(--patternHSL), 0) 75%, 
+  hsla(var(--patternHSL), 0) 100% 
+  );
+
+  /* prettier-ignore */
+  --bgImage2: url(../images/Wave.svg);
+
+  /* prettier-ignore */
+  --bgImage3: url(../images/Dots.svg);
+  --bgImage4: none;
+}
+
+piece gild {
+  rotate: -194deg;
+  background-size: 40% 40%;
+  /* background-position: 0 0, 100% 100%; */
+  background-repeat: repeat;
+  scale: 1.1;
+  animation: rotatinggild 3 3s linear infinite;
+  -webkit-animation: rotatinggild 33s linear infinite;
+}
+
+@keyframes rotatinggild {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes rotatinggild {
+  100% {
+    transform: rotate(360deg);
+  }
+}
