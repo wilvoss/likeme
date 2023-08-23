@@ -1125,6 +1125,7 @@ container {
   transform: translateY(-640px);
   transition: 00ms ease-out transform;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 container.dropped,
