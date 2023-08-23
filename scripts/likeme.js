@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.1.0',
+    currentVersion: '4.1.1',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -1103,7 +1103,6 @@ var app = new Vue({
       announce('Game Initialized');
       this.AdjustPieceSizeBasedOnViewport();
       this.CheckForMobile();
-
       this.GetRandomWallpaper();
 
       let _onemoretime = localStorage.getItem('onemoretime');
@@ -1262,6 +1261,17 @@ var app = new Vue({
       window.clearInterval(this.updateInterval);
       this.updateInterval = window.setInterval(this.UpdateApp, this.appSettingsModeHardInterval);
       this.GetDailyChallenge();
+      this.CheckForServiceWorkerUpdate();
+    },
+
+    CheckForServiceWorkerUpdate() {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function (registrations) {
+          for (let registration of registrations) {
+            registration.update();
+          }
+        });
+      }
     },
 
     HandleOnVisibilityChange(event) {
@@ -1269,6 +1279,7 @@ var app = new Vue({
       if (document.visibilityState === 'visible') {
         this.GetDailyChallenge();
       }
+      this.CheckForServiceWorkerUpdate();
     },
 
     AdjustPieceSizeBasedOnViewport() {
