@@ -9,6 +9,7 @@ class PieceObject {
     this.nudge = spec.nudge == undefined ? false : spec.nudge;
     this.isMatch = spec.isMatch == undefined ? false : spec.isMatch;
     this.isFullMatch = spec.isFullMatch == undefined ? false : spec.isFullMatch;
+    this.description = spec.description == undefined ? '' : spec.description;
   }
 }
 

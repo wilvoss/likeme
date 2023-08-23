@@ -748,6 +748,68 @@ tutorial smallbuttons {
   padding-bottom: var(--defaultGap);
 }
 
+tutorial container description {
+  position: absolute;
+  opacity: 1;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--pieceSize);
+  padding: 0 var(--defaultGap);
+  width: calc(var(--pieceSize) - (var(--defaultGap) * 2));
+  line-height: 100%;
+  z-index: 100;
+  transition: var(--transitionTime) var(--transitionEase) opacity;
+  color: hsl(var(--appForegroundStrongest));
+}
+
+tutorial container:hover description,
+tutorial container:hover description.show {
+  opacity: 0;
+}
+
+tutorial container description b {
+  font-weight: normal;
+  padding: 2px 3px 0px;
+  margin: 0 0;
+  text-align: center;
+  display: block;
+  background: hsl(var(--appBackground));
+  opacity: 0;
+  border-radius: 2px 2px 0px 0px;
+  transition: var(--transitionTime) var(--transitionEase) opacity;
+}
+
+tutorial container description b:last-of-type {
+  border-radius: 2px;
+  padding-bottom: 2px;
+}
+
+tutorial container description.show b {
+  opacity: 1;
+}
+
+tutorial container:nth-child(4) description b,
+tutorial container:nth-child(3) description b,
+tutorial container:nth-child(2) description b,
+tutorial container:nth-child(1) description b {
+  transition-delay: 0ms;
+}
+
+tutorial container:nth-child(1) description.show b {
+  transition-delay: 400ms;
+}
+tutorial container:nth-child(2) description.show b {
+  transition-delay: 500ms;
+}
+tutorial container:nth-child(3) description.show b {
+  transition-delay: 600ms;
+}
+tutorial container:nth-child(4) description.show b {
+  transition-delay: 700ms;
+}
+
 modal img {
   width: 80%;
 }
@@ -1615,5 +1677,9 @@ gameover h2 {
 
   time.alert {
     color: hsl(var(--appBackgroundStrongest));
+  }
+
+  tutorial container description b {
+    font-size: 0.9em;
   }
 }

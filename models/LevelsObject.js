@@ -69,19 +69,23 @@ function constructLevel(_bs, _splice = false) {
   for (let x = 1; x < _bs.length; x++) {
     const _s = _bs[x].toString().split('');
     let _piece = new PieceObject({ shape: Shapes[_s[0]], color: Colors[_s[1]], backgroundImage: BackgroundImages[_s[2]] });
-
+    let _description = '';
     let _likeness = 0;
     if (_piece.color === _level.me.color) {
       _likeness++;
+      _description = _description + '<b>color</b>';
     }
     if (_piece.shape === _level.me.shape) {
+      _description = _description + '<b>shape</b>';
       _likeness++;
     }
     if (_piece.backgroundImage === _level.me.backgroundImage) {
+      _description = _description + '<b>pattern</b>';
       _likeness++;
     }
     _piece.isMatch = _likeness > 1;
     _piece.isFullMatch = _likeness === 3;
+    _piece.description = _piece.isMatch ? (_piece.isFullMatch ? '<b>all 3</b>' : _description) : '';
 
     _level.board.push(_piece);
   }

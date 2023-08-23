@@ -117,6 +117,7 @@
             <credit>Marianne Geisemann</credit>
             <credit>Jerry Hoffmeister</credit>
             <credit>Rebecca Hoffmeister</credit>
+            <credit>Amy Redmond</credit>
             <credit>Danielle Siler</credit>
             <credit>Gretchen Voss</credit>
             <credit>Kathleen Voss</credit>
@@ -296,6 +297,7 @@
           <description v-html="ChangeTutorialPiecesToCats(appTutorialSteps[appTutorialCurrentStepIndex].description)"></description>
           <board :class="{unreveal: appTutorialCurrentStepIndex < 2 || appTutorialCurrentStepIndex === appTutorialSteps.length - 1, partial: appTutorialCurrentStepIndex === 3   }">
             <container class="dropped" :class="{selected: piece.isSelected}" v-for="(piece, index) in appTutorialBoardPieces.board" @click="piece.isSelected = appTutorialCurrentStepIndex > 3 ? !piece.isSelected : piece.isSelected">
+              <description :class="{show: appTutorialCurrentStepIndex === 3}" v-html="piece.description"></description>
               <piece :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color}">
                 <gild :style="{backgroundImage: piece.backgroundImage }"> </gild>
               </piece>

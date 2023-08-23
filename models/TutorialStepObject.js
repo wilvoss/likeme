@@ -23,7 +23,7 @@ var TutorialSteps = [
   }),
   new TutorialStepObject({
     title: 'These pieces are like me!',
-    description: 'They share <b>at least 2</b> of my attributes: pattern and shape, shape and color, or color and pattern.',
+    description: 'They share <b>at least 2</b> of my attributes: <br />color, shape, or pattern.',
   }),
   new TutorialStepObject({
     title: 'So now what?',
