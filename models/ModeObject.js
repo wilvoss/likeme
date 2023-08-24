@@ -21,7 +21,7 @@ var Modes = {
   }),
   easy: new ModeObject({
     name: 'Easy',
-    description: 'Game ends after three minutes.',
+    description: 'Game starts with 3 minute countdown.',
     piece: new PieceObject({
       shape: Shapes[getRandomInt(0, Shapes.length)],
       color: Colors[getRandomInt(0, Colors.length)],
