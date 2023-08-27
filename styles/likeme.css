@@ -248,6 +248,23 @@ tutorial {
   transition: var(--transitionTime) var(--transitionEase) all;
 }
 
+modal.semitransparent,
+challenge.semitransparent {
+  background: hsla(var(--appBackground), 0.92);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+modal.semitransparent.preview {
+  background: hsla(var(--appBackground), 0.3);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+}
+modal.semitransparent.preview content {
+  opacity: 0;
+  /* visibility: none; */
+}
+
 .notransition {
   transition: 0ms none none;
 }
@@ -583,6 +600,11 @@ icon.settings {
   -webkit-mask-image: url(../images/icon_settings.svg);
 }
 
+icon.eye {
+  mask-image: url(../images/icon_eye.svg);
+  -webkit-mask-image: url(../images/icon_eye.svg);
+}
+
 icon.copyright {
   mask-image: url(../images/icon_copyright.svg);
   -webkit-mask-image: url(../images/icon_copyright.svg);
@@ -706,6 +728,17 @@ chrome {
   overflow: hidden;
 }
 
+chrome.hide {
+  transition: none;
+  opacity: 0.1;
+}
+
+.show chrome.footer {
+  height: calc(1.5 * var(--chromeHeight));
+  position: relative;
+  background: transparent;
+}
+
 .show chrome button,
 chrome button {
   font-size: 1em;
@@ -727,6 +760,18 @@ chrome button {
   transition: var(--transitionTime) var(--transitionEase) all;
   margin: 0;
   min-height: var(--chromeHeight);
+}
+
+.show chrome.footer button {
+  width: 100%;
+  height: 100%;
+  align-items: end;
+  justify-content: end;
+  padding: 0px;
+}
+
+.show chrome.footer button icon {
+  width: 64px;
 }
 
 .show chrome button:last-of-type,

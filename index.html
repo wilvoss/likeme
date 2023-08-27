@@ -57,18 +57,16 @@
           </section>
           <section>
             <modes>
-              <mode v-for="mode in appSettingsModes" :class="{selected: mode.isSelected}">
+              <mode v-for="mode in appSettingsModes" v-if="!mode.isHidden" :class="{selected: mode.isSelected}">
                 <container :title="mode.name + ' mode. ' + mode.description + ' Click to select.'" @click="SelectMode(mode)">
                   <piece :style="{maskImage: mode.piece.shape, webkitMaskImage: mode.piece.shape, backgroundColor: mode.piece.color}">
                     <gild :style="{backgroundImage: mode.piece.backgroundImage }" />
                   </piece>
                 </container>
-                <value>{{mode.name}} mode</value>
+                <value>{{mode.name}}</value>
               </mode>
             </modes>
-            <description v-if="appSettingsModes.infinite.isSelected">{{appSettingsModes.infinite.description}} </description>
-            <description v-if="appSettingsModes.hard.isSelected">{{appSettingsModes.hard.description}}</description>
-            <description v-if="appSettingsModes.easy.isSelected">{{appSettingsModes.easy.description}}</description>
+            <description v-for="mode in appSettingsModes" v-if="mode.isSelected">{{mode.description}} </description>
           </section>
           <section>
             <button title="Click to start a new game." class="primary" @click="RestartGame">Play</button>
@@ -118,6 +116,7 @@
             <credit>Marianne Geisemann</credit>
             <credit>Jerry Hoffmeister</credit>
             <credit>Rebecca Hoffmeister</credit>
+            <credit>JJ Kaze</credit>
             <credit>Amy Redmond</credit>
             <credit>Danielle Siler</credit>
             <credit>Gretchen Voss</credit>
@@ -177,7 +176,7 @@
             <h1>High Scores</h1>
           </header>
           <section>
-            <h2>Easy</h2>
+            <h2>Basic Mode</h2>
             <leftright v-for="score in userScoresHighEasyByValue" :title="score.isDaily ? 'Recorded for the ' + FormatDate(score.dailyDate) + ' daily challange.' : ''" :class="{current: score.isCurrent, daily: score.isDaily}">
               <left>{{FormatDate(score.date)}}</left>
               <right>{{NumberWithCommas(score.value)}}</right>
@@ -185,14 +184,14 @@
             <leftright v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighEasyByValue.length"> <left></left>&nbsp;<right></right> </leftright>
           </section>
           <section>
-            <h2>Hard</h2>
-            <leftright v-for="score in userScoresHighHardByValue" :class="{current: score.isCurrent}">
+            <h2>Sudden Death</h2>
+            <leftright v-for="score in userScoresHighBlitzByValue" :class="{current: score.isCurrent}">
               <left>{{FormatDate(score.date)}}</left>
               <right>{{NumberWithCommas(score.value)}}</right>
             </leftright>
-            <leftright v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighHardByValue.length"> <left></left>&nbsp;<right></right> </leftright>
+            <leftright v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighBlitzByValue.length"> <left></left>&nbsp;<right></right> </leftright>
           </section>
-          <section v-if="userScoresHighEasyByValue.length > 0 || userScoresHighHardByValue.length > 0">
+          <section v-if="userScoresHighEasyByValue.length > 0">
             <button class="danger" @click="ClearAllUserScores">Clear All Scores</button>
           </section>
         </content>
@@ -247,44 +246,50 @@
           </section>
         </content>
       </modal>
-      <modal class="notransition" :class="{show: appVisualStateShowPageGameOver}" @pointerdown="appVisualStateShowNotification = false;">
+      <modal class="notransition semitransparent" :class="{show: appVisualStateShowPageGameOver, preview: !appVisualStateShowGameOverContent}" @pointerdown="appVisualStateShowNotification = false;">
         <content style="justify-content: center">
           <!-- prettier-ignore -->
-          <copyme id="copyme" v-if="gameLastHighScore.isDaily">▨ ▲ ◯  Daily - {{GetMonthAndDay(gameLastHighScore.dailyDate)}}
+          <copyme id="copyme" v-if="appVisualStateShowPageGameOver && gameLastHighScore.isDaily">▨ ▲ ◯  Daily - {{GetMonthAndDay(gameLastHighScore.dailyDate)}}
 {{NumberWithCommas(gameCurrentTotalScore) + ' pts - ' + gameCurrentNumberOfClears + ' level'}}{{gameCurrentNumberOfClears !== 1 ? 's' : ''}}
 {{'(https://' + window.location.host + ')'}}</copyme>
           <!-- prettier-ignore -->
-          <copyme id="copyme" v-if="!gameLastHighScore.isDaily && !appSettingsModes.infinite.isSelected">▨ ▲ ◯  {{appSettingsModes.easy.isSelected ? 'Easy Mode' : 'Hard Mode'}} 
+          <copyme id="copyme" v-if="appVisualStateShowPageGameOver && !gameLastHighScore.isDaily && !getInfiniteModeComputed.isSelected">▨ ▲ ◯  {{getCurrentGameModeComputed.name}} 
 {{NumberWithCommas(gameCurrentTotalScore) + ' pts - ' + gameCurrentNumberOfClears + ' level'}}{{gameCurrentNumberOfClears !== 1 ? 's' : ''}}
 {{'(https://' + window.location.host + ')'}}</copyme>
-          <h1>{{gameLastHighScore.isDaily ? 'Challenge' : 'Game'}} Over</h1>
+          <h1 :style="{rotate: getCurrentGameModeComputed.useBatThwap ?  getRandomInt(0, 8) - 4 + 'deg' : '0deg'}">{{getCurrentGameModeComputed.endGameTitle}}</h1>
+          <p>{{getCurrentGameModeComputed.endGameConsolationMessage}}</p>
           <newhigh @pointerdown="ToggleHighScores(event, true)"> {{appVisualStateShowNewHighScoreElement ? 'A NEW high score!' : '&nbsp;'}} </newhigh>
           <section>
             <leftright class="impress">
-              <left> {{!appSettingsModes.infinite.isSelected ? 'Final score ' : 'Total levels cleared '}} </left>
-              <right> {{!appSettingsModes.infinite.isSelected ? NumberWithCommas(gameCurrentTotalScore) + ' pts' : gameCurrentNumberOfClears}} </right>
+              <left> {{!getInfiniteModeComputed.isSelected ? 'Final score ' : 'Total levels cleared '}} </left>
+              <right> {{!getInfiniteModeComputed.isSelected ? NumberWithCommas(gameCurrentTotalScore) + ' pts' : gameCurrentNumberOfClears}} </right>
             </leftright>
-            <leftright v-if="!appSettingsModes.infinite.isSelected">
-              <left>Time remaining</left>
+            <leftright>
+              <left>Time {{getInfiniteModeComputed.isSelected ? 'played' : 'remaining'}}</left>
               <right>{{GetMsToTime(gameCurrentTimer)}}</right>
             </leftright>
-            <leftright v-if="!appSettingsModes.infinite.isSelected">
+            <leftright v-if="!getInfiniteModeComputed.isSelected">
               <left>Levels cleared</left>
               <right>{{gameCurrentNumberOfClears}}{{gameLastHighScore.isDaily ? '/' + gameDailyChallenge.allLevels.length : ''}}</right>
             </leftright>
-            <leftright v-if="!appSettingsModes.infinite.isSelected">
+            <leftright v-if="getCurrentGameModeComputed.bonustime > 0">
               <left>Bonus time added</left>
               <right>{{GetMsToTime(gameCurrentNumberOfPerfectMatches * 3000)}}</right>
             </leftright>
           </section>
           <section>
-            <button v-if="gameLastHighScore.isDaily || (!appSettingsModes.infinite.isSelected && appVisualStateShowNewHighScoreElement)" title="Click to share your score with your friends." class="tertiary inline" @click="ShareScore">Share!<icon class="share"></icon></button>
+            <button v-if="gameLastHighScore.isDaily || (!getInfiniteModeComputed.isSelected && appVisualStateShowNewHighScoreElement)" title="Click to share your score with your friends." class="tertiary inline" @click="ShareScore">Share!<icon class="share"></icon></button>
             <button v-if="!gameLastHighScore.isDaily" title="Click to start a new game" class="primary" @click="RestartGame">New Game</button>
             <button title="Click to return to the home screen." class="secondary" @click="appVisualStateShowPageGameOver = false, appVisualStateShowPageHome = true">Home</button>
           </section>
         </content>
+        <chrome class="footer" v-if="getCurrentGameModeComputed.id != 'infinite'">
+          <button title="Click to adjust the game settings." class="quaternary" @pointerdown="appVisualStateShowGameOverContent = false" @pointerup="appVisualStateShowGameOverContent = true" @pointerout="appVisualStateShowGameOverContent = true">
+            <icon class="eye"></icon>
+          </button>
+        </chrome>
       </modal>
-      <challenge :class="{show: appVisualStateShowPageChallenge}">
+      <challenge class="semitransparent" :class="{show: appVisualStateShowPageChallenge}">
         <section>
           <h1>Quit for real?</h1>
         </section>
@@ -294,11 +299,11 @@
         </smallbuttons>
       </challenge>
       <stage v-if="!appVisualStateShowPageHome && !appTutorialIsInPlay" :class="{paused: gameCurrentIsPaused}">
-        <chrome :class="{alert: gameCurrentTimer < 6000 && !appSettingsModes.infinite.isSelected}">
+        <chrome :class="{hide: !appVisualStateShowGameOverContent, alert: gameCurrentTimer < 6000 && !getInfiniteModeComputed.isSelected}">
           <button @click="appVisualStateShowPageSettings = true">Settings</button>
           <gameinfo>
             <labelsmall v-if="gameDailyChallengeHasBeenStarted"> level {{parseInt(gameCurrentNumberOfClears + 1)}} <span>of</span> {{gameDailyChallenge.allLevels.length}} </labelsmall>
-            <time @click="ToggleGamePause(event, false)" v-if="!appSettingsModes.infinite.isSelected">{{gameCurrentIsPaused ? 'Paused' : NumberWithCommas(gameCurrentTotalScore) + ' pts'}}</time>
+            <time @click="ToggleGamePause(event, false)" v-if="!getInfiniteModeComputed.isSelected">{{gameCurrentIsPaused ? 'Paused' : NumberWithCommas(gameCurrentTotalScore) + ' pts'}}</time>
           </gameinfo>
           <button @click="ToggleChallenge(event, true)">Quit</button>
         </chrome>
@@ -306,9 +311,9 @@
           <message v-html="gameCurrentHintText"></message>
         </hint>
         <playarea @click="if(gameCurrentIsPaused) ToggleGamePause(event, false)">
-          <scorearea :class="{clickable: !appSettingsModes.infinite.isSelected}" @click="ToggleGamePause(event, !gameCurrentIsPaused)">
-            <labelsmall>{{appSettingsModes.infinite.isSelected ? '' : 'II'}} {{appSettingsModes.infinite.isSelected ? 'clears' : 'pause'}}</labelsmall>
-            <currentscore :class="{bigpulse: gameCurrentTimer < 6000 && !appSettingsModes.infinite.isSelected}">{{appSettingsModes.infinite.isSelected ? NumberWithCommas(gameCurrentNumberOfClears) : GetMsToTime(gameCurrentTimer)}}</currentscore>
+          <scorearea :class="{clickable: !getInfiniteModeComputed.isSelected}" @click="ToggleGamePause(event, !gameCurrentIsPaused)">
+            <labelsmall>{{getInfiniteModeComputed.isSelected ? '' : 'II'}} {{getInfiniteModeComputed.isSelected ? 'clears' : 'pause'}}</labelsmall>
+            <currentscore :class="{bigpulse: !getInfiniteModeComputed.isSelected && !gameCurrentIsGameOver && gameCurrentTimer < 6000 }">{{getInfiniteModeComputed.isSelected ? NumberWithCommas(gameCurrentNumberOfClears) : GetMsToTime(gameCurrentTimer)}}</currentscore>
           </scorearea>
           <board>
             <container @click="TogglePieceSelection(piece)" v-for="piece in gameCurrentBoardPieces" :class="{include:  piece.nudge && userSettingsUseHints && piece.isMatch, exclude: piece.nudge && userSettingsUseHints && !piece.isMatch, selected: piece.isSelected, dropped: piece.hasDropped}">
