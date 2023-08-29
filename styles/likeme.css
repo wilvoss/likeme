@@ -782,6 +782,9 @@ chrome button {
   margin: 0;
   min-height: var(--chromeHeight);
 }
+chrome.footer button {
+  transition: none;
+}
 
 .show chrome.footer button {
   width: 100%;
@@ -1000,6 +1003,8 @@ mode {
   display: flex;
   flex-direction: column;
   -webkit-tap-highlight-color: transparent;
+  align-items: center;
+  min-width: 76px;
 }
 
 mode.selected {
@@ -1699,13 +1704,6 @@ gameover h2 {
     border-color: hsl(var(--appBackground));
   }
 
-  button {
-    height: 38px;
-    min-height: 38px;
-    margin-bottom: 6px;
-    font-size: 1.4em;
-  }
-
   smallbuttons,
   controlgroup {
     column-gap: 6px;
@@ -1769,6 +1767,13 @@ gameover h2 {
   modal.notransition content {
     margin-top: 0;
     padding-top: calc(2 * var(--defaultGap));
+  }
+
+  button {
+    height: 38px;
+    min-height: 38px;
+    margin-bottom: 6px;
+    font-size: 1.4em;
   }
 
   scorearea labelsmall {
