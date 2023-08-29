@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.5',
+    currentVersion: '4.2.33',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -87,6 +87,8 @@ var app = new Vue({
     userHighScoresInfinite: [],
     userHighScoresEasy: [],
     userHighScoresBlitz: [],
+    usersBlitzStreakCurrent: 0,
+    usersBlitzStreakBest: 0,
     userSettingsUseAltPatterns: false,
     userSettingsUseHints: true,
     userSettingsUseSoundFX: true,
@@ -427,6 +429,17 @@ var app = new Vue({
         localStorage.setItem('userHighScoresEasy', JSON.stringify(this.userHighScoresEasy));
       } else if (this.GetModeById('blitz').isSelected) {
         this.userHighScoresBlitz.push(_score);
+        if (this.gameCurrentTimer === 0 && _score.value > 0) {
+          this.usersBlitzStreakCurrent++;
+        } else {
+          this.usersBlitzStreakCurrent = 0;
+        }
+        if (this.usersBlitzStreakBest < this.usersBlitzStreakCurrent) {
+          this.usersBlitzStreakBest = this.usersBlitzStreakCurrent;
+        }
+        localStorage.setItem('usersBlitzStreakBest', JSON.stringify(this.usersBlitzStreakBest));
+        localStorage.setItem('usersBlitzStreakCurrent', JSON.stringify(this.usersBlitzStreakCurrent));
+
         if (_score === this.userScoresHighBlitzByValue[0]) {
           this.appVisualStateShowNewHighScoreElement = true;
         }
@@ -445,6 +458,7 @@ var app = new Vue({
       }
       this.gameCurrentIsGameDailyChallenge = false;
       this.GetDailyChallenge();
+      this.CheckForServiceWorkerUpdate();
       this.gameCurrentIsGameOver = true;
       this.gameDailyChallengeHasBeenStarted = false;
       this.appVisualStateShowPageChallenge = false;
@@ -452,9 +466,7 @@ var app = new Vue({
     },
 
     SetState() {
-      this.gameDailyChallengeAlreadyScored = false;
-      this.gameDailyChallengeHasBeenStarted = false;
-      this.gameDailyChallenge.allLevelsSource = '010';
+      this.gameCurrentTimer = 3000;
     },
 
     // adds the animation of remaining time at the end of a game
@@ -657,6 +669,18 @@ var app = new Vue({
             });
           });
         }
+      }
+
+      let _usersBlitzStreakCurrent = localStorage.getItem('usersBlitzStreakCurrent');
+      if (_usersBlitzStreakCurrent !== undefined && _usersBlitzStreakCurrent !== null) {
+        _usersBlitzStreakCurrent = JSON.parse(_usersBlitzStreakCurrent);
+        this.usersBlitzStreakCurrent = _usersBlitzStreakCurrent;
+      }
+
+      let _usersBlitzStreakBest = localStorage.getItem('usersBlitzStreakBest');
+      if (_usersBlitzStreakBest !== undefined && _usersBlitzStreakBest !== null) {
+        _usersBlitzStreakBest = JSON.parse(_usersBlitzStreakBest);
+        this.usersBlitzStreakBest = _usersBlitzStreakBest;
       }
 
       let _hints = localStorage.getItem('userSettingsUseHints');
@@ -1183,6 +1207,8 @@ var app = new Vue({
         localStorage.setItem('gameCurrentHasAnyPieceEverBeenSelected', JSON.stringify(this.gameCurrentHasAnyPieceEverBeenSelected));
         localStorage.setItem('gameLikenessNudgeHasBeenShown', JSON.stringify(this.gameLikenessNudgeHasBeenShown));
         localStorage.setItem('gameClickMeNudgeHasBeenShown', JSON.stringify(this.gameClickMeNudgeHasBeenShown));
+        localStorage.setItem('usersBlitzStreakBest', JSON.stringify(this.usersBlitzStreakBest));
+        localStorage.setItem('usersBlitzStreakCurrent', JSON.stringify(this.usersBlitzStreakCurrent));
         localStorage.setItem('userSettingsUseCats', this.userSettingsUseCats);
         localStorage.setItem('userSettingsUseAltPatterns', this.userSettingsUseAltPatterns);
         localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
@@ -1294,11 +1320,11 @@ var app = new Vue({
             if (app.gameDailyChallenge === null || app.gameDailyChallenge === undefined || app.gameDailyChallenge.allLevelsSource === '') {
               app.gameDailyChallenge = new AllLevelsObject({});
               constructAllLevels(contents, app.gameDailyChallenge);
-              app.CheckIfUserHasScoredDailyChallenge(true);
             }
           }
         });
       }
+      app.CheckIfUserHasScoredDailyChallenge(true);
     },
 
     StartDailyChallenge() {
@@ -1491,6 +1517,20 @@ var app = new Vue({
         return 0;
       }
       return this.userHighScoresInfinite.sort(compare).flat().slice(0, this.appSettingsNumberOfHighScoresShown);
+    },
+
+    userScoresHighDailyByValue: function () {
+      note('userScoresHighDailyByValue() called');
+      function compare(a, b) {
+        if (a.value < b.value) return 1;
+        if (a.value > b.value) return -1;
+        return 0;
+      }
+      return this.userHighScoresEasy
+        .filter((obj) => obj.isDaily)
+        .sort(compare)
+        .flat()
+        .slice(0, this.appSettingsNumberOfHighScoresShown);
     },
 
     getCurrentGameModeComputed: function () {

@@ -10,11 +10,13 @@ async function readDailyChallengeFile(callback) {
   var filename = 'dailyChallenge' + month + day + year + '.txt';
 
   try {
-    await caches.open('my-cache').then(function (cache) {
-      cache.delete('dailyChallenges/' + filename).then(function (response) {
-        note('The cache has been deleted for: ' + filename);
+    if (typeof caches !== 'undefined') {
+      await caches.open('my-cache').then(function (cache) {
+        cache.delete('dailyChallenges/' + filename).then(function (response) {
+          note('The cache has been deleted for: ' + filename);
+        });
       });
-    });
+    }
   } catch (_error) {
     error(_error);
   }
