@@ -76,7 +76,7 @@
                 <icon class="share"></icon>
               </button>
             </smallbuttons>
-            <version> &copy;{{new Date().getFullYear()}} <a href="#" @click="GiveFeedback" target="_blank">Big Tent Games</a> - v{{currentVersion + (window.location.host !== 'likeme.games' ? 'p' : '')}} </version>
+            <version :style="{fontStyle: window.location.host !== 'likeme.games' ? 'italic' : ''}">{{currentVersion}} </version>
           </section>
         </content>
       </page>
@@ -146,6 +146,9 @@
               <left>Previous theme</left>
               <right>[</right>
             </leftright>
+          </section>
+          <section>
+            <credit>&copy;{{new Date().getFullYear()}} Big Tent Games</credit>
           </section>
           <!-- <section>
             <button class="quaternary inline small" @click="window.open('/history.html')">Version history</button>
@@ -330,7 +333,7 @@
           <h2>{{ChangeTutorialPiecesToCats(appTutorialSteps[appTutorialCurrentStepIndex].title)}}</h2>
           <description v-html="ChangeTutorialPiecesToCats(appTutorialSteps[appTutorialCurrentStepIndex].description)"></description>
           <board :class="{unreveal: appTutorialCurrentStepIndex < 2 || appTutorialCurrentStepIndex === appTutorialSteps.length - 1, partial: appTutorialCurrentStepIndex === 3   }">
-            <container class="dropped" :class="{selected: piece.isSelected}" v-for="(piece, index) in appTutorialBoardPieces.board" @click="piece.isSelected = appTutorialCurrentStepIndex > 3 ? !piece.isSelected : piece.isSelected">
+            <container class="dropped" :class="{selected: piece.isSelected, describe: appTutorialCurrentStepIndex === 3}" v-for="(piece, index) in appTutorialBoardPieces.board" @click="piece.isSelected = appTutorialCurrentStepIndex > 3 ? !piece.isSelected : piece.isSelected">
               <description :class="{show: appTutorialCurrentStepIndex === 3}" v-html="piece.description"></description>
               <piece :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color}">
                 <gild :style="{backgroundImage: piece.backgroundImage }"> </gild>

@@ -823,60 +823,43 @@ tutorial container description {
   flex-direction: column;
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: var(--pieceSize);
+  justify-content: start;
+  height: auto;
   padding: 0 var(--defaultGap);
   width: calc(var(--pieceSize) - (var(--defaultGap) * 2));
   line-height: 100%;
   z-index: 100;
+  transform: translateY(var(--pieceSize));
   transition: var(--transitionTime) var(--transitionEase) opacity;
   color: hsl(var(--appForegroundStrongest));
 }
 
-tutorial container:hover description,
-tutorial container:hover description.show {
+tutorial container description,
+tutorial container.describe:hover description {
   opacity: 0;
+  transition: var(--transitionTime) var(--transitionEase) all;
+}
+
+tutorial container.describe description {
+  opacity: 1;
 }
 
 tutorial container description b {
+  color: var(--color1);
   font-weight: normal;
   padding: 2px 3px 0px;
   margin: 0 0;
   text-align: center;
   display: block;
   background: hsl(var(--appBackground));
-  opacity: 0;
+  /* opacity: 0; */
   border-radius: 2px 2px 0px 0px;
-  transition: var(--transitionTime) var(--transitionEase) opacity;
+  /* transition: var(--transitionTime) var(--transitionEase) opacity; */
 }
 
-tutorial container description b:last-of-type {
+tutorial container.describe description b:last-of-type {
   border-radius: 2px;
   padding-bottom: 2px;
-}
-
-tutorial container description.show b {
-  opacity: 1;
-}
-
-tutorial container:nth-child(4) description b,
-tutorial container:nth-child(3) description b,
-tutorial container:nth-child(2) description b,
-tutorial container:nth-child(1) description b {
-  transition-delay: 0ms;
-}
-
-tutorial container:nth-child(1) description.show b {
-  transition-delay: 400ms;
-}
-tutorial container:nth-child(2) description.show b {
-  transition-delay: 500ms;
-}
-tutorial container:nth-child(3) description.show b {
-  transition-delay: 600ms;
-}
-tutorial container:nth-child(4) description.show b {
-  transition-delay: 700ms;
 }
 
 modal img {
@@ -1189,12 +1172,12 @@ tutorial board.unreveal {
 }
 
 tutorial board.partial {
-  height: calc(var(--pieceSize) + 4px);
+  height: calc(1.5 * var(--pieceSize) + 4px);
 }
 
 container {
   transform: translateY(-640px);
-  transition: 00ms ease-out transform;
+  transition: 0ms ease-out transform;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
@@ -1203,7 +1186,8 @@ container.dropped,
 me container,
 page container,
 modal me container {
-  transition: 200ms ease-out transform;
+  transition: 200ms ease-out;
+  transition-property: transform, opacity;
   transform: translateY(0) scale(1);
   border-radius: var(--borderRadius);
 }
@@ -1274,6 +1258,20 @@ container.selected.exclude {
   66% {
     transform: translateX(2px);
   }
+}
+
+tutorial board container {
+  transition: var(--transitionEase) var(--transitionTime) all;
+}
+board.partial container.describe {
+  opacity: 0;
+}
+
+tutorial container.describe:nth-child(1),
+tutorial container.describe:nth-child(2),
+tutorial container.describe:nth-child(3),
+tutorial container.describe:nth-child(4) {
+  opacity: 1;
 }
 
 stage me,
