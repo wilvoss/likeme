@@ -260,6 +260,7 @@ modal.semitransparent.preview {
   backdrop-filter: blur(0px);
   -webkit-backdrop-filter: blur(0px);
 }
+
 modal.semitransparent.preview content {
   opacity: 0;
   /* visibility: none; */
@@ -315,7 +316,7 @@ modal content {
   margin-top: var(--defaultGap);
 }
 
-modal chrome + content {
+modal chrome+content {
   margin-top: var(--chromeHeight);
 }
 
@@ -782,6 +783,7 @@ chrome button {
   margin: 0;
   min-height: var(--chromeHeight);
 }
+
 chrome.footer button {
   transition: none;
 }
@@ -1263,6 +1265,7 @@ container.selected.exclude {
 tutorial board container {
   transition: var(--transitionEase) var(--transitionTime) all;
 }
+
 board.partial container.describe {
   opacity: 0;
 }
@@ -1761,6 +1764,7 @@ gameover h2 {
     font-size: 0.9em;
   }
 }
+
 @media only screen and (max-height: 450px) {
   modal.notransition content {
     margin-top: 0;
