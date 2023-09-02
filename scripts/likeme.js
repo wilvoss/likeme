@@ -1417,23 +1417,15 @@ var app = new Vue({
         case '4':
           break;
         case ' ':
-          if (!this.appTutorialIsInPlay && !this.gameCurrentIsGameOver && !this.appVisualStateShowPageChallenge) {
-            this.CheckBoard();
-          }
-          break;
         case 'Enter':
           if (!this.appTutorialIsInPlay && !this.gameCurrentIsGameOver && !this.appVisualStateShowPageChallenge) {
-            log('1');
             this.CheckBoard();
           } else if (!this.gameCurrentIsGameOver && this.appVisualStateShowPageChallenge) {
-            log('2');
             this.EndGame();
           } else if (this.appTutorialIsInPlay) {
             if (this.appTutorialCurrentStepIndex < this.appTutorialSteps.length - 1) {
-              log('3');
               this.HandleTutorialNext();
             } else if (this.gameCurrentIsGameOver) {
-              log('4');
               this.HandleSkipTutorial();
             }
           }
@@ -1442,6 +1434,10 @@ var app = new Vue({
           this.ClearEphemeralVisualStates();
           break;
       }
+    },
+
+    HandleKeyDown(event) {
+      event.preventDefault();
     },
 
     ClearEphemeralVisualStates() {
@@ -1504,6 +1500,7 @@ var app = new Vue({
     this.HandleServiceWorkerRegistration();
     this.InitializeGame();
     window.addEventListener('keyup', this.HandleKeyUp);
+    window.addEventListener('keydown', this.HandleKeyDown);
     window.addEventListener('pageshow', this.HandleOnPageShowEvent);
     window.addEventListener('visibilitychange', this.HandleOnVisibilityChange);
     window.addEventListener('pagehide', this.HandleOnPageHideEvent);
