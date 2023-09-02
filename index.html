@@ -72,7 +72,7 @@
               <button title="Click to see a list of credits." class="secondary" @click="ToggleCredits(event, true)">
                 <icon class="bullhorn"></icon>
               </button>
-              <button title="Click to share this app with your friends." class="secondary" @click="ShareApp">
+              <button title="Click to share this game with your friends." class="secondary" @click="ShareApp">
                 <icon class="share"></icon>
               </button>
             </smallbuttons>
@@ -82,7 +82,7 @@
       </page>
       <modal :class="{show: appVisualStateShowPageCredits}">
         <chrome>
-          <button @click="ToggleCredits(event, false)">done</button>
+          <button @click="ClearEphemeralVisualStates">done</button>
         </chrome>
         <content>
           <header>
@@ -154,24 +154,31 @@
       </modal>
       <modal :class="{show: appVisualStateShowPageHighScores}">
         <chrome>
-          <button @click="ToggleHighScores(event, false)">done</button>
+          <button @click="ClearEphemeralVisualStates">done</button>
         </chrome>
         <content>
           <header>
-            <h1>High Scores</h1>
+            <h1>Scores</h1>
           </header>
+          <section v-if="gameLastHighScore.isCurrent">
+            <h2>Last Game</h2>
+            <leftright @click="SetScoreForSharingAndShare(gameLastHighScore)" :title="gameLastHighScore.isDaily ? 'Recorded for the ' + FormatDate(gameLastHighScore.dailyDate) + ' daily challange.' : ''" class="lastscore">
+              <left>{{gameLastHighScore.isDaily ? 'Daily Challenge' : gameLastHighScore.modeName}}</left>
+              <right>{{NumberWithCommas(gameLastHighScore.value)}}</right>
+            </leftright>
+          </section>
           <section>
-            <h2>Basic Mode</h2>
-            <leftright v-for="score in userScoresHighEasyByValue" :title="score.isDaily ? 'Recorded for the ' + FormatDate(score.dailyDate) + ' daily challange.' : ''" :class="{current: score.isCurrent, daily: score.isDaily}">
+            <h2>Basic Mode - Highs</h2>
+            <leftright @click="SetScoreForSharingAndShare(score, getNormalModeComputed)" v-for="score in userScoresHighEasyByValue" :title="score.isDaily ? 'Recorded for the ' + FormatDate(score.dailyDate) + ' daily challange.' : ''" :class="{current: score.isCurrent, daily: score.isDaily}">
               <left>{{FormatDate(score.date)}}</left>
               <right>{{NumberWithCommas(score.value)}}</right>
             </leftright>
             <leftright v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighEasyByValue.length"> <left></left>&nbsp;<right></right> </leftright>
           </section>
           <section>
-            <h2>Sudden Death</h2>
+            <h2>Sudden Death - Highs</h2>
             <credit>Streaks: Current - {{usersBlitzStreakCurrent}}, Best - {{usersBlitzStreakBest}}</credit>
-            <leftright v-for="score in userScoresHighBlitzByValue" :class="{current: score.isCurrent}">
+            <leftright @click="SetScoreForSharingAndShare(score, getBlitzModeComputed)" v-for="score in userScoresHighBlitzByValue" :class="{current: score.isCurrent}">
               <left>{{FormatDate(score.date)}}</left>
               <right>{{NumberWithCommas(score.value)}}</right>
             </leftright>
@@ -189,7 +196,7 @@
       </modal>
       <modal :class="{show: appVisualStateShowPageSettings}">
         <chrome>
-          <button @click="ToggleSettings(event, false)">done</button>
+          <button @click="ClearEphemeralVisualStates">done</button>
         </chrome>
         <content>
           <header>
@@ -237,19 +244,19 @@
       <modal class="notransition semitransparent" :class="{show: appVisualStateShowPageGameOver, preview: !appVisualStateShowGameOverContent}" @pointerdown="appVisualStateShowNotification = false;">
         <content style="justify-content: center">
           <!-- prettier-ignore -->
-          <copyme id="copyme" v-if="appVisualStateShowPageGameOver && gameLastHighScore.isDaily">▨ ▲ ◯ Daily - {{GetMonthAndDay(gameLastHighScore.dailyDate)}}
-{{NumberWithCommas(gameCurrentTotalScore) + ' pts - ' + gameCurrentNumberOfClears + ' level'}}{{gameCurrentNumberOfClears !== 1 ? 's' : ''}}
+          <copyme id="copyme" v-if="gameScoreToShare.isDaily">▨ ▲ ◯ Daily - {{GetMonthAndDay(gameScoreToShare.dailyDate)}}
+{{NumberWithCommas(gameScoreToShare.value) + ' pts - ' + gameScoreToShare.numberOfClears + ' level'}}{{gameScoreToShare.numberOfClears !== 1 ? 's' : ''}}
 {{'(https://' + window.location.host + ')'}}</copyme>
           <!-- prettier-ignore -->
-          <copyme id="copyme" v-if="appVisualStateShowPageGameOver && !gameLastHighScore.isDaily && !getInfiniteModeComputed.isSelected">▨ ▲ ◯ {{getCurrentGameModeComputed.name}}
-{{NumberWithCommas(gameCurrentTotalScore) + ' pts - ' + gameCurrentNumberOfClears + ' level'}}{{gameCurrentNumberOfClears !== 1 ? 's' : ''}}{{getCurrentGameModeComputed.id === 'blitz' ? ' - ' + usersBlitzStreakBest + ' best streak': ''}}
+          <copyme id="copyme" v-if="!gameScoreToShare.isDaily && !getInfiniteModeComputed.isSelected">▨ ▲ ◯ {{gameScoreToShare.modeName}}
+{{NumberWithCommas(gameScoreToShare.value) + ' pts - ' + gameScoreToShare.numberOfClears + ' level'}}{{gameScoreToShare.numberOfClears !== 1 ? 's' : ''}}{{gameScoreToShare.modeId === 'blitz' ? ' - ' + usersBlitzStreakBest + ' best streak': ''}}
 {{'(https://' + window.location.host + ')'}}</copyme>
-          <h1 :style="{rotate: getCurrentGameModeComputed.useBatThwap ?  getRandomInt(0, 8) - 4 + 'deg' : '0deg'}">
+          <h1 v-if="appVisualStateShowPageGameOver" :style="{rotate: getCurrentGameModeComputed.useBatThwap ?  getRandomInt(0, 8) - 4 + 'deg' : '0deg'}">
             {{getCurrentGameModeComputed.endGameTitle}}
             <icon v-if="getCurrentGameModeComputed.id === 'infinite'" class="zen"></icon>
           </h1>
           <p v-if="getCurrentGameModeComputed.endGameConsolationMessage != '' && !appVisualStateShowNewHighScoreElement">{{getCurrentGameModeComputed.endGameConsolationMessage}}</p>
-          <newhigh v-if="appVisualStateShowNewHighScoreElement"> 'A NEW high score!'</newhigh>
+          <newhigh v-if="appVisualStateShowNewHighScoreElement">A NEW high score!</newhigh>
           <section>
             <leftright class="impress">
               <left> {{!getInfiniteModeComputed.isSelected ? 'Final score ' : 'Total levels cleared '}} </left>
@@ -273,7 +280,7 @@
             </leftright>
           </section>
           <section>
-            <button v-if="!getInfiniteModeComputed.isSelected" title="Click to share your score with your friends." class="tertiary inline" @click="ShareScore">Share!<icon class="share"></icon></button>
+            <button v-if="!getInfiniteModeComputed.isSelected" title="Click to share your score with your friends." class="tertiary inline" @click="SetScoreForSharingAndShare(gameLastHighScore)">Share!<icon class="share"></icon></button>
             <button title="Click to return to the home screen." class="secondary" @click="appVisualStateShowPageGameOver = false, appVisualStateShowPageHome = true">Home</button>
             <button v-if="!gameLastHighScore.isDaily" title="Click to start a new game" class="primary" @click="RestartGame">New Game</button>
           </section>

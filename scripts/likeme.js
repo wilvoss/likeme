@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.045',
+    currentVersion: '4.2.068',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -71,6 +71,7 @@ var app = new Vue({
     gameCurrentBoardScore: 0,
     gameCurrentTotalScore: 0,
     gameLastHighScore: new ScoreObject({}),
+    gameScoreToShare: new ScoreObject({}),
     gameCurrentStartingTime: 61000,
     gameCurrentTimer: 61000,
     gameCurrentNumberOfClears: 0,
@@ -267,6 +268,18 @@ var app = new Vue({
       }
     },
 
+    SetScoreForSharingAndShare(_score, _mode) {
+      this.appVisualStateShowNotification = false;
+      if (_score.modeId == '') {
+        _score.modeId = _mode.id;
+        _score.modeName = _mode.name;
+      }
+      this.gameScoreToShare = _score;
+      window.setTimeout(function () {
+        app.ShareScore();
+      }, 200);
+    },
+
     ShareScore() {
       let _shareText = document.getElementById('copyme').textContent;
       if (this.CheckForMobile()) {
@@ -417,6 +430,10 @@ var app = new Vue({
       let _score = new ScoreObject({
         value: this.gameCurrentTotalScore,
         isDaily: this.gameCurrentIsGameDailyChallenge,
+        modeId: this.GetCurrentGameMode().id,
+        modeName: this.GetCurrentGameMode().name,
+        numberOfClears: this.gameCurrentNumberOfClears,
+        streak: this.GetCurrentGameMode().id == 'blitz' ? this.usersBlitzStreakCurrent : 0,
       });
       if (this.gameCurrentIsGameDailyChallenge) {
         _score.dailyDate = this.gameDailyChallenge.date;
@@ -450,6 +467,7 @@ var app = new Vue({
       }
       _score.isCurrent = true;
       this.gameLastHighScore = _score;
+      this.gameScoreToShare = this.gameLastHighScore;
       this.AddBonusToScore();
 
       this.gameCurrentLevel.completed = true;
@@ -794,6 +812,9 @@ var app = new Vue({
       note('ClearAllUserScores() called');
       let _confirm = window.confirm('Are you sure you want to clear all of your scores?');
       if (_confirm) {
+        this.appVisualStateShowNotification = false;
+        this.gameLastHighScore = new ScoreObject({});
+        this.gameScoreToShare = new ScoreObject({});
         this.userHighScoresEasy = [];
         this.userHighScoresBlitz = [];
         this.userHighScoresInfinite = [];
@@ -1208,6 +1229,8 @@ var app = new Vue({
         localStorage.setItem('gameLikenessNudgeHasBeenShown', JSON.stringify(this.gameLikenessNudgeHasBeenShown));
         localStorage.setItem('gameClickMeNudgeHasBeenShown', JSON.stringify(this.gameClickMeNudgeHasBeenShown));
         localStorage.setItem('usersBlitzStreakBest', JSON.stringify(this.usersBlitzStreakBest));
+        localStorage.setItem('userHighScoresEasy', JSON.stringify(this.userHighScoresEasy));
+        localStorage.setItem('userHighScoresBlitz', JSON.stringify(this.userHighScoresBlitz));
         localStorage.setItem('usersBlitzStreakCurrent', JSON.stringify(this.usersBlitzStreakCurrent));
         localStorage.setItem('userSettingsUseCats', this.userSettingsUseCats);
         localStorage.setItem('userSettingsUseAltPatterns', this.userSettingsUseAltPatterns);
@@ -1392,8 +1415,12 @@ var app = new Vue({
         case '3':
         case '4':
           break;
-        case 'Enter':
         case ' ':
+          if (!this.appTutorialIsInPlay && !this.gameCurrentIsGameOver && !this.appVisualStateShowPageChallenge) {
+            this.CheckBoard();
+          }
+          break;
+        case 'Enter':
           if (!this.appTutorialIsInPlay && !this.gameCurrentIsGameOver && !this.appVisualStateShowPageChallenge) {
             this.CheckBoard();
           } else if (this.appVisualStateShowPageChallenge) {
@@ -1541,6 +1568,16 @@ var app = new Vue({
     getInfiniteModeComputed: function () {
       note('getInfiniteModeComputed() called');
       return this.GetModeById('infinite');
+    },
+
+    getBlitzModeComputed: function () {
+      note('getBlitzModeComputed() called');
+      return this.GetModeById('blitz');
+    },
+
+    getNormalModeComputed: function () {
+      note('getNormalModeComputed() called');
+      return this.GetModeById('normal');
     },
   },
 });

@@ -902,6 +902,10 @@ leftright:first-of-type {
   margin-top: 10px;
 }
 
+leftright.daily left:after {
+  content: ' - Daily';
+}
+
 leftright.current {
   background: hsl(var(--appBackgroundStrongest));
   border-color: hsl(var(--appBackgroundStrongest));
