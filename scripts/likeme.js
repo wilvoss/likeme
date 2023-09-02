@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.068',
+    currentVersion: '4.2.069',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -1386,6 +1386,7 @@ var app = new Vue({
 
     HandleKeyUp(event) {
       note('HandleKeyUp(event) called');
+      event.preventDefault();
       let _currentThemeIndex = -1;
       this.appSettingsThemes.forEach((theme, i) => {
         if (theme.isSelected) {
@@ -1422,13 +1423,17 @@ var app = new Vue({
           break;
         case 'Enter':
           if (!this.appTutorialIsInPlay && !this.gameCurrentIsGameOver && !this.appVisualStateShowPageChallenge) {
+            log('1');
             this.CheckBoard();
-          } else if (this.appVisualStateShowPageChallenge) {
+          } else if (!this.gameCurrentIsGameOver && this.appVisualStateShowPageChallenge) {
+            log('2');
             this.EndGame();
           } else if (this.appTutorialIsInPlay) {
             if (this.appTutorialCurrentStepIndex < this.appTutorialSteps.length - 1) {
+              log('3');
               this.HandleTutorialNext();
-            } else {
+            } else if (this.gameCurrentIsGameOver) {
+              log('4');
               this.HandleSkipTutorial();
             }
           }
