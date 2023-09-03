@@ -59,7 +59,7 @@
             <description v-for="mode in appSettingsModes" v-if="mode.isSelected">{{mode.description}} </description>
           </section>
           <section>
-            <button v-if="!gameDailyChallengeAlreadyScored && !gameDailyChallengeHasBeenStarted && gameDailyChallenge.allLevelsSource != ''" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="tertiary" @click="StartDailyChallenge">Daily Challenge!</button>
+            <button v-if="!userHasDoneTodaysDailyChallenge && !gameDailyChallengeHasBeenStarted && gameDailyChallenge.allLevelsSource != ''" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="tertiary" @click="StartDailyChallenge">Daily Challenge!</button>
             <button title="Click to start a new game." class="primary" @click="RestartGame">Play</button>
             <button title="Click to learn how to play Like Me?" class="secondary inline" @click="ToggleHowToPlay(event, true)">Tutorial</button>
             <smallbuttons>
@@ -158,7 +158,7 @@
         </chrome>
         <content>
           <header>
-            <h1>Scores</h1>
+            <h1>High Scores</h1>
           </header>
           <section v-if="gameLastHighScore.isCurrent">
             <h2>Last Game</h2>
@@ -168,7 +168,7 @@
             </leftright>
           </section>
           <section>
-            <h2>Basic Mode - Highs</h2>
+            <h2>Basic Mode</h2>
             <leftright @click="SetScoreForSharingAndShare(score, getNormalModeComputed)" v-for="score in userScoresHighEasyByValue" :title="score.isDaily ? 'Recorded for the ' + FormatDate(score.dailyDate) + ' daily challange.' : ''" :class="{current: score.isCurrent, daily: score.isDaily}">
               <left>{{FormatDate(score.date)}}</left>
               <right>{{NumberWithCommas(score.value)}}</right>
@@ -176,7 +176,7 @@
             <leftright v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighEasyByValue.length"> <left></left>&nbsp;<right></right> </leftright>
           </section>
           <section>
-            <h2>Sudden Death - Highs</h2>
+            <h2>Sudden Death</h2>
             <credit>Streaks: Current - {{usersBlitzStreakCurrent}}, Best - {{usersBlitzStreakBest}}</credit>
             <leftright @click="SetScoreForSharingAndShare(score, getBlitzModeComputed)" v-for="score in userScoresHighBlitzByValue" :class="{current: score.isCurrent}">
               <left>{{FormatDate(score.date)}}</left>

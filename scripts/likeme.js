@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.074',
+    currentVersion: '4.2.076',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -1561,6 +1561,11 @@ var app = new Vue({
         .sort(compare)
         .flat()
         .slice(0, this.appSettingsNumberOfHighScoresShown);
+    },
+
+    userHasDoneTodaysDailyChallenge: function () {
+      const today = new Date().toDateString();
+      return this.userHighScoresEasy.some((obj) => new Date(obj.dailyDate).toDateString() === today && obj.isDaily);
     },
 
     getCurrentGameModeComputed: function () {
