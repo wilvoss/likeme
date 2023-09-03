@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.076',
+    currentVersion: '4.2.077',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -275,9 +275,13 @@ var app = new Vue({
         _score.modeName = _mode.name;
       }
       this.gameScoreToShare = _score;
-      window.setTimeout(function () {
+      if (this.appVisualStateShowNotification) {
+        window.setTimeout(function () {
+          app.ShareScore();
+        }, 200);
+      } else {
         app.ShareScore();
-      }, 200);
+      }
     },
 
     ShareScore() {
