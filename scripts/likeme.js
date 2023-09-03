@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.069',
+    currentVersion: '4.2.074',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -448,6 +448,7 @@ var app = new Vue({
         this.userHighScoresBlitz.push(_score);
         if (this.gameCurrentTimer === 0 && _score.value > 0) {
           this.usersBlitzStreakCurrent++;
+          _score.streak = this.usersBlitzStreakCurrent;
         } else {
           this.usersBlitzStreakCurrent = 0;
         }
@@ -756,7 +757,7 @@ var app = new Vue({
         if (_userHighScoresEasy !== undefined && _userHighScoresEasy !== null && _userHighScoresEasy !== '[]') {
           _userHighScoresEasy = JSON.parse(_userHighScoresEasy);
           _userHighScoresEasy.forEach((s) => {
-            this.userHighScoresEasy.push(new ScoreObject({ date: new Date(s.date), isDaily: s.isDaily, value: s.value, dailyDate: s.dailyDate != undefined ? new Date(s.dailyDate) : new Date(s.date) }));
+            this.userHighScoresEasy.push(new ScoreObject({ modeId: s.modeId == undefined ? '' : s.modeId, modeName: s.modeName == undefined ? '' : s.modeName, streak: s.streak == undefined ? 0 : s.streak, numberOfClears: s.numberOfClears == undefined ? 0 : s.numberOfClears, date: new Date(s.date), isDaily: s.isDaily, value: s.value, dailyDate: s.dailyDate != undefined ? new Date(s.dailyDate) : new Date(s.date) }));
           });
         }
       } catch (_error) {
@@ -769,7 +770,7 @@ var app = new Vue({
         if (_userHighScoresBlitz !== undefined && _userHighScoresBlitz !== null && _userHighScoresBlitz !== '[]') {
           _userHighScoresBlitz = JSON.parse(_userHighScoresBlitz);
           _userHighScoresBlitz.forEach((s) => {
-            this.userHighScoresBlitz.push(new ScoreObject({ date: new Date(s.date), value: s.value }));
+            this.userHighScoresBlitz.push(new ScoreObject({ modeId: s.modeId == undefined ? '' : s.modeId, modeName: s.modeName == undefined ? '' : s.modeName, streak: s.streak == undefined ? 0 : s.streak, numberOfClears: s.numberOfClears == undefined ? 0 : s.numberOfClears, date: new Date(s.date), isDaily: s.isDaily, value: s.value, dailyDate: s.dailyDate != undefined ? new Date(s.dailyDate) : new Date(s.date) }));
           });
         }
       } catch (_error) {
