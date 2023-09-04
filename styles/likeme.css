@@ -347,7 +347,7 @@ tutorial playarea {
 modal.pause {
   height: calc(100% - var(--chromeHeight));
   margin-top: var(--chromeHeight);
-  background: hsl(var(--appBackgroundWeakest)) var(--bgImage1);
+  background: hsl(var(--appBackgroundStronger));
   cursor: pointer;
   align-items: center;
   justify-content: center;
@@ -418,8 +418,10 @@ button {
 
 button.hide {
   visibility: hidden;
-  /* pointer-events: none;
-  opacity: 0; */
+}
+
+button.isolate {
+  margin: var(--defaultGap);
 }
 
 button.primary {
@@ -488,6 +490,13 @@ button.quaternary:active {
   margin-bottom: 2px;
 }
 
+.show button.inline icon.bullhorn {
+  mask-size: 23px 23px;
+  -webkit-mask-size: 23px 23px;
+  height: 23px;
+  width: 23px;
+}
+
 @keyframes pulse {
   50% {
     transform: scale(1.02);
@@ -500,8 +509,7 @@ button.quaternary:active {
   }
 }
 
-button.danger {
-  color: var(--colorDanger);
+button.simple {
   border: none;
   background: none;
   box-shadow: none;
@@ -512,6 +520,10 @@ button.danger {
   height: auto;
   width: auto;
   min-height: unset;
+}
+
+button.danger {
+  color: var(--colorDanger);
 }
 
 button:focus,
@@ -590,6 +602,11 @@ icon.help {
 icon.download {
   mask-image: url(../images/icon_download.svg);
   -webkit-mask-image: url(../images/icon_download.svg);
+}
+
+icon.coffee {
+  mask-image: url(../images/icon_coffee.svg);
+  -webkit-mask-image: url(../images/icon_coffee.svg);
 }
 
 .inline icon.gradcap {
@@ -974,6 +991,7 @@ labelsmall span {
 credit {
   font-size: 0.8em;
 }
+
 
 page img {
   width: 50%;
