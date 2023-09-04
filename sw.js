@@ -1,5 +1,5 @@
 // the cache version gets updated every time there is a new deployment
-const CACHE_VERSION = '4.2.078';
+const CACHE_VERSION = '4.2.080';
 const CURRENT_CACHE = `main-${CACHE_VERSION}`;
 
 // prettier-ignore
