@@ -4,6 +4,7 @@ class ScoreObject {
     this.modeId = spec.modeId == undefined ? '' : spec.modeId;
     this.modeName = spec.modeName == undefined ? '' : spec.modeName;
     this.numberOfClears = spec.numberOfClears == undefined ? 0 : spec.numberOfClears;
+    this.totalPossibleClears = spec.totalPossibleClears == undefined ? -1 : spec.totalPossibleClears;
     this.dailyDate = spec.dailyDate == undefined ? new Date() : spec.dailyDate;
     this.isCurrent = spec.isCurrent == undefined ? false : spec.isCurrent;
     this.isDaily = spec.isDaily == undefined ? false : spec.isDaily;

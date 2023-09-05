@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.080',
+    currentVersion: '4.2.087',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -190,6 +190,29 @@ var app = new Vue({
       }
     },
 
+    CalculateDailyChallengeTotalScore() {
+      let _totalGameScore = 0;
+      this.gameDailyChallenge.allLevels.forEach((level, index) => {
+        let _totalBoardScore = 0;
+        let _totalPossibleLikePieces = 0;
+        level.board.forEach((piece, pi) => {
+          if (piece.isMatch) {
+            _totalPossibleLikePieces++;
+            if (piece.isFullMatch) {
+              _totalBoardScore = _totalBoardScore + this.appSettingsScoreTwinIncrement;
+            } else {
+              _totalBoardScore = _totalBoardScore + this.appSettingsScoreSiblingIncrement;
+            }
+          }
+        });
+        if (_totalPossibleLikePieces === 0) {
+          _totalBoardScore = this.appSettingsScoreTwinIncrement + this.appSettingsScoreSiblingIncrement;
+        }
+        _totalGameScore = _totalGameScore + this.appSettingsCurrentGameMode.scoreMultiplier * _totalBoardScore;
+      });
+      return _totalGameScore;
+    },
+
     NewBoard() {
       note('NewBoard() called');
       this.AdjustPieceSizeBasedOnViewport();
@@ -280,7 +303,9 @@ var app = new Vue({
           app.ShareScore();
         }, 200);
       } else {
-        app.ShareScore();
+        window.setTimeout(function () {
+          app.ShareScore();
+        }, 20);
       }
     },
 
@@ -441,6 +466,7 @@ var app = new Vue({
       });
       if (this.gameCurrentIsGameDailyChallenge) {
         _score.dailyDate = this.gameDailyChallenge.date;
+        _score.totalPossibleClears = this.gameDailyChallenge.allLevels.length;
       }
       if (this.GetModeById('normal').isSelected) {
         this.userHighScoresEasy.push(_score);
@@ -1326,9 +1352,7 @@ var app = new Vue({
     HandleOnVisibilityChange(event) {
       note('HandleOnVisibilityChange() called');
       this.appVisualStateShowGameOverContent = true;
-      if (document.visibilityState === 'visible') {
-        this.GetDailyChallenge();
-      }
+      this.GetDailyChallenge();
       this.CheckForServiceWorkerUpdate();
     },
 
@@ -1345,10 +1369,8 @@ var app = new Vue({
           this.gameDailyChallenge = new AllLevelsObject({});
           announce(result);
           if (contents !== null && contents !== undefined) {
-            if (app.gameDailyChallenge === null || app.gameDailyChallenge === undefined || app.gameDailyChallenge.allLevelsSource === '') {
-              app.gameDailyChallenge = new AllLevelsObject({});
-              constructAllLevels(contents, app.gameDailyChallenge);
-            }
+            app.gameDailyChallenge = new AllLevelsObject({});
+            constructAllLevels(contents, app.gameDailyChallenge);
           }
         });
       }

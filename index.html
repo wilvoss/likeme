@@ -258,12 +258,12 @@
             {{getCurrentGameModeComputed.endGameTitle}}
             <icon v-if="getCurrentGameModeComputed.id === 'infinite'" class="zen"></icon>
           </h1>
-          <p v-if="getCurrentGameModeComputed.endGameConsolationMessage != '' && !appVisualStateShowNewHighScoreElement">{{getCurrentGameModeComputed.endGameConsolationMessage}}</p>
-          <newhigh v-if="appVisualStateShowNewHighScoreElement">A NEW high score!</newhigh>
+          <p v-if="(gameLastHighScore.isDaily || getCurrentGameModeComputed.endGameConsolationMessage != '') && !appVisualStateShowNewHighScoreElement">{{gameLastHighScore.isDaily ? 'Daily - ' + GetMonthAndDay(gameLastHighScore.dailyDate) : getCurrentGameModeComputed.endGameConsolationMessage}}</p>
+          <newhigh v-if="appVisualStateShowNewHighScoreElement">{{gameLastHighScore.isDaily ? 'Daily - ' + GetMonthAndDay(gameLastHighScore.dailyDate) : 'A NEW high score!'}}</newhigh>
           <section>
             <leftright class="impress">
               <left> {{!getInfiniteModeComputed.isSelected ? 'Final score ' : 'Total levels cleared '}} </left>
-              <right> {{!getInfiniteModeComputed.isSelected ? NumberWithCommas(gameCurrentTotalScore) + ' pts' : gameCurrentNumberOfClears}} </right>
+              <right> {{!getInfiniteModeComputed.isSelected ? NumberWithCommas(gameLastHighScore.value) + ' pts' : gameLastHighScore.numberOfClears}} </right>
             </leftright>
             <leftright v-if="getCurrentGameModeComputed.id === 'blitz'">
               <left>Current streak</left>
@@ -275,7 +275,7 @@
             </leftright>
             <leftright v-if="!getInfiniteModeComputed.isSelected">
               <left>Levels cleared</left>
-              <right> {{gameCurrentNumberOfClears}}{{gameLastHighScore.isDaily ? '/' + gameDailyChallenge.allLevels.length : ''}} </right>
+              <right> {{gameLastHighScore.numberOfClears}}{{gameLastHighScore.isDaily ? '/' + gameLastHighScore.totalPossibleClears : ''}} </right>
             </leftright>
             <leftright v-if="getCurrentGameModeComputed.bonustime > 0">
               <left>Bonus time added</left>

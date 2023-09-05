@@ -920,7 +920,7 @@ leftright:first-of-type {
 }
 
 leftright.daily left:after {
-  content: ' - Daily';
+  content: '*';
 }
 
 leftright.current {
