@@ -1,0 +1,10 @@
+{
+    "web_apps": [
+        {
+            "web_app_identity": "https://likeme.games/index.html"
+        },
+        {
+            "web_app_identity": "https://www.likeme.games/index.html"
+        }
+    ]
+}

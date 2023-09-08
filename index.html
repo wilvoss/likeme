@@ -13,7 +13,7 @@
     <meta name="theme-color" id="themeColor" content="#f0f0f0" />
 
     <meta name="keywords" content="Like Me?, Big Tent Games, Games, Free, FullyFree" />
-    <meta name="description" content="What in this whole world is like me?" />
+    <meta name="description" content="A game of matching likenesses." />
 
     <link id="appleicon" rel="apple-touch-icon" sizes="180x180" href="images/icon180.png" />
     <!-- iPhone X (1125px x 2436px) -->
@@ -249,11 +249,11 @@
           <!-- prettier-ignore -->
           <copyme id="copyme" v-if="gameScoreToShare.isDaily">▨ ▲ ◯ Daily - {{GetMonthAndDay(gameScoreToShare.dailyDate)}}
 {{NumberWithCommas(gameScoreToShare.value) + ' pts' + (gameScoreToShare.numberOfClears === 0 ? '' : ' - ' + gameScoreToShare.numberOfClears + ' lvl')}}{{gameScoreToShare.numberOfClears !== 0 && gameScoreToShare.numberOfClears !== 1 ? 's' : ''}}
-{{'(https://' + window.location.host + ')'}}</copyme>
+{{'(https://' + window.location.host.replace('www.', '') + ')'}}</copyme>
           <!-- prettier-ignore -->
           <copyme id="copyme" v-if="!gameScoreToShare.isDaily && !getInfiniteModeComputed.isSelected">▨ ▲ ◯ {{gameScoreToShare.modeName}}
 {{NumberWithCommas(gameScoreToShare.value) + ' pts' + (gameScoreToShare.numberOfClears === 0 ? '' : ' - ' + gameScoreToShare.numberOfClears + ' lvl')}}{{gameScoreToShare.numberOfClears !== 0 && gameScoreToShare.numberOfClears !== 1 ? 's' : ''}}{{gameScoreToShare.modeId === 'blitz' ? ' - ' + gameScoreToShare.streak + ' streak': ''}}
-{{'(https://' + window.location.host + ')'}}</copyme>
+{{'(https://' + window.location.host.replace('www.', '') + ')'}}</copyme>
           <h1 v-if="appVisualStateShowPageGameOver" :style="{rotate: getCurrentGameModeComputed.useBatThwap ?  getRandomInt(0, 8) - 4 + 'deg' : '0deg'}">
             {{getCurrentGameModeComputed.endGameTitle}}
             <icon v-if="getCurrentGameModeComputed.id === 'infinite'" class="zen"></icon>

@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.088',
+    currentVersion: '4.2.091',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -279,12 +279,12 @@ var app = new Vue({
       let _shareObject = {
         title: 'Like Me?',
         text: 'A game of matching likenesses!',
-        url: 'https://' + window.location.host,
+        url: 'https://' + window.location.host.replace('www.', ''),
       };
       if (this.CheckForMobile()) {
         navigator.share(_shareObject);
       } else {
-        _shareObject = 'https://' + window.location.host;
+        _shareObject = 'https://' + window.location.host.replace('www.', '');
         this.appVisualStateShowNotification = true;
         this.appNotificationMessage = 'Copied game link to the clipboard.';
         navigator.clipboard.writeText(_shareObject);

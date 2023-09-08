@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "games.likeme.twa",
+        "sha256_cert_fingerprints": ["27:EE:23:99:C0:26:EA:0C:32:B9:E3:4A:A4:FE:3A:0B:78:20:B5:03:C2:F2:98:98:63:A1:08:17:AF:A0:51:9F"]
+      }
+    }]
