@@ -48,7 +48,7 @@
 
   --bgImage1: repeating-linear-gradient(-45deg, hsla(var(--patternHSL), 1) 0px, hsla(var(--patternHSL), 1) 10%, hsla(var(--patternHSL), 0) 10%, hsla(var(--patternHSL), 0) 20%);
   --bgImage2: repeating-linear-gradient(45deg, hsla(var(--patternHSL), 1) 0px, hsla(var(--patternHSL), 1) 1.1%, hsla(var(--patternHSL), 0) 1.1%, hsla(var(--patternHSL), 0) 4.5%);
-  --bgImage3: repeating-radial-gradient(circle, hsla(var(--patternHSL), 1) 0px, hsla(var(--patternHSL), 1) 14.5%, hsla(var(--patternHSL), 0) 14.5%, hsla(var(--patternHSL), 0) 29%);
+  --bgImage3: repeating-radial-gradient(circle, hsla(var(--patternHSL), 1) 0px, hsla(var(--patternHSL), 1) 14.7%, hsla(var(--patternHSL), 0) 14.7%, hsla(var(--patternHSL), 0) 29.4%);
   --bgImage4: none;
 }
 

@@ -9,6 +9,14 @@
   --appForegroundStrong: 0, 0%, calc(100% - 10%);
   --appForegroundStrongest: 0, 0%, calc(100% - 0%);
   --appForegroundWeak: 0, 0%, calc(100% - 39%);
+  --patternHSL: 0, 0%, 0%;
+  --patternOpacity: 1;
+
+}
+
+piece gild {
+  mix-blend-mode: soft-light;
+
 }
 
 mode.selected piece,
@@ -45,8 +53,7 @@ button.secondary {
 }
 
 .show button.quaternary,
-button.quaternary {
-}
+button.quaternary {}
 
 time {
   color: var(--color3);

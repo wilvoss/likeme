@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.091',
+    currentVersion: '4.2.092',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
