@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.092',
+    currentVersion: '4.2.095',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -303,14 +303,19 @@ var app = new Vue({
           app.ShareScore();
         }, 200);
       } else {
-        window.setTimeout(function () {
-          app.ShareScore();
-        }, 20);
+        app.ShareScore();
       }
     },
 
     ShareScore() {
-      let _shareText = document.getElementById('copyme').textContent;
+      let _shapes = ['▨ ', '▲ ', '◯ '].sort(() => Math.random() - 0.5).join('');
+      let _shareText = `${_shapes}${this.gameScoreToShare.isDaily ? 'Daily - ' + this.GetMonthAndDay(this.gameScoreToShare.dailyDate) : this.gameScoreToShare.modeName}
+${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToShare.numberOfClears} lvl${this.gameScoreToShare.numberOfClears === 1 ? '' : 's'}`;
+
+      if (this.gameScoreToShare.modeId === 'blitz') {
+        _shareText += `\ncurrent streak: ${this.usersBlitzStreakCurrent}`;
+      }
+
       if (this.CheckForMobile()) {
         let _shareObject = {
           text: _shareText,

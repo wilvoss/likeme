@@ -246,14 +246,6 @@
       </modal>
       <modal class="notransition semitransparent" :class="{show: appVisualStateShowPageGameOver, preview: !appVisualStateShowGameOverContent}" @pointerdown="appVisualStateShowNotification = false;">
         <content style="justify-content: center">
-          <!-- prettier-ignore -->
-          <copyme id="copyme" v-if="gameScoreToShare.isDaily">▨ ▲ ◯ Daily - {{GetMonthAndDay(gameScoreToShare.dailyDate)}}
-{{NumberWithCommas(gameScoreToShare.value) + ' pts' + (gameScoreToShare.numberOfClears === 0 ? '' : ' - ' + gameScoreToShare.numberOfClears + ' lvl')}}{{gameScoreToShare.numberOfClears !== 0 && gameScoreToShare.numberOfClears !== 1 ? 's' : ''}}
-{{'(https://' + window.location.host.replace('www.', '') + ')'}}</copyme>
-          <!-- prettier-ignore -->
-          <copyme id="copyme" v-if="!gameScoreToShare.isDaily && !getInfiniteModeComputed.isSelected">▨ ▲ ◯ {{gameScoreToShare.modeName}}
-{{NumberWithCommas(gameScoreToShare.value) + ' pts' + (gameScoreToShare.numberOfClears === 0 ? '' : ' - ' + gameScoreToShare.numberOfClears + ' lvl')}}{{gameScoreToShare.numberOfClears !== 0 && gameScoreToShare.numberOfClears !== 1 ? 's' : ''}}{{gameScoreToShare.modeId === 'blitz' ? ' - ' + gameScoreToShare.streak + ' streak': ''}}
-{{'(https://' + window.location.host.replace('www.', '') + ')'}}</copyme>
           <h1 v-if="appVisualStateShowPageGameOver" :style="{rotate: getCurrentGameModeComputed.useBatThwap ?  getRandomInt(0, 8) - 4 + 'deg' : '0deg'}">
             {{getCurrentGameModeComputed.endGameTitle}}
             <icon v-if="getCurrentGameModeComputed.id === 'infinite'" class="zen"></icon>
