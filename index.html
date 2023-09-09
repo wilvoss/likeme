@@ -12,6 +12,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, minimum-scale=1, maximum-scale=1, user-scalable=no" />
     <meta name="theme-color" id="themeColor" content="#f0f0f0" />
 
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="og:title" content="Like Me?" />
+    <meta property="og:site_name" content="Big Tent Games" />
+    <meta property="og:author" content="Wil Voss" />
+    <meta property="og:description" content="A game of matching likenesses." />
+    <meta property="og:type" content="photo" />
+    <meta property="og:url" content="https://likeme.games" />
+    <meta property="og:image" content="https://likeme.games/images/likeme_og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
     <meta name="keywords" content="Like Me?, Big Tent Games, Games, Free, FullyFree" />
     <meta name="description" content="A game of matching likenesses." />
 
@@ -114,6 +125,8 @@
             <h2>How can you help?</h2>
             <credit>The games I create are a labor of passion. I don't make any money off of them except what folks donate.</credit>
             <button class="quaternary isolate inline simple" @click="window.open('https://www.buymeacoffee.com/wilvoss')"><icon class="coffee"></icon>Buy me a coffee!</button>
+            <credit>Also, you can share this game with your friends!</credit>
+            <button title="Click to share this game with your friends." class="quaternary isolate inline simple" @click="ShareApp"><icon class="share"></icon>Share Like Me</button>
           </section>
           <section v-if="!deviceHasTouch" style="display: none">
             <h2>Keyboard shortcuts</h2>
