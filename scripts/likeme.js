@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.101',
+    currentVersion: '4.2.102',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -399,8 +399,20 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       this.documentCssRoot.style.setProperty('--color2', _theme.color2);
       this.documentCssRoot.style.setProperty('--color3', _theme.color3);
       this.documentCssRoot.style.setProperty('--color3contrast', _theme.color3contrast);
+      this.documentCssRoot.style.setProperty('--darkBlendMode', _theme.darkBlendMode);
+      this.documentCssRoot.style.setProperty('--darkPatternOpacity', _theme.darkPatternOpacity);
+      if (this.userSettingsUseDarkMode) {
+        this.documentCssRoot.style.setProperty('--patternHSL', _theme.darkPatternHSL);
+      } else {
+        this.documentCssRoot.style.setProperty('--patternHSL', '0, 0%, 100%');
+      }
       localStorage.setItem('userSettingsTheme', JSON.stringify(_theme.name));
       this.GetRandomWallpaper();
+    },
+
+    GetCurrentTheme() {
+      note('GetCurrentTheme() called');
+      return this.appSettingsThemes.filter((obj) => obj.isSelected)[0];
     },
 
     UpdateApp() {
@@ -507,9 +519,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       this.AddBonusToScore();
 
       this.gameCurrentLevel.completed = true;
-      if (this.gameCurrentIsGameDailyChallenge) {
-        this.gameDailyChallenge = new AllLevelsObject({});
-      }
       this.gameCurrentIsGameDailyChallenge = false;
       this.GetDailyChallenge();
       this.CheckForServiceWorkerUpdate();
@@ -612,6 +621,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         event.preventDefault();
       }
       this.userSettingsUseDarkMode = !this.userSettingsUseDarkMode;
+      this.SelectTheme(this.GetCurrentTheme());
       document.getElementById('themeColor').content = this.userSettingsUseDarkMode ? '#000000' : '#f0f0f0';
       localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
     },
@@ -1369,7 +1379,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
 
     async GetDailyChallenge() {
       note('GetDailyChallenge() called');
-      if (!this.gameCurrentIsGameDailyChallenge) {
+      if (!this.gameCurrentIsGameDailyChallenge && (this.gameDailyChallenge.allLevels.length === 0 || this.GetMonthAndDay(this.gameDailyChallenge.date) !== this.GetMonthAndDay(new Date()))) {
         readDailyChallengeFile(function (contents, result) {
           this.gameDailyChallenge = new AllLevelsObject({});
           announce(result);

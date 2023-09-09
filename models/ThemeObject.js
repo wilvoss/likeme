@@ -5,6 +5,9 @@ class ThemeObject {
     this.color2 = spec.color2;
     this.color3 = spec.color3;
     this.color3contrast = spec.color3contrast == undefined ? 'white' : spec.color3contrast;
+    this.darkPatternHSL = spec.darkPatternHSL == undefined ? '0, 0%, 0%' : spec.darkPatternHSL;
+    this.darkBlendMode = spec.darkBlendMode == undefined ? 'soft-light' : spec.darkBlendMode;
+    this.darkPatternOpacity = spec.darkPatternOpacity == undefined ? 1 : spec.darkPatternOpacity;
     this.isSelected = spec.isSelected == undefined ? false : spec.isSelected;
   }
 }
@@ -14,8 +17,7 @@ var Themes = [
     name: 'Awake',
     color1: 'hsl(313, 44%, 25%)',
     color2: 'hsl(187, 42%, 46%)',
-    color3: 'hsl(64, 60%, 53%)',
-    color3contrast: 'rgb(0, 0, 0)',
+    color3: 'hsl(64, 60%, 49%)',
     isSelected: true,
   }),
   new ThemeObject({
@@ -37,6 +39,9 @@ var Themes = [
     color2: 'hsl(0, 0%, 46%)',
     color3: 'hsl(0, 0%, 70%)',
     color3contrast: 'black',
+    darkPatternOpacity: 0.5,
+    darkPatternHSL: '0, 0%, 0%',
+    darkBlendMode: 'overlay',
   }),
   new ThemeObject({
     name: 'Keen',
@@ -63,12 +68,16 @@ var Themes = [
     color1: 'rgb(145 97 21)',
     color2: 'rgb(104 195 156)',
     color3: 'rgb(234 145 4)',
+    darkPatternHSL: '0, 0%, 50%',
+    darkBlendMode: 'luminosity',
   }),
   new ThemeObject({
     name: 'Moody',
     color1: 'rgb(96, 0, 117)',
     color2: 'rgb(204, 17, 110)',
     color3: 'rgb(255, 127, 78)',
+    darkPatternHSL: '0, 0%, 50%',
+    darkBlendMode: 'luminosity',
   }),
   new ThemeObject({
     name: 'Mellow',
@@ -82,11 +91,14 @@ var Themes = [
     color1: 'rgb(129, 32, 0)',
     color2: 'rgb(255, 0, 0)',
     color3: 'rgb(255, 159, 0)',
+    darkPatternHSL: '0, 0%, 50%',
+    darkBlendMode: 'luminosity',
   }),
   new ThemeObject({
     name: 'Sullen',
     color1: 'rgb(66, 39, 110)',
     color2: 'rgb(74, 116, 150)',
     color3: 'rgb(134, 198, 165)',
+    darkPatternOpacity: 0.5,
   }),
 ];

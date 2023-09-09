@@ -15,8 +15,8 @@
 }
 
 piece gild {
-  mix-blend-mode: soft-light;
-
+  mix-blend-mode: var(--darkBlendMode);
+  opacity: var(--darkPatternOpacity);
 }
 
 mode.selected piece,
@@ -51,9 +51,6 @@ button.secondary {
   background-color: var(--color1);
   border-color: var(--color1);
 }
-
-.show button.quaternary,
-button.quaternary {}
 
 time {
   color: var(--color3);
