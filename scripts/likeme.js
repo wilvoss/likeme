@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.097',
+    currentVersion: '4.2.100',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -278,10 +278,10 @@ var app = new Vue({
     ShareApp() {
       let _shareObject = {
         title: 'Like Me?',
-        text: 'A game of matching likenesses!',
+        text: "Check out this fun game I've been playing!",
         url: 'https://' + window.location.host.replace('www.', ''),
       };
-      if (this.CheckForMobile()) {
+      if (navigator.share) {
         navigator.share(_shareObject);
       } else {
         _shareObject = 'https://' + window.location.host.replace('www.', '');
@@ -316,7 +316,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         _shareText += `\ncurrent streak: ${this.usersBlitzStreakCurrent}`;
       }
 
-      if (this.CheckForMobile()) {
+      if (navigator.share) {
         let _shareObject = {
           text: _shareText,
         };

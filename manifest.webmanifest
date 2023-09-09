@@ -1,7 +1,7 @@
 {
   "name": "Like Me?",
   "lang": "en-us",
-  "short_name": "Like Me?",
+  "short_name": "Like Me",
   "description": "A game of matching likenesses.",
   "start_url": "/",
   "scope": "/",
