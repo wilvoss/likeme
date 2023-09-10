@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.102',
+    currentVersion: '4.2.105',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -1583,6 +1583,20 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         return 0;
       }
       return this.userHighScoresEasy.sort(compare).flat().slice(0, this.appSettingsNumberOfHighScoresShown);
+    },
+
+    userScoresHighDailyByDate: function () {
+      note('userScoresHighDailyByDate() called');
+      function compare(a, b) {
+        if (a.date < b.date) return 1;
+        if (a.date > b.date) return -1;
+        return 0;
+      }
+      return this.userHighScoresEasy
+        .filter((obj) => obj.isDaily)
+        .sort(compare)
+        .flat()
+        .slice(0, this.appSettingsNumberOfHighScoresShown);
     },
 
     userScoresHighInfiniteByValue: function () {

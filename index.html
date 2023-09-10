@@ -70,7 +70,7 @@
             <description v-for="mode in appSettingsModes" v-if="mode.isSelected">{{mode.description}} </description>
           </section>
           <section>
-            <button v-if="!userHasDoneTodaysDailyChallenge && !gameDailyChallengeHasBeenStarted && gameDailyChallenge.allLevelsSource != ''" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="tertiary" @click="StartDailyChallenge">Daily Challenge!</button>
+            <button v-if="!gameDailyChallengeAlreadyScored" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="tertiary" @click="StartDailyChallenge">Daily Challenge!</button>
             <button title="Click to start a new game." class="primary" @click="RestartGame">Play</button>
             <button title="Click to learn how to play Like Me?" class="secondary inline" @click="ToggleHowToPlay(event, true)">Tutorial</button>
             <smallbuttons>
@@ -184,6 +184,14 @@
             </leftright>
           </section>
           <section>
+            <h2>Daily Challenge</h2>
+            <leftright @click="SetScoreForSharingAndShare(score, getNormalModeComputed)" v-for="score in userScoresHighDailyByDate">
+              <left>{{FormatDate(score.date)}}</left>
+              <right>{{NumberWithCommas(score.value)}}</right>
+            </leftright>
+            <leftright v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighDailyByDate.length"> <left></left>&nbsp;<right></right> </leftright>
+          </section>
+          <section>
             <h2>Basic Mode</h2>
             <leftright @click="SetScoreForSharingAndShare(score, getNormalModeComputed)" v-for="score in userScoresHighEasyByValue" :title="score.isDaily ? 'Recorded for the ' + FormatDate(score.dailyDate) + ' daily challange.' : ''" :class="{current: score.isCurrent, daily: score.isDaily}">
               <left>{{FormatDate(score.date)}}</left>
@@ -200,7 +208,7 @@
             </leftright>
             <leftright v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighBlitzByValue.length"> <left></left>&nbsp;<right></right> </leftright>
           </section>
-          <section v-if="userScoresHighEasyByValue.length > 0">
+          <section v-if="userScoresHighEasyByValue.length > 0 || userScoresHighBlitzByValue.length > 0">
             <button class="simple danger" @click="ClearAllUserScores">Clear All Scores</button>
           </section>
         </content>
