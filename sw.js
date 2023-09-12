@@ -1,5 +1,5 @@
 // the cache version gets updated every time there is a new deployment
-const CACHE_VERSION = '4.2.105';
+const CACHE_VERSION = '4.2.109';
 const CURRENT_CACHE = `main-${CACHE_VERSION}`;
 
 // prettier-ignore
@@ -23,6 +23,7 @@ const cacheFiles = [
   'images/icon_settings.svg',
   'images/icon_play.svg',
   'images/icon_coffee.svg',
+  'images/icon_bmc.svg',
   'images/icon_trophy.svg',
   'images/icon_info.svg',
   'images/Square.svg',

@@ -592,9 +592,15 @@ button.inline {
 button.inline icon {
   mask-size: 20px 20px;
   -webkit-mask-size: 20px 20px;
+  height: 100%;
+  margin-bottom: 2px;
+  display: flex;
+  justify-content: center;
+}
+
+button.quaternary.inline icon, button.tertiary.inline icon {
   height: 20px;
   width: 20px;
-  margin-bottom: 2px;
 }
 
 icon.help {
@@ -608,18 +614,41 @@ icon.download {
 }
 
 icon.coffee {
+  mask-size: 23px;
+  -webkit-mask-size: 23px;
   mask-image: url(../images/icon_coffee.svg);
   -webkit-mask-image: url(../images/icon_coffee.svg);
 }
 
-.inline icon.gradcap {
-  mask-size: 22px 22px;
-  -webkit-mask-size: 22px 22px;
-  height: 22px;
-  width: 22px;
-  margin-bottom: 2px;
-  mask-image: url(../images/icon_gradcap.svg);
-  -webkit-mask-image: url(../images/icon_gradcap.svg);
+
+icon.bmc {
+  /* mask-size: 23px;
+  -webkit-mask-size: 23px; */
+  mask-image: url(../images/icon_bmc.svg);
+  -webkit-mask-image: url(../images/icon_bmc.svg);
+}
+
+
+icon.coffee-hand {
+  mask-size: 32px;
+  -webkit-mask-size: 32px;
+  mask-image: url(../images/icon_coffee_hand.svg);
+  -webkit-mask-image: url(../images/icon_coffee_hand.svg);
+}
+
+icon.money-hand {
+  mask-size: 26px;
+  -webkit-mask-size: 26px;
+  mask-image: url(../images/icon_money_hand.svg);
+  -webkit-mask-image: url(../images/icon_money_hand.svg);
+}
+
+
+icon.coffee-money {
+  mask-size: 24px;
+  -webkit-mask-size: 24px;
+  mask-image: url(../images/icon_coffee_money.svg);
+  -webkit-mask-image: url(../images/icon_coffee_money.svg);
 }
 
 icon.feedback {
@@ -675,8 +704,8 @@ icon.share {
 }
 
 icon.trophy {
-  mask-size: 23px 23px;
-  -webkit-mask-size: 23px 23px;
+  mask-size: 24px;
+  -webkit-mask-size: 24px;
   mask-image: url(../images/icon_trophy.svg);
   -webkit-mask-image: url(../images/icon_trophy.svg);
 }
@@ -847,8 +876,8 @@ tutorial container description {
   align-items: center;
   justify-content: start;
   height: auto;
-  padding: 0 var(--defaultGap);
-  width: calc(var(--pieceSize) - (var(--defaultGap) * 2));
+  padding: 0;
+  width: calc(var(--pieceSize));
   line-height: 100%;
   z-index: 100;
   transform: translateY(var(--pieceSize));
@@ -856,8 +885,7 @@ tutorial container description {
   color: hsl(var(--appForegroundStrongest));
 }
 
-tutorial container description,
-tutorial container.describe:hover description {
+tutorial container description {
   opacity: 0;
   transition: var(--transitionTime) var(--transitionEase) all;
 }
@@ -877,6 +905,16 @@ tutorial container description b {
   /* opacity: 0; */
   border-radius: 2px 2px 0px 0px;
   /* transition: var(--transitionTime) var(--transitionEase) opacity; */
+}
+
+tutorial container description b:after {
+  content: ' +';
+  /* display: inline-block; */
+  /* padding: 0px 4px; */
+}
+
+tutorial container description b:last-of-type:after {
+  content: '';
 }
 
 tutorial container.describe description b:last-of-type {

@@ -85,7 +85,7 @@ function constructLevel(_bs, _splice = false) {
     }
     _piece.isMatch = _likeness > 1;
     _piece.isFullMatch = _likeness === 3;
-    _piece.description = _piece.isMatch ? (_piece.isFullMatch ? '<b>all <br />three</b>' : _description) : '';
+    _piece.description = _description;
 
     _level.board.push(_piece);
   }

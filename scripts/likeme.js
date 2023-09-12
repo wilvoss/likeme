@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.105',
+    currentVersion: '4.2.109',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -27,7 +27,7 @@ var app = new Vue({
     appTutorialUserHasSeen: false,
     appTutorialCurrentStepIndex: 0,
     appTutorialSteps: TutorialSteps,
-    appTutorialBoardPieces: constructLevel('010020013110010112100220303221213211102001200313120', true),
+    appTutorialBoardPieces: constructLevel('010013110020010303112100220221213211102001200313120', true),
     appTutorialIsInPlay: false,
     appTutorialMePiece: new PieceObject({ color: 'var(--color2)' }),
     appNotificationMessage: '',
@@ -94,6 +94,7 @@ var app = new Vue({
     userSettingsUseHints: true,
     userSettingsUseSoundFX: true,
     userSettingsUseDarkMode: false,
+    userTutorialCheckCount: 0,
     documentCssRoot: document.querySelector(':root'),
   },
 
@@ -1294,6 +1295,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
 
     HandleSkipTutorial() {
       note('HandleSkipTutorial() called');
+      this.userTutorialCheckCount = 0;
       this.appTutorialIsInPlay = false;
       this.appTutorialUserHasSeen = true;
       this.appTutorialCurrentStepIndex = 0;
@@ -1321,6 +1323,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     HandleTutorialCheck() {
       note('HandleTutorialCheck() called');
       if (this.appTutorialCurrentStepIndex > 3) {
+        this.userTutorialCheckCount++;
         let _perfectMatch = true;
         this.appTutorialBoardPieces.board.forEach((piece, i) => {
           if ((i < 4 && !piece.isSelected) || (i >= 4 && piece.isSelected)) {
@@ -1334,12 +1337,18 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
           this.appTutorialCurrentStepIndex = this.appTutorialSteps.length - 2;
           this.HandleTutorialNext();
         } else {
+          if (this.userTutorialCheckCount > 2) {
+            this.appTutorialBoardPieces.board.forEach((piece, i) => {
+              piece.isSelected = piece.isMatch;
+            });
+          }
           this.gameCurrentIsUserGuessWrong = true;
           window.setTimeout(function () {
             app.gameCurrentIsUserGuessWrong = false;
           }, 500);
         }
       }
+      log('this.userTutorialCheckCount = ' + this.userTutorialCheckCount);
     },
 
     HandleOnPageShowEvent() {
