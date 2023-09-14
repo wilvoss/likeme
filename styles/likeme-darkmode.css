@@ -42,12 +42,12 @@ labelsmall {
   color: var(--color3);
 }
 
-button.primary {
+button.primary, a.button.primary {
   background-color: var(--color2);
   border-color: var(--color2);
 }
 
-button.secondary {
+button.secondary, a.button.secondary {
   background-color: var(--color1);
   border-color: var(--color1);
 }

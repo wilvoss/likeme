@@ -403,14 +403,17 @@ modal.show.notransition {
   transition: none;
 }
 
-button {
+button, a.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   width: 250px;
   height: 44px;
   min-height: 44px;
   margin-bottom: 8px;
   color: white;
-  border: 1px solid var(--color1);
+  border: 0px solid var(--color1);
   border-radius: var(--borderRadius);
   font-family: 'Bangers';
   font-size: 1.5em;
@@ -419,27 +422,27 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
-button.hide {
+button.hide, a.hide {
   visibility: hidden;
 }
 
-button.isolate {
+button.isolate, a.isolate {
   margin: var(--defaultGap);
 }
 
-button.primary {
+button.primary, a.button.primary {
   background-color: var(--color1);
   border-color: var(--color1);
   color: white;
 }
 
-button.secondary {
+button.secondary, a.button.secondary {
   background-color: var(--color2);
   border-color: var(--color2);
   color: white;
 }
 
-button.tertiary {
+button.tertiary, a.button.tertiary {
   background: var(--color3);
   border-color: var(--color3);
   color: var(--color3contrast);
@@ -451,6 +454,12 @@ button.tertiary {
   -webkit-animation: pulse 1s var(--transitionEase) 0s infinite;
 }
 
+.show a.button.quaternary,
+a.button.quaternary,
+.show a.button:active.quaternary,
+a.button:active.quaternary,
+.show a.button:focus.quaternary,
+a.button:focus.quaternary,
 .show button.quaternary,
 button.quaternary,
 .show button:active.quaternary,
@@ -471,12 +480,14 @@ button:focus.quaternary {
   background-color: var(--color3contrast);
 }
 
+.show a.button.quaternary:active,
+a.button.quaternary:active,
 .show button.quaternary:active,
 button.quaternary:active {
   box-shadow: none;
 }
 
-.show button.inline.small {
+.show button.inline.small, .show a.button.inline.small {
   font-size: 12px;
   font-family: -apple-system, Arial, sans-serif;
   text-transform: uppercase;
@@ -484,7 +495,7 @@ button.quaternary:active {
   letter-spacing: 0px;
 }
 
-.show button.inline.small icon {
+.show button.inline.small icon, .show a.button.inline.small icon {
   background-color: var(--color2);
   mask-size: 12px 12px;
   -webkit-mask-size: 12px 12px;
@@ -493,7 +504,7 @@ button.quaternary:active {
   margin-bottom: 2px;
 }
 
-.show button.inline icon.bullhorn {
+.show button.inline icon.bullhorn, .show a.button.inline icon.bullhorn {
   mask-size: 23px 23px;
   -webkit-mask-size: 23px 23px;
   height: 23px;
@@ -512,7 +523,7 @@ button.quaternary:active {
   }
 }
 
-button.simple {
+button.simple, a.simple {
   border: none;
   background: none;
   box-shadow: none;
@@ -530,7 +541,8 @@ button.danger {
 }
 
 button:focus,
-button:active {
+button:active, a.button:focus,
+a.button:active {
   transform: translateY(1px);
 }
 
@@ -552,7 +564,7 @@ controlgroup {
   width: 100%;
 }
 
-smallbuttons button {
+smallbuttons button, a.button {
   overflow: hidden;
   background: (--color1);
   padding: 0;
@@ -580,7 +592,7 @@ h1 icon {
   background: hsl(var(--appForeground));
 }
 
-button.inline {
+button.inline, a.inline {
   display: flex;
   justify-content: center;
   justify-items: baseline;
@@ -589,7 +601,7 @@ button.inline {
   column-gap: 8px;
 }
 
-button.inline icon {
+button.inline icon, a.inline icon {
   mask-size: 20px 20px;
   -webkit-mask-size: 20px 20px;
   height: 100%;
@@ -598,7 +610,7 @@ button.inline icon {
   justify-content: center;
 }
 
-button.quaternary.inline icon, button.tertiary.inline icon {
+button.quaternary.inline icon, button.tertiary.inline icon, a.quaternary.inline icon, a.tertiary.inline icon {
   height: 20px;
   width: 20px;
 }
@@ -732,6 +744,10 @@ icon.reel {
   -webkit-mask-image: url(../images/icon_reel.svg);
 }
 
+.show a.button,
+.show a.button.primary,
+.show a.button.secondary,
+.show a.button.tertiary,
 .show button,
 .show button.primary,
 .show button.secondary,
