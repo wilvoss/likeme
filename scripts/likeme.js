@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.111',
+    currentVersion: '4.2.112',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -1394,11 +1394,33 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
           announce(result);
           if (contents !== null && contents !== undefined) {
             app.gameDailyChallenge = new AllLevelsObject({});
-            constructAllLevels(contents, app.gameDailyChallenge);
+            constructAllLevels(app.GenerateNumbers(contents), app.gameDailyChallenge);
           }
         });
       }
       app.CheckIfUserHasScoredDailyChallenge(true);
+    },
+
+    GenerateNumbers(seed) {
+      // Set the seed for the random number generator
+      // var random = require('seedrandom');
+      var rng = new Math.seedrandom(seed);
+      // Generate a series of 51-digit numbers
+     var numbers = [];
+    for (var i = 0; i < 150; i++) {  // Change this to generate more or fewer numbers
+        var number = '';
+        for (var j = 0; j < 51; j++) {
+            var digit;
+            if (j % 3 == 2) {
+                digit = Math.floor(rng() * 4) + 1;
+            } else {
+                digit = Math.floor(rng() * 3) + 1;
+            }
+            number += digit.toString();
+        }
+        numbers += number;
+    }
+    return numbers;
     },
 
     StartDailyChallenge() {

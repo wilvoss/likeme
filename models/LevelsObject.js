@@ -1,4 +1,5 @@
 /// <reference path="../helpers/console-enhancer.js" />
+/// <reference path="../helpers/seedrandom.js" />
 /// <reference path="../models/PieceObject.js" />
 
 class SingleLevelObject {

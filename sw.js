@@ -38,6 +38,7 @@ const cacheFiles = [
   'helpers/vue.min.js',
   'helpers/getDailyChallenge.js',
   'helpers/console-enhancer.js',
+  'helpers/seedrandom.js',
   'helpers/howler.js',
   'images/pieces.png',
   'styles/likeme.css',

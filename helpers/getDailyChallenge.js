@@ -12,7 +12,7 @@ async function readDailyChallengeFile(callback) {
   try {
     if (typeof caches !== 'undefined') {
       await caches.open('my-cache').then(function (cache) {
-        cache.delete('dailyChallenges/' + filename).then(function (response) {
+        cache.delete('dailyChallengeSeeds/' + filename).then(function (response) {
           note('The cache has been deleted for: ' + filename);
         });
       });
@@ -22,7 +22,7 @@ async function readDailyChallengeFile(callback) {
   }
 
   try {
-    const response = await fetch('dailyChallenges/' + filename);
+    const response = await fetch('dailyChallengeSeeds/' + filename);
     if (!response.ok) {
       callback(null);
       return;
