@@ -70,7 +70,7 @@
             <description v-for="mode in appSettingsModes" v-if="mode.isSelected">{{mode.description}} </description>
           </section>
           <section>
-            <button v-if="!gameDailyChallengeAlreadyScored" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="tertiary" @click="StartDailyChallenge">Daily Challenge!</button>
+            <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="tertiary" @click="StartDailyChallenge">Daily Challenge!</button>
             <button title="Click to start a new game." class="primary" @click="RestartGame">Play</button>
             <button title="Click to learn how to play Like Me?" class="secondary inline" @click="ToggleHowToPlay(event, true)">Tutorial</button>
             <smallbuttons>
