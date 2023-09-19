@@ -83,12 +83,12 @@
               <button title="Click to see a list of shoutouts." class="secondary" @click="ToggleCredits(event, true)">
                 <icon class="bullhorn"></icon>
               </button>
-              <!-- <button title="Click to share this game with your friends." class="secondary" @click="ShareApp">
+              <button title="Click to share this game with your friends." class="secondary" @click="ShareApp">
                 <icon class="share"></icon>
-              </button> -->
-              <a title="Click to buy me a cup of coffee." class="button secondary" href="https://www.buymeacoffee.com/wilvoss" target="_blank">
+              </button>
+              <!-- <a title="Click to buy me a cup of coffee." class="button secondary" href="https://www.buymeacoffee.com/wilvoss" target="_blank">
                 <icon class="bmc"></icon>
-              </a>
+              </a> -->
             </smallbuttons>
             <version :style="{fontStyle: window.location.host !== 'likeme.games' ? 'italic' : ''}"><a href="https://bigtentgames.com/?showVersionHistory=true#likeme" target="_blank">{{currentVersion}}</a></version>
           </section>
@@ -126,9 +126,7 @@
           </section>
           <section>
             <h2>How can you help?</h2>
-            <credit>The games I create are a labor of passion. I don't make any money off of them except what folks donate.</credit>
-            <a class="button quaternary isolate inline simple" href="https://www.buymeacoffee.com/wilvoss" target="_blank"><icon class="bmc"></icon>Buy me a coffee!</a>
-            <credit>Also, you can share this game with your friends!</credit>
+            <credit> You can share this game with your friends!</credit>
             <button title="Click to share this game with your friends." class="quaternary isolate inline simple" @click="ShareApp"><icon class="share"></icon>Share this game!</button>
           </section>
           <section v-if="!deviceHasTouch" style="display: none">
@@ -360,8 +358,8 @@
         <playarea>
           <h2>{{ChangeTutorialPiecesToCats(appTutorialSteps[appTutorialCurrentStepIndex].title)}}</h2>
           <description v-html="ChangeTutorialPiecesToCats(appTutorialSteps[appTutorialCurrentStepIndex].description)"> </description>
-          <board :class="{unreveal: appTutorialCurrentStepIndex < 2 || appTutorialCurrentStepIndex === appTutorialSteps.length - 1, partial: appTutorialCurrentStepIndex === 3   }">
-            <container class="dropped" :class="{selected: piece.isSelected, describe: appTutorialCurrentStepIndex === 3}" v-for="(piece, index) in appTutorialBoardPieces.board" @click="piece.isSelected = appTutorialCurrentStepIndex > 3 ? !piece.isSelected : piece.isSelected">
+          <board :class="{unreveal: appTutorialSteps[appTutorialCurrentStepIndex].unreveal, partial: appTutorialSteps[appTutorialCurrentStepIndex].partial  }">
+            <container class="dropped" :class="{selected: piece.isSelected, describe: appTutorialSteps[appTutorialCurrentStepIndex].describe}" v-for="(piece, index) in appTutorialBoardPieces.board" @click="piece.isSelected = appTutorialCurrentStepIndex > 3 ? !piece.isSelected : piece.isSelected">
               <description :class="{show: appTutorialCurrentStepIndex === 3}" v-html="piece.description"></description>
               <piece :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color}">
                 <gild :style="{backgroundImage: piece.backgroundImage }"> </gild>
@@ -369,7 +367,7 @@
             </container>
           </board>
           <addtime :class="{flyaway: appVisualStateShowElementFlyaway}">+3 seconds</addtime>
-          <me v-if="appTutorialCurrentStepIndex !== appTutorialSteps.length - 1 && appTutorialCurrentStepIndex !== 4">
+          <me v-if="appTutorialCurrentStepIndex !== appTutorialSteps.length - 1 && !appTutorialSteps[appTutorialCurrentStepIndex].checkBoard">
             <container @click="HandleTutorialNext">
               <piece v-if="appTutorialCurrentStepIndex === 0" :style="{maskImage: 'var(--shape4)', webkitMaskImage: 'var(--shape4)', backgroundColor: 'var(--color1)'}">
                 <gild :style="{backgroundImage: 'var(--bgImage1)' }"> </gild>
@@ -386,7 +384,7 @@
               </piece>
             </container>
           </me>
-          <me v-if="appTutorialCurrentStepIndex === 4" :class="{nope: gameCurrentIsUserGuessWrong}">
+          <me v-if="appTutorialSteps[appTutorialCurrentStepIndex].checkBoard" :class="{nope: gameCurrentIsUserGuessWrong}">
             <container @click="HandleTutorialCheck">
               <piece :style="{maskImage: appTutorialMePiece.shape, webkitMaskImage: appTutorialMePiece.shape, backgroundColor: appTutorialMePiece.color}">
                 <gild :style="{backgroundImage: appTutorialMePiece.backgroundImage }"> </gild>

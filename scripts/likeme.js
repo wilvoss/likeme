@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.114',
+    currentVersion: '4.2.117',
     deviceHasTouch: true,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -280,12 +280,12 @@ var app = new Vue({
       let _shareObject = {
         title: 'Like Me?',
         text: "Check out this fun game I've been playing!",
-        url: 'https://' + window.location.host.replace('www.', ''),
+        url: 'https://bigtentgames.com/likeme.html',
       };
       if (navigator.share) {
         navigator.share(_shareObject);
       } else {
-        _shareObject = 'https://' + window.location.host.replace('www.', '');
+        _shareObject = 'https://bigtentgames.com/likeme.html';
         this.appVisualStateShowNotification = true;
         this.appNotificationMessage = 'Copied game link to the clipboard.';
         navigator.clipboard.writeText(_shareObject);
@@ -1334,7 +1334,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
           this.appTutorialBoardPieces.board.forEach((piece, i) => {
             piece.isSelected = false;
           });
-          this.appTutorialCurrentStepIndex = this.appTutorialSteps.length - 2;
+          // this.appTutorialCurrentStepIndex = this.appTutorialSteps.length - 2;
           this.HandleTutorialNext();
         } else {
           if (this.userTutorialCheckCount > 2) {
@@ -1406,21 +1406,22 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       // var random = require('seedrandom');
       var rng = new Math.seedrandom(seed);
       // Generate a series of 51-digit numbers
-     var numbers = [];
-    for (var i = 0; i < 150; i++) {  // Change this to generate more or fewer numbers
+      var numbers = [];
+      for (var i = 0; i < 150; i++) {
+        // Change this to generate more or fewer numbers
         var number = '';
         for (var j = 0; j < 51; j++) {
-            var digit;
-            if (j % 3 == 2) {
-                digit = Math.floor(rng() * 4) + 1;
-            } else {
-                digit = Math.floor(rng() * 3) + 1;
-            }
-            number += digit.toString();
+          var digit;
+          if (j % 3 == 2) {
+            digit = Math.floor(rng() * 4) + 1;
+          } else {
+            digit = Math.floor(rng() * 3) + 1;
+          }
+          number += digit.toString();
         }
         numbers += number;
-    }
-    return numbers;
+      }
+      return numbers;
     },
 
     StartDailyChallenge() {
