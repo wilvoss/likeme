@@ -83,12 +83,12 @@
               <button title="Click to see a list of shoutouts." class="secondary" @click="ToggleCredits(event, true)">
                 <icon class="bullhorn"></icon>
               </button>
-              <button title="Click to share this game with your friends." class="secondary" @click="ShareApp">
+              <button v-if="isInNativeAppWebView" title="Click to share this game with your friends." class="secondary" @click="ShareApp">
                 <icon class="share"></icon>
               </button>
-              <!-- <a title="Click to buy me a cup of coffee." class="button secondary" href="https://www.buymeacoffee.com/wilvoss" target="_blank">
+              <a v-if="!isInNativeAppWebView" title="Click to buy me a cup of coffee." class="button secondary" href="https://www.buymeacoffee.com/wilvoss" target="_blank">
                 <icon class="bmc"></icon>
-              </a> -->
+              </a>
             </smallbuttons>
             <version :style="{fontStyle: window.location.host !== 'likeme.games' ? 'italic' : ''}"><a href="https://bigtentgames.com/?showVersionHistory=true#likeme" target="_blank">{{currentVersion}}</a></version>
           </section>

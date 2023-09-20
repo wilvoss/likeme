@@ -19,8 +19,9 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.117',
+    currentVersion: '4.2.124',
     deviceHasTouch: true,
+    isInNativeAppWebView: false,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
     newVersionAvailable: false,
@@ -1186,6 +1187,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     InitializeGame() {
       announce('Game Initialized');
       this.AdjustPieceSizeBasedOnViewport();
+      this.CheckIfGameIsInNativeAppWebView();
       this.CheckForMobile();
       this.GetRandomWallpaper();
 
@@ -1373,9 +1375,16 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       }
     },
 
+    CheckIfGameIsInNativeAppWebView() {
+      note('CheckIfGameIsInNativeAppWebView() called');
+      this.isInNativeAppWebView = document.cookie.match(/^(.*;)?\s*app-platform\s*=\s*[^;]+(.*)?$/) !== null;
+      return this.isInNativeAppWebView;
+    },
+
     HandleOnVisibilityChange(event) {
       note('HandleOnVisibilityChange() called');
       this.appVisualStateShowGameOverContent = true;
+      this.CheckIfGameIsInNativeAppWebView();
       this.GetDailyChallenge();
       this.CheckForServiceWorkerUpdate();
     },
