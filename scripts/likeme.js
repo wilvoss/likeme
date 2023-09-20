@@ -1381,6 +1381,20 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       return this.isInNativeAppWebView;
     },
 
+    CheckLocalStorageSize() {
+      var _lsTotal = 0,
+        _xLen,
+        _x;
+      for (_x in localStorage) {
+        if (!localStorage.hasOwnProperty(_x)) {
+          continue;
+        }
+        _xLen = (localStorage[_x].length + _x.length) * 2;
+        _lsTotal += _xLen;
+      }
+      return 'Total = ' + (_lsTotal / 1024).toFixed(2) + ' KB';
+    },
+
     HandleOnVisibilityChange(event) {
       note('HandleOnVisibilityChange() called');
       this.appVisualStateShowGameOverContent = true;

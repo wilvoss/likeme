@@ -6,5 +6,13 @@
       "package_name": "game.likeme.twa",
       "sha256_cert_fingerprints": ["9F:A9:3D:C1:A4:AA:B1:C5:DF:09:D2:11:0C:29:ED:6C:21:82:10:0C:15:5D:15:46:29:92:36:D3:28:02:95:8C"]
     }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "games.likeme.twa",
+      "sha256_cert_fingerprints": ["9F:A9:3D:C1:A4:AA:B1:C5:DF:09:D2:11:0C:29:ED:6C:21:82:10:0C:15:5D:15:46:29:92:36:D3:28:02:95:8C"]
+    }
   }
 ]
