@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.124',
+    currentVersion: '4.2.125',
     deviceHasTouch: true,
     isInNativeAppWebView: false,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
@@ -1398,9 +1398,11 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     HandleOnVisibilityChange(event) {
       note('HandleOnVisibilityChange() called');
       this.appVisualStateShowGameOverContent = true;
+      this.HandleOnPageHideEvent();
       this.CheckIfGameIsInNativeAppWebView();
       this.GetDailyChallenge();
       this.CheckForServiceWorkerUpdate();
+      this.InitializeGame();
     },
 
     AdjustPieceSizeBasedOnViewport() {
