@@ -395,7 +395,7 @@
         <section>
           <smallbuttons>
             <button v-if="appTutorialCurrentStepIndex < appTutorialSteps.length - 1" :class="{disabled: appTutorialCurrentStepIndex === 0}" @click="HandleTutorialBack" class="secondary">Back</button>
-            <button v-if="appTutorialCurrentStepIndex < appTutorialSteps.length - 1 && appTutorialCurrentStepIndex === 4" class="secondary" :class="{disabled: userTutorialCheckCount < 3}" @click="HandleTutorialCheck ">Next</button>
+            <button v-if="appTutorialCurrentStepIndex < appTutorialSteps.length - 1 && appTutorialCurrentStepIndex === 4" class="secondary" @click="HandleTutorialNext ">Next</button>
             <button v-if="appTutorialCurrentStepIndex < appTutorialSteps.length - 1 && appTutorialCurrentStepIndex !== 4" class="secondary" @click="HandleTutorialNext">Next</button>
             <button v-if="!appTutorialUserHasSeen && appTutorialCurrentStepIndex === appTutorialSteps.length - 1" class="primary" @click="HandleDoneTutorial">Let's Go!</button>
             <button v-if="appTutorialUserHasSeen && appTutorialCurrentStepIndex === appTutorialSteps.length - 1" class="secondary" @click="HandleSkipTutorial">Done</button>
