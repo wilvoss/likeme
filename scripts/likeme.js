@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.126',
+    currentVersion: '4.2.130',
     deviceHasTouch: true,
     isInNativeAppWebView: false,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
@@ -1402,7 +1402,8 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       this.CheckIfGameIsInNativeAppWebView();
       this.GetDailyChallenge();
       this.CheckForServiceWorkerUpdate();
-      this.InitializeGame();
+      window.clearInterval(this.updateInterval);
+      this.updateInterval = window.setInterval(this.UpdateApp, this.appSettingsModeIntervalIncrement);
     },
 
     AdjustPieceSizeBasedOnViewport() {
