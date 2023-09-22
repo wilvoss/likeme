@@ -144,7 +144,7 @@ var Modes = [
     }),
     starttime: 61000,
     useBatThwap: true,
-    endGameConsolationMessage: 'That was fast.',
+    endGameConsolationMessage: 'Better luck next time!',
     scoreMultiplier: 4,
   }),
   new ModeObject({

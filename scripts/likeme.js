@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.130',
+    currentVersion: '4.2.132',
     deviceHasTouch: true,
     isInNativeAppWebView: false,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
@@ -340,6 +340,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       this.gameCurrentStartingTime = this.appSettingsCurrentGameMode.starttime;
       if (this.appSettingsCurrentGameMode.useBatThwap) {
         this.appSettingsCurrentGameMode.endGameTitle = BatThwaps[getRandomInt(0, BatThwaps.length)];
+        this.getCurrentGameModeComputed.endGameConsolationMessage = 'Better luck next time!';
       }
       this.gameCurrentTimer = this.GetModeById('infinite').isSelected ? 0 : this.gameCurrentStartingTime;
       this.gameCurrentNumberOfFails = 0;
@@ -498,6 +499,10 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         if (this.gameCurrentTimer === 0 && _score.value > 0) {
           this.usersBlitzStreakCurrent++;
           _score.streak = this.usersBlitzStreakCurrent;
+          if (this.appSettingsCurrentGameMode.useBatThwap) {
+            this.appSettingsCurrentGameMode.endGameTitle = 'Nicely done!';
+            this.getCurrentGameModeComputed.endGameConsolationMessage = _score.streak === 1 ? 'Your streak begins!' : 'Your streak continues.';
+          }
         } else {
           this.usersBlitzStreakCurrent = 0;
         }
