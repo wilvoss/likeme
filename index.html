@@ -67,11 +67,13 @@
                 <value>{{mode.name}}</value>
               </mode>
             </modes>
-            <description v-for="mode in appSettingsModes" v-if="mode.isSelected">{{mode.description}} </description>
+            <description v-if="getCurrentGameModeComputed.id !== 'blitz'">{{getCurrentGameModeComputed.description}} </description>
+            <description v-if="getCurrentGameModeComputed.id === 'blitz'">{{usersBlitzStreakCurrent === 0 ? getCurrentGameModeComputed.description : 'Streak: ' + usersBlitzStreakCurrent + '&nbsp;&nbsp; • &nbsp;&nbsp;Score: ' + NumberWithCommas(usersBlitzStreakScore)}}</description>
           </section>
           <section>
             <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="tertiary" @click="StartDailyChallenge">Daily Challenge!</button>
-            <button title="Click to start a new game." class="primary" @click="RestartGame">Play</button>
+            <button v-if="gameDailyChallengeAlreadyScored || gameDailyChallenge.allLevels.length === 0" title="The next Daily Challenge will be available at midnight tonight." class="tertiary small inline"><icon v-if="isGettingDailyChallenge" class="spinner spin"></icon><span v-if="!isGettingDailyChallenge">Next challenge: {{timeToMidnight}}</span></button>
+            <button title="Click to start a new game." class="primary" @click="RestartGame">{{getCurrentGameModeComputed.id === "normal" ? 'Play' : getCurrentGameModeComputed.name}}</button>
             <button title="Click to learn how to play Like Me?" class="secondary inline" @click="ToggleHowToPlay(event, true)">Tutorial</button>
             <smallbuttons>
               <button title="Click to adjust the game settings." class="secondary" @click="ToggleSettings(event, true)">
@@ -116,7 +118,10 @@
             <credit>Jerry Hoffmeister</credit>
             <credit>Rebecca Hoffmeister</credit>
             <credit>JJ Kaze</credit>
+            <credit>John Lehan</credit>
             <credit>Amy Redmond</credit>
+            <credit>AJ Rogers</credit>
+            <credit>Abi Rogers</credit>
             <credit>Danielle Siler</credit>
             <credit>Gretchen Voss</credit>
             <credit>Kathleen Voss</credit>
@@ -204,7 +209,7 @@
             <h2>Sudden Death</h2>
             <credit>Streaks: Current - {{usersBlitzStreakCurrent}}, Best - {{usersBlitzStreakBest}}</credit>
             <leftright @click="SetScoreForSharingAndShare(score, getBlitzModeComputed)" v-for="score in userScoresHighBlitzByValue" :class="{current: score.isCurrent}">
-              <left>{{FormatDate(score.date)}}</left>
+              <left>Streak - {{score.streak}}</left>
               <right>{{NumberWithCommas(score.value)}}</right>
             </leftright>
             <leftright v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighBlitzByValue.length"> <left></left>&nbsp;<right></right> </leftright>

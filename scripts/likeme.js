@@ -19,8 +19,11 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.132',
+    currentVersion: '4.2.162',
     deviceHasTouch: true,
+    timeToMidnight: '24h 0m 0s',
+    isGettingDailyChallenge: true,
+    getDailyTimeThreshold: 86400000,
     isInNativeAppWebView: false,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
     currentWallpaper: '',
@@ -90,11 +93,13 @@ var app = new Vue({
     userHighScoresEasy: [],
     userHighScoresBlitz: [],
     usersBlitzStreakCurrent: 0,
+    usersBlitzStreakScore: 0,
     usersBlitzStreakBest: 0,
     userSettingsUseAltPatterns: false,
     userSettingsUseHints: true,
     userSettingsUseSoundFX: true,
     userSettingsUseDarkMode: false,
+    usersModeBeforeDailyChallenge: null,
     userTutorialCheckCount: 0,
     documentCssRoot: document.querySelector(':root'),
   },
@@ -115,7 +120,7 @@ var app = new Vue({
       });
 
       this.appVisualStateShowNewHighScoreElement = false;
-      this.gameCurrentTotalScore = 0;
+      this.gameCurrentTotalScore = this.getCurrentGameModeComputed.id === 'blitz' ? this.usersBlitzStreakScore : 0;
       this.gameCurrentIsGameOver = false;
     },
 
@@ -419,6 +424,13 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     },
 
     UpdateApp() {
+      if (this.appVisualStateShowPageHome) {
+        this.timeToMidnight = this.GetTimeUntilMidnight();
+        if (this.GetTimeUntilMidnightInMS() < this.getDailyTimeThreshold && this.GetTimeUntilMidnightInMS() > this.getDailyTimeThreshold - 1000) {
+          this.GetDailyChallenge();
+        }
+      }
+
       if (!this.gameCurrentIsPaused && !this.appVisualStateShowPageGameOver) {
         if (this.gameCurrentNumberOfClears === 0 && this.userHighScoresEasy.length === 0) {
           if (!this.appSettingsInfiniteMode.isSelected && !this.gameLikenessNudgeHasBeenShown && this.appSettingsCurrentGameMode.starttime - this.gameCurrentTimer === 7000) {
@@ -469,9 +481,35 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       return hrsstring + minstring + secstring;
     },
 
+    GetMsToHMS(ms) {
+      var s = (ms - (ms % 1000)) / 1000;
+      var secs = s % 60;
+      s = (s - secs) / 60;
+      var mins = s % 60;
+      var hrs = (s - mins) / 60;
+
+      var secstring = secs + 's';
+      var minstring = mins != 0 ? mins + 'm ' : '';
+      var hrsstring = hrs != 0 ? hrs + 'h ' : '';
+
+      return hrsstring + minstring + secstring;
+    },
+
     DateDiffInDays(_date1 = new Date(), _date2 = new Date('7/30/2023')) {
       _number = Math.round((_date1 - _date2) / (1000 * 60 * 60 * 24));
       return _number;
+    },
+
+    GetTimeUntilMidnightInMS() {
+      var now = new Date();
+      var midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+      var diffInMs = midnight - now;
+
+      return diffInMs;
+    },
+
+    GetTimeUntilMidnight() {
+      return this.GetMsToHMS(this.GetTimeUntilMidnightInMS());
     },
 
     EndGame() {
@@ -490,13 +528,14 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       }
       if (this.GetModeById('normal').isSelected) {
         this.userHighScoresEasy.push(_score);
-        if (_score === this.userScoresHighEasyByValue[0]) {
+        if (_score === this.userScoresHighEasyByValue[0] && _score.value !== 0) {
           this.appVisualStateShowNewHighScoreElement = true;
         }
         localStorage.setItem('userHighScoresEasy', JSON.stringify(this.userHighScoresEasy));
       } else if (this.GetModeById('blitz').isSelected) {
         this.userHighScoresBlitz.push(_score);
         if (this.gameCurrentTimer === 0 && _score.value > 0) {
+          this.usersBlitzStreakScore = _score.value;
           this.usersBlitzStreakCurrent++;
           _score.streak = this.usersBlitzStreakCurrent;
           if (this.appSettingsCurrentGameMode.useBatThwap) {
@@ -504,6 +543,9 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
             this.getCurrentGameModeComputed.endGameConsolationMessage = _score.streak === 1 ? 'Your streak begins!' : 'Your streak continues.';
           }
         } else {
+          _score.value = 0;
+          _score.streak = 0;
+          this.usersBlitzStreakScore = 0;
           this.usersBlitzStreakCurrent = 0;
         }
         if (this.usersBlitzStreakBest < this.usersBlitzStreakCurrent) {
@@ -511,8 +553,9 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         }
         localStorage.setItem('usersBlitzStreakBest', JSON.stringify(this.usersBlitzStreakBest));
         localStorage.setItem('usersBlitzStreakCurrent', JSON.stringify(this.usersBlitzStreakCurrent));
+        localStorage.setItem('usersBlitzStreakScore', JSON.stringify(this.usersBlitzStreakScore));
 
-        if (_score === this.userScoresHighBlitzByValue[0]) {
+        if (_score === this.userScoresHighBlitzByValue[0] && _score.value !== 0) {
           this.appVisualStateShowNewHighScoreElement = true;
         }
         localStorage.setItem('userHighScoresBlitz', JSON.stringify(this.userHighScoresBlitz));
@@ -520,11 +563,16 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         this.userHighScoresInfinite.push(_score);
         localStorage.setItem('userHighScoresInfinite', JSON.stringify(this.userHighScoresInfinite));
       }
+
       _score.isCurrent = true;
       this.gameLastHighScore = _score;
       this.gameScoreToShare = this.gameLastHighScore;
       this.AddBonusToScore();
 
+      if (this.usersModeBeforeDailyChallenge !== null) {
+        this.SelectMode(this.usersModeBeforeDailyChallenge);
+      }
+      this.usersModeBeforeDailyChallenge = null;
       this.gameCurrentLevel.completed = true;
       this.gameCurrentIsGameDailyChallenge = false;
       this.GetDailyChallenge();
@@ -746,6 +794,12 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       if (_usersBlitzStreakCurrent !== undefined && _usersBlitzStreakCurrent !== null) {
         _usersBlitzStreakCurrent = JSON.parse(_usersBlitzStreakCurrent);
         this.usersBlitzStreakCurrent = _usersBlitzStreakCurrent;
+      }
+
+      let _usersBlitzStreakScore = localStorage.getItem('usersBlitzStreakScore');
+      if (_usersBlitzStreakScore !== undefined && _usersBlitzStreakScore !== null) {
+        _usersBlitzStreakScore = JSON.parse(_usersBlitzStreakScore);
+        this.usersBlitzStreakScore = _usersBlitzStreakScore;
       }
 
       let _usersBlitzStreakBest = localStorage.getItem('usersBlitzStreakBest');
@@ -1286,6 +1340,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         localStorage.setItem('userHighScoresEasy', JSON.stringify(this.userHighScoresEasy));
         localStorage.setItem('userHighScoresBlitz', JSON.stringify(this.userHighScoresBlitz));
         localStorage.setItem('usersBlitzStreakCurrent', JSON.stringify(this.usersBlitzStreakCurrent));
+        localStorage.setItem('usersBlitzStreakScore', JSON.stringify(this.usersBlitzStreakScore));
         localStorage.setItem('userSettingsUseCats', this.userSettingsUseCats);
         localStorage.setItem('userSettingsUseAltPatterns', this.userSettingsUseAltPatterns);
         localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
@@ -1383,6 +1438,9 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     CheckIfGameIsInNativeAppWebView() {
       note('CheckIfGameIsInNativeAppWebView() called');
       this.isInNativeAppWebView = document.cookie.match(/^(.*;)?\s*app-platform\s*=\s*[^;]+(.*)?$/) !== null;
+      if (!this.isInNativeAppWebView) {
+        this.isInNativeAppWebView = window.location.search.indexOf('googleplay') !== -1;
+      }
       return this.isInNativeAppWebView;
     },
 
@@ -1420,9 +1478,11 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     async GetDailyChallenge() {
       note('GetDailyChallenge() called');
       if (!this.gameCurrentIsGameDailyChallenge && (this.gameDailyChallenge.allLevels.length === 0 || this.GetMonthAndDay(this.gameDailyChallenge.date) !== this.GetMonthAndDay(new Date()))) {
+        this.isGettingDailyChallenge = true;
         readDailyChallengeFile(function (contents, result) {
           this.gameDailyChallenge = new AllLevelsObject({});
           announce(result);
+          app.isGettingDailyChallenge = false;
           if (contents !== null && contents !== undefined) {
             app.gameDailyChallenge = new AllLevelsObject({});
             constructAllLevels(app.GenerateNumbers(contents), app.gameDailyChallenge);
@@ -1457,6 +1517,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
 
     StartDailyChallenge() {
       note('StartDailyChallenge() called');
+      this.usersModeBeforeDailyChallenge = this.getCurrentGameModeComputed;
       this.SelectMode(this.GetModeById('normal'));
       this.gameDailyChallengeHasBeenStarted = true;
       this.gameCurrentIsGameDailyChallenge = true;

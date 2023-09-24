@@ -111,7 +111,7 @@ var Modes = [
   new ModeObject({
     id: 'infinite',
     name: 'Zen Mode',
-    description: 'Untimed matching with no pressure.',
+    description: 'Zen Mode is untimed and stress free.',
     piece: new PieceObject({
       shape: 'var(--infinity)',
       color: Colors[2],
@@ -123,7 +123,7 @@ var Modes = [
   new ModeObject({
     id: 'normal',
     name: 'Basic Mode',
-    description: 'Game starts with a 1 minute countdown.',
+    description: 'Basic Mode starts with a 1 minute timer.',
     piece: new PieceObject({
       shape: Shapes[3],
       color: Colors[1],
@@ -136,7 +136,7 @@ var Modes = [
   new ModeObject({
     id: 'blitz',
     name: 'Sudden Death',
-    description: '1 minute, no mistakes, no bonuses!',
+    description: "Sudden Death scores add up 'til you mess up!",
     piece: new PieceObject({
       shape: Shapes[2],
       color: Colors[0],

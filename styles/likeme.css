@@ -495,6 +495,16 @@ button.quaternary:active {
   letter-spacing: 0px;
 }
 
+page.show button.tertiary.inline.small {
+  text-transform: none;
+  font-size: .8em;
+  background: hsla(0, 0%, 50%, .15);
+  opacity: .8;
+  /* background: var(--color3) linear-gradient(hsla(var(--appBackground), .8), hsla(var(--appBackground), .8)); */
+  border-color: transparent;
+  color: var(--appForeground);
+}
+
 .show button.inline.small icon, .show a.button.inline.small icon {
   background-color: var(--color2);
   mask-size: 12px 12px;
@@ -618,6 +628,28 @@ button.quaternary.inline icon, button.tertiary.inline icon, a.quaternary.inline 
 icon.help {
   mask-image: url(../images/icon_question.svg);
   -webkit-mask-image: url(../images/icon_question.svg);
+}
+
+icon.spinner, .show button.inline.small icon.spinner {
+  margin-top: 2px;
+  mask-size: 20px 20px;
+  -webkit-mask-size: 20px 20px;
+  width: 20px;
+  height: 20px;
+  mask-image: url(../images/icon_inner_spinner.svg);
+  -webkit-mask-image: url(../images/icon_inner_spinner.svg);
+  background: hsl(var(--appForeground));
+}
+
+.spin {
+  animation: spin 3s linear 0s infinite;
+  -webkit-animation: spin 3s linear 0s infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 icon.download {
@@ -942,7 +974,7 @@ leftright {
   width: calc(70%);
   flex-direction: row;
   justify-content: space-between;
-  border: 1px solid hsl(var(--appBackgroundStronger));
+  /* border: 1px solid hsl(var(--appBackgroundStronger)); */
   margin: 0px;
   font-size: 0.9em;
   padding: 1px 9px;
@@ -979,15 +1011,6 @@ leftright.current {
   background: hsl(var(--appBackgroundStrongest));
   border-color: hsl(var(--appBackgroundStrongest));
   color: var(--color2);
-}
-
-leftright.current left {
-  color: transparent;
-}
-
-leftright.current:before {
-  content: 'NEW!';
-  font-weight: bold;
 }
 
 scorearea {

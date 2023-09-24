@@ -18,6 +18,7 @@ var Themes = [
     color1: 'hsl(313, 44%, 25%)',
     color2: 'hsl(187, 42%, 46%)',
     color3: 'hsl(64, 60%, 49%)',
+    color3contrast: 'black',
     isSelected: true,
   }),
   new ThemeObject({
