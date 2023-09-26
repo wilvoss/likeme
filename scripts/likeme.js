@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.162',
+    currentVersion: '4.2.164',
     deviceHasTouch: true,
     timeToMidnight: '24h 0m 0s',
     isGettingDailyChallenge: true,
@@ -581,6 +581,8 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       this.gameDailyChallengeHasBeenStarted = false;
       this.appVisualStateShowPageChallenge = false;
       this.appVisualStateShowPageGameOver = true;
+
+      this.HandleOnPageHideEvent(false);
     },
 
     SetState() {
@@ -1301,8 +1303,10 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       this.updateInterval = window.setInterval(this.UpdateApp, this.appSettingsModeIntervalIncrement);
     },
 
-    HandleOnPageHideEvent() {
-      window.clearInterval(this.updateInterval);
+    HandleOnPageHideEvent(_clearInterval = true) {
+      if (_clearInterval) {
+        window.clearInterval(this.updateInterval);
+      }
       this.appSettingsSoundFX.unload();
       if (this.appSettingsSaveSettings) {
         localStorage.setItem('storedVersion', this.currentVersion);
