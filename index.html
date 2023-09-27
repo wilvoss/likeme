@@ -23,7 +23,7 @@
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
 
-    <meta name="keywords" content="Like Me?, Big Tent Games, Games, Free, FullyFree" />
+    <meta name="keywords" content="Like Me?, Big Tent Games, Games, Causual game, Puzzle game, Puzzle logic" />
     <meta name="description" content="A game of matching likenesses." />
 
     <link id="appleicon" rel="apple-touch-icon" sizes="180x180" href="images/icon180.png" />
@@ -42,7 +42,7 @@
 
   <body>
     <wallpaper onclick="app.ClearEphemeralVisualStates()"></wallpaper>
-    <app id="app" v-cloak :class="{challenge: appVisualStateShowPageChallenge, tutorial: appTutorialIsInPlay}">
+    <app id="app" v-cloak :class="{challenge: appVisualStateShowPageChallenge, tutorial: appTutorialIsInPlay}" @click="HandleTouchApp">
       <link v-if="userSettingsUseDarkMode" rel="stylesheet" href="styles/likeme-darkmode.css" media="screen" />
       <link v-if="userSettingsUseCats" rel="stylesheet" href="styles/cats-likeme.css" media="screen" />
       <link v-if="userSettingsUseAltPatterns" rel="stylesheet" href="styles/altpattern1.css" media="screen" />
@@ -234,12 +234,18 @@
           </header>
           <section>
             <controlgroup>
+              <leftright>
+                <checkbox :class="{on: userSettingsPlayMusic}" @click="TogglePlayingMusic(event)">
+                  Music
+                  <toggle></toggle>
+                </checkbox>
+                <checkbox :class="{on: userSettingsUseSoundFX}" @click="ToggleUsingSound(event)">
+                  Sound FX
+                  <toggle></toggle>
+                </checkbox>
+              </leftright>
               <checkbox :class="{on: userSettingsUseHints}" @click="ToggleUsingHints(event)">
                 Tips and Hints
-                <toggle></toggle>
-              </checkbox>
-              <checkbox :class="{on: userSettingsUseSoundFX}" @click="ToggleUsingSound(event)">
-                Sound
                 <toggle></toggle>
               </checkbox>
               <checkbox :class="{on: userSettingsUseAltPatterns}" @click="ToggleUsingAltPattern(event)">

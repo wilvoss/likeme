@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.164',
+    currentVersion: '4.2.202',
     deviceHasTouch: true,
     timeToMidnight: '24h 0m 0s',
     isGettingDailyChallenge: true,
@@ -39,7 +39,20 @@ var app = new Vue({
     appSettingsModes: Modes,
     appSettingsCurrentGameMode: null,
     appSettingsInfiniteMode: null,
-    appSettingsSoundFX: new Howl({ src: '../audio/phft4.mp3', volume: 0.5 }),
+    appSettingsSoundFX: new Howl({
+      src: '../audio/phft4.mp3',
+      volume: 0.5,
+      onload: function () {
+        if (this.userSettingsPlayMusic) this.volume(0.5);
+      },
+    }),
+    userSettingsMusicVolume: 0.15,
+    appSettingsThemeSong: new Howl({
+      src: '../audio/themesong.m4a',
+      volume: 0,
+      loop: true,
+      id: 'theme',
+    }),
     appSettingsSaveSettings: true,
     appSettingsModeIntervalIncrement: 100,
     appSettingsNumberOfHighScoresShown: 5,
@@ -98,6 +111,7 @@ var app = new Vue({
     userSettingsUseAltPatterns: false,
     userSettingsUseHints: true,
     userSettingsUseSoundFX: true,
+    userSettingsPlayMusic: true,
     userSettingsUseDarkMode: false,
     usersModeBeforeDailyChallenge: null,
     userTutorialCheckCount: 0,
@@ -668,7 +682,26 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       event.stopPropagation();
       event.preventDefault();
       this.userSettingsUseSoundFX = !this.userSettingsUseSoundFX;
+
       localStorage.setItem('userSettingsUseSoundFX', this.userSettingsUseSoundFX);
+    },
+
+    TogglePlayingMusic(event) {
+      note('TogglePlayingMusic(event) called');
+      event.stopPropagation();
+      event.preventDefault();
+      this.userSettingsPlayMusic = !this.userSettingsPlayMusic;
+
+      if (this.userSettingsPlayMusic) {
+        this.appSettingsThemeSong.stop();
+        this.appSettingsThemeSong.volume(0);
+        this.appSettingsThemeSong.play();
+        this.appSettingsThemeSong.fade(0, this.userSettingsMusicVolume, 1000);
+      } else {
+        this.appSettingsThemeSong.fade(this.userSettingsMusicVolume, 0, 1000);
+      }
+
+      localStorage.setItem('userSettingsPlayMusic', this.userSettingsPlayMusic);
     },
 
     ToggleUsingDarkMode(event) {
@@ -689,7 +722,18 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         event.stopPropagation();
         event.preventDefault();
       }
+
       this.gameCurrentIsPaused = _value;
+
+      if (!this.gameCurrentIsPaused && this.userSettingsPlayMusic) {
+        this.appSettingsThemeSong.stop();
+        this.appSettingsThemeSong.volume(0);
+        this.appSettingsThemeSong.play();
+        this.appSettingsThemeSong.fade(0, this.userSettingsMusicVolume, 1000);
+      } else if (this.gameCurrentIsPaused && this.userSettingsPlayMusic) {
+        this.appSettingsThemeSong.fade(this.userSettingsMusicVolume, 0, 1000);
+      }
+
       localStorage.setItem('gameCurrentIsPaused', this.gameCurrentIsPaused);
     },
 
@@ -832,6 +876,12 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       if (_sounds !== undefined && _sounds !== null) {
         _sounds = JSON.parse(_sounds);
         this.userSettingsUseSoundFX = _sounds;
+      }
+
+      let _music = localStorage.getItem('userSettingsPlayMusic');
+      if (_music !== undefined && _music !== null) {
+        _music = JSON.parse(_music);
+        this.userSettingsPlayMusic = _music;
       }
 
       let _darkmode = localStorage.getItem('userSettingsUseDarkMode');
@@ -1307,6 +1357,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       if (_clearInterval) {
         window.clearInterval(this.updateInterval);
       }
+
       this.appSettingsSoundFX.unload();
       if (this.appSettingsSaveSettings) {
         localStorage.setItem('storedVersion', this.currentVersion);
@@ -1349,6 +1400,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         localStorage.setItem('userSettingsUseAltPatterns', this.userSettingsUseAltPatterns);
         localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
         localStorage.setItem('userSettingsUseSoundFX', this.userSettingsUseSoundFX);
+        localStorage.setItem('userSettingsPlayMusic', this.userSettingsPlayMusic);
         localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
         localStorage.setItem('appTutorialUserHasSeen', JSON.stringify(this.appTutorialUserHasSeen));
       }
@@ -1422,14 +1474,24 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       this.appVisualStateShowGameOverContent = true;
       this.appSettingsInfiniteMode = this.appSettingsInfiniteMode === null ? this.GetModeById('infinite') : this.appSettingsInfiniteMode;
       this.appSettingsCurrentGameMode = this.appSettingsCurrentGameMode === null ? this.GetCurrentGameMode() : this.appSettingsCurrentGameMode;
-      this.appSettingsSoundFX = new Howl({ src: '../audio/phft4.mp3', volume: 0.5 });
       window.clearInterval(this.updateInterval);
       this.updateInterval = window.setInterval(this.UpdateApp, this.appSettingsModeIntervalIncrement);
       this.GetDailyChallenge();
       this.CheckForServiceWorkerUpdate();
     },
 
+    HandleTouchApp() {
+      note('HandleTouchApp() called');
+      if (!this.appSettingsThemeSong.playing() && this.appSettingsThemeSong.state() === 'loaded' && !this.appTutorialIsInPlay && this.userSettingsPlayMusic) {
+        this.appSettingsThemeSong.stop();
+        this.appSettingsThemeSong.volume(0);
+        this.appSettingsThemeSong.play();
+        this.appSettingsThemeSong.fade(0, this.userSettingsMusicVolume, 1000);
+      }
+    },
+
     CheckForServiceWorkerUpdate() {
+      note('CheckForServiceWorkerUpdate() called');
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then(function (registrations) {
           for (let registration of registrations) {
@@ -1466,9 +1528,28 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       note('HandleOnVisibilityChange() called');
       this.appVisualStateShowGameOverContent = true;
       this.HandleOnPageHideEvent();
+      this.appSettingsThemeSong.stop();
+
+      if (!document.hidden) {
+        log('document visible');
+        if (this.userSettingsPlayMusic) {
+          this.appSettingsThemeSong.volume(0);
+          this.appSettingsThemeSong.play();
+          this.appSettingsThemeSong.fade(0, this.userSettingsMusicVolume, 1000);
+        }
+        this.appSettingsSoundFX = new Howl({
+          src: '../audio/phft4.mp3',
+          volume: 0.5,
+        });
+      } else {
+        log('document hidden');
+        this.appSettingsSoundFX.unload();
+      }
+
       this.CheckIfGameIsInNativeAppWebView();
       this.GetDailyChallenge();
       this.CheckForServiceWorkerUpdate();
+
       window.clearInterval(this.updateInterval);
       this.updateInterval = window.setInterval(this.UpdateApp, this.appSettingsModeIntervalIncrement);
     },

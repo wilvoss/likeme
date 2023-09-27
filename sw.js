@@ -1,5 +1,4 @@
-// the cache version gets updated every time there is a new deployment
-const CACHE_VERSION = '4.2.164';
+const CACHE_VERSION = '4.2.202';
 const CURRENT_CACHE = `main-${CACHE_VERSION}`;
 
 // prettier-ignore
@@ -8,6 +7,7 @@ const cacheFiles = [
   '/',
   '',
   'audio/phft4.mp3',
+  'audio/themesong.m4a',
   'models/TutorialStepObject.js',
   'models/ModeObject.js',
   'models/PieceObject.js',

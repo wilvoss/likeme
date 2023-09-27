@@ -39,7 +39,6 @@
 
   /* game set values */
   --colorDanger: rgb(224, 0, 0);
-
   --patternOpacity: 0.5;
   --patternHSL: 0, 0%, 100%;
 
@@ -982,6 +981,14 @@ leftright {
   border-radius: var(--borderRadius);
   margin-bottom: 4px;
   transition: var(--transitionTime) var(--transitionEase) all;
+}
+
+controlgroup leftright, controlgroup leftright:first-of-type {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  gap: 6px;
 }
 
 leftright.impress {
