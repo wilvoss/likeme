@@ -466,9 +466,14 @@ button:active.quaternary,
 .show button:focus.quaternary,
 button:focus.quaternary {
   background: transparent;
-  border-color: transparent;
+  border-color: var(--color2);
   color: var(--color2);
   box-shadow: none;
+  padding: 0px 20px;
+  width: auto;
+  height: 30px;
+  min-height: 0px;
+  border-width: 1px;
 }
 
 .quaternary icon {
