@@ -286,7 +286,7 @@
           <p v-if="(gameLastHighScore.isDaily || getCurrentGameModeComputed.endGameConsolationMessage != '') && !appVisualStateShowNewHighScoreElement">{{gameLastHighScore.isDaily ? 'Daily - ' + GetMonthAndDay(gameLastHighScore.dailyDate) : getCurrentGameModeComputed.endGameConsolationMessage}}</p>
           <newhigh v-if="appVisualStateShowNewHighScoreElement">{{gameLastHighScore.isDaily ? 'Daily - ' + GetMonthAndDay(gameLastHighScore.dailyDate) : 'A NEW high score!'}}</newhigh>
           <section>
-            <leftright class="impress">
+            <leftright class="impress" v-if="getCurrentGameModeComputed.id !== 'blitz' || getCurrentGameModeComputed.id === 'blitz' && gameLastHighScore.value > 0">
               <left> {{!getInfiniteModeComputed.isSelected ? 'Final score ' : 'Total levels cleared '}} </left>
               <right> {{!getInfiniteModeComputed.isSelected ? NumberWithCommas(gameLastHighScore.value) + ' pts' : gameLastHighScore.numberOfClears}} </right>
             </leftright>
