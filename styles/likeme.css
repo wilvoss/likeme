@@ -1406,6 +1406,22 @@ modal me container piece gild {
   background-image: var(--bgImage1);
 }
 
+.splashboard chrome, .splashboard challenge, .splashboard modal, .splashboard tutorial, .splashboard page, .splashboard hint, .splashboard notification, .splashboard scorearea, .splashboard stage me {
+  display: none;
+}
+
+app.splashboard, app.splashboard stage {
+  max-width: unset;
+  max-height: unset;
+  box-shadow: none;
+  background: none;
+}
+
+app.splashboard stage playarea {
+  margin-top: 0;
+  height: calc(100% - var(--defaultGap));
+}
+
 examples {
   display: flex;
   flex-direction: row;

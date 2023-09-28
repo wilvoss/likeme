@@ -19,13 +19,14 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.207',
+    currentVersion: '4.2.210',
     deviceHasTouch: true,
     timeToMidnight: '24h 0m 0s',
     isGettingDailyChallenge: true,
     getDailyTimeThreshold: 86400000,
     isInNativeAppWebView: false,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
+    splashBoard: false,
     currentWallpaper: '',
     newVersionAvailable: false,
     appTutorialUserHasSeen: false,
@@ -1543,6 +1544,11 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         });
       } else {
         log('document hidden');
+        if (this.splashBoard) {
+          this.splashBoard = false;
+          this.EndGame();
+          this.HandleOnResizeEvent();
+        }
         this.appSettingsSoundFX.unload();
       }
 
@@ -1555,9 +1561,11 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     },
 
     AdjustPieceSizeBasedOnViewport() {
-      this.appSettingsPieceSize = window.innerWidth < 450 ? (window.innerWidth - 60) / this.appSettingsBoardGridSize + 'px' : 400 / this.appSettingsBoardGridSize + 'px';
-      this.documentCssRoot.style.setProperty('--pieceSize', this.appSettingsPieceSize);
-      this.appSettingsTotalNumberOfBoardPieces = window.innerHeight < 234 ? 12 : 16;
+      if (!this.splashBoard) {
+        this.appSettingsPieceSize = window.innerWidth < 450 ? (window.innerWidth - 60) / this.appSettingsBoardGridSize + 'px' : 400 / this.appSettingsBoardGridSize + 'px';
+        this.documentCssRoot.style.setProperty('--pieceSize', this.appSettingsPieceSize);
+        this.appSettingsTotalNumberOfBoardPieces = window.innerHeight < 234 ? 12 : 16;
+      }
     },
 
     async GetDailyChallenge() {
@@ -1598,6 +1606,21 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         numbers += number;
       }
       return numbers;
+    },
+
+    FillBoardWithPieces(size = this.appSettingsPieceSize) {
+      if (UseDebug) {
+        let numbers = this.GenerateNumbers();
+        this.HandleSkipTutorial();
+        this.SelectMode(this.getInfiniteModeComputed);
+        this.RestartGame();
+        this.documentCssRoot.style.setProperty('--pieceSize', size);
+        let _level = constructLevel(numbers, true);
+        this.gameCurrentBoardPieces = _level.board;
+        this.splashBoard = true;
+        document.getElementsByTagName('wallpaper')[0].style.backgroundColor = 'black';
+        document.getElementsByTagName('wallpaper')[0].style.opacity = 0.8;
+      }
     },
 
     StartDailyChallenge() {
