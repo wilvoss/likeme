@@ -355,8 +355,10 @@ modal.pause {
   justify-content: center;
 }
 
-modal.pause button {
+.pause.show button.quaternary {
   height: 54px;
+  width: 100%;
+  border: none;
 }
 
 modal.pause icon.play {
