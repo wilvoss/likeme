@@ -891,8 +891,8 @@ chrome.footer button {
   transition: none;
 }
 
-.show chrome.footer button {
-  width: 100%;
+.show chrome.footer button, .show chrome.footer button:active, .show chrome.footer button:focus {
+  /* width: 100%; */
   height: 100%;
   align-items: end;
   justify-content: end;
