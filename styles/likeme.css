@@ -1406,6 +1406,10 @@ modal me container piece gild {
   background-image: var(--bgImage1);
 }
 
+.splashboard, .splashboard container, .splashboard container button, .splashboard button {
+  cursor: crosshair;
+}
+
 .splashboard chrome, .splashboard challenge, .splashboard modal, .splashboard tutorial, .splashboard page, .splashboard hint, .splashboard notification, .splashboard scorearea, .splashboard stage me {
   display: none;
 }
