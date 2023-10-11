@@ -866,11 +866,11 @@ chrome.hide {
 
 .show chrome button,
 chrome button {
-  font-size: 1em;
+  font-size: 1.1em;
   font-family: -apple-system, Arial, sans-serif;
   background: none;
   background-color: hsl(var(--appBackground));
-  color: hsl(var(--appForeground));
+  color: var(--color2);
   border: none;
   border-color: hsl(var(--appBackground));
   letter-spacing: 0px;
