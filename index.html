@@ -45,7 +45,7 @@
     <app id="app" v-cloak :class="{challenge: appVisualStateShowPageChallenge, tutorial: appTutorialIsInPlay, splashboard: splashBoard}" @click="HandleTouchApp">
       <link v-if="userSettingsUseDarkMode" rel="stylesheet" href="styles/likeme-darkmode.css" media="screen" />
       <link v-if="userSettingsUseCats" rel="stylesheet" href="styles/cats-likeme.css" media="screen" />
-      <link v-if="userSettingsUseAltPatterns" rel="stylesheet" href="styles/altpattern1.css" media="screen" />
+      <link v-if="userSettingsUseAltPatterns" rel="stylesheet" href="styles/altpattern2.css" media="screen" />
       <notification @pointerdown="appVisualStateShowNotification = false" :class="{show: appVisualStateShowNotification}">
         <message v-html="appNotificationMessage"></message>
       </notification>
