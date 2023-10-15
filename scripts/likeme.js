@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.213',
+    currentVersion: '4.2.216',
     deviceHasTouch: true,
     timeToMidnight: '24h 0m 0s',
     isGettingDailyChallenge: true,
@@ -584,10 +584,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       this.gameScoreToShare = this.gameLastHighScore;
       this.AddBonusToScore();
 
-      if (this.usersModeBeforeDailyChallenge !== null) {
-        this.SelectMode(this.usersModeBeforeDailyChallenge);
-      }
-      this.usersModeBeforeDailyChallenge = null;
       this.gameCurrentLevel.completed = true;
       this.gameCurrentIsGameDailyChallenge = false;
       this.GetDailyChallenge();
@@ -755,6 +751,17 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       }
       this.ResetModalContentScrollPositions();
       this.appVisualStateShowPageChallenge = _value;
+    },
+
+    ToggleShowHomeOn(event) {
+      event.stopPropagation();
+      event.preventDefault();
+      this.appVisualStateShowPageGameOver = false;
+      this.appVisualStateShowPageHome = true;
+      if (this.usersModeBeforeDailyChallenge !== null) {
+        this.SelectMode(this.usersModeBeforeDailyChallenge);
+        this.usersModeBeforeDailyChallenge = null;
+      }
     },
 
     ToggleHowToPlay(event, _value) {
