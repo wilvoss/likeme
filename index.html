@@ -364,7 +364,7 @@
       </stage>
       <tutorial :class="{show: appTutorialIsInPlay}">
         <chrome v-if="appTutorialCurrentStepIndex !== appTutorialSteps.length - 1">
-          <button @click="HandleSkipTutorial">{{!appTutorialUserHasSeen ? 'Skip This' : 'Done'}}</button>
+          <button @click="HandleSkipTutorial">{{!appTutorialUserHasSeen ? 'Skip Tutorial' : 'Done'}}</button>
         </chrome>
         <playarea>
           <h2>{{ChangeTutorialPiecesToCats(appTutorialSteps[appTutorialCurrentStepIndex].title)}}</h2>
