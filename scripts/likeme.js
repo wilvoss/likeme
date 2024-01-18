@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.219',
+    currentVersion: '4.2.220',
     deviceHasTouch: true,
     timeToMidnight: '24h 0m 0s',
     isGettingDailyChallenge: true,
@@ -41,7 +41,7 @@ var app = new Vue({
     appSettingsCurrentGameMode: null,
     appSettingsInfiniteMode: null,
     appSettingsSoundFX: new Howl({
-      src: '../audio/phft4.mp3',
+      src: './audio/phft4.mp3',
       volume: 0.5,
       onload: function () {
         if (this.userSettingsPlayMusic) this.volume(0.5);
@@ -49,7 +49,7 @@ var app = new Vue({
     }),
     userSettingsMusicVolume: 0.15,
     appSettingsThemeSong: new Howl({
-      src: '../audio/themesong.m4a',
+      src: './audio/themesong.m4a',
       volume: 0,
       loop: true,
       id: 'theme',
@@ -1546,7 +1546,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
           this.appSettingsThemeSong.fade(0, this.userSettingsMusicVolume, 1000);
         }
         this.appSettingsSoundFX = new Howl({
-          src: '../audio/phft4.mp3',
+          src: './audio/phft4.mp3',
           volume: 0.5,
         });
       } else {
@@ -1760,7 +1760,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       note('HandleServiceWorkerRegistration() called');
       if ('serviceWorker' in navigator) {
         // Register the service worker
-        navigator.serviceWorker.register('/sw.js').then((reg) => {
+        navigator.serviceWorker.register('./sw.js').then((reg) => {
           reg.addEventListener('updatefound', () => {
             // An updated service worker has appeared in reg.installing!
             this.serviceWorker = reg.installing;

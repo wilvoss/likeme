@@ -1,10 +1,10 @@
-const CACHE_VERSION = '4.2.219';
+const CACHE_VERSION = '4.2.220';
 const CURRENT_CACHE = `main-${CACHE_VERSION}`;
 
 // prettier-ignore
 // these are the routes we are going to cache for offline support
 const cacheFiles = [
-  '/',
+  './',
   '',
   'audio/phft4.mp3',
   'audio/themesong.m4a',
