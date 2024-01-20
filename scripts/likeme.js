@@ -19,10 +19,10 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.220',
+    currentVersion: '4.2.222',
     deviceHasTouch: true,
     timeToMidnight: '24h 0m 0s',
-    isGettingDailyChallenge: true,
+    isGettingDailyChallenge: false,
     getDailyTimeThreshold: 86400000,
     isInNativeAppWebView: false,
     wallpaperNames: ['square', 'circle', 'triangle', 'hexagon'],
@@ -1576,18 +1576,13 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     },
 
     async GetDailyChallenge() {
-      note('GetDailyChallenge() called');
-      if (!this.gameCurrentIsGameDailyChallenge && (this.gameDailyChallenge.allLevels.length === 0 || this.GetMonthAndDay(this.gameDailyChallenge.date) !== this.GetMonthAndDay(new Date()))) {
-        this.isGettingDailyChallenge = true;
-        readDailyChallengeFile(function (contents, result) {
-          this.gameDailyChallenge = new AllLevelsObject({});
-          announce(result);
-          app.isGettingDailyChallenge = false;
-          if (contents !== null && contents !== undefined) {
-            app.gameDailyChallenge = new AllLevelsObject({});
-            constructAllLevels(app.GenerateNumbers(contents), app.gameDailyChallenge);
-          }
-        });
+      note('GetDailyChallenge() 2 called');
+      let today = new Date();
+      if (!this.gameCurrentIsGameDailyChallenge && (this.gameDailyChallenge.allLevels.length === 0 || this.GetMonthAndDay(this.gameDailyChallenge.date) !== this.GetMonthAndDay(today))) {
+        this.gameDailyChallenge = new AllLevelsObject({});
+        this.gameDailyChallenge = new AllLevelsObject({});
+        let seed = parseInt(today.toISOString().slice(0, 10).replace(/-/g, ''));
+        constructAllLevels(this.GenerateNumbers(seed), this.gameDailyChallenge);
       }
       app.CheckIfUserHasScoredDailyChallenge(true);
     },
