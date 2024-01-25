@@ -1,4 +1,4 @@
-const CACHE_VERSION = '4.2.223';
+const CACHE_VERSION = '4.2.224';
 const CURRENT_CACHE = `main-${CACHE_VERSION}`;
 
 // prettier-ignore
@@ -41,7 +41,6 @@ const cacheFiles = [
   'helpers/console-enhancer.js',
   'helpers/seedrandom.js',
   'helpers/howler.js',
-  'images/pieces.png',
   'styles/likeme.css',
   'styles/likeme-darkmode.css',
   'styles/cats-likeme.css',
