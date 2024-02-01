@@ -13,7 +13,7 @@ class ModeObject {
     this.highscores = spec.highscores == undefined ? [] : spec.highscores;
     this.isHidden = spec.isHidden == undefined ? false : spec.isHidden;
     this.useBatThwap = spec.useBatThwap == undefined ? false : spec.useBatThwap;
-    this.endGameTitle = spec.endGameTitle == undefined ? 'Game over' : spec.endGameTitle;
+    this.endGameTitle = spec.endGameTitle == undefined ? 'Nicely done!' : spec.endGameTitle;
     this.endGameConsolationMessage = spec.endGameConsolationMessage == undefined ? '' : spec.endGameConsolationMessage;
   }
 }

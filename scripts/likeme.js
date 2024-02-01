@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.225',
+    currentVersion: '4.2.226',
     deviceHasTouch: true,
     timeToMidnight: '24h 0m 0s',
     isGettingDailyChallenge: false,
@@ -1593,7 +1593,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       var rng = new Math.seedrandom(seed);
       // Generate a series of 51-digit numbers
       var numbers = [];
-      for (var i = 0; i < 150; i++) {
+      for (var i = 0; i < 10; i++) {
         // Change this to generate more or fewer numbers
         var number = '';
         for (var j = 0; j < 51; j++) {
