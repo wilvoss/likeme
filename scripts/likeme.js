@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.228',
+    currentVersion: '4.2.229',
     deviceHasTouch: true,
     timeToMidnight: '24h 0m 0s',
     isGettingDailyChallenge: false,
@@ -583,6 +583,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         localStorage.setItem('userHighScoresInfinite', JSON.stringify(this.userHighScoresInfinite));
       }
 
+      _score.numberOfPerfectClears = this.gameCurrentNumberOfPerfectMatches;
       _score.isCurrent = true;
       this.gameLastHighScore = _score;
       this.gameScoreToShare = this.gameLastHighScore;
