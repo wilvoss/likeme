@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.226',
+    currentVersion: '4.2.227',
     deviceHasTouch: true,
     timeToMidnight: '24h 0m 0s',
     isGettingDailyChallenge: false,
@@ -332,7 +332,10 @@ var app = new Vue({
     ShareScore() {
       let _shapes = ['▨ ', '▲ ', '◯ '].sort(() => Math.random() - 0.5).join('');
       let _shareText = `${_shapes}${this.gameScoreToShare.isDaily ? 'Daily - ' + this.GetMonthAndDay(this.gameScoreToShare.dailyDate) : this.gameScoreToShare.modeName}
-${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToShare.numberOfClears} lvl${this.gameScoreToShare.numberOfClears === 1 ? '' : 's'}`;
+${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToShare.numberOfClears} lvl${this.gameScoreToShare.numberOfClears === 1 ? '' : 's'} ${this.gameScoreToShare.isDaily ? '(' + this.gameCurrentNumberOfPerfectMatches + ' perfect)' : ''}`;
+
+      if (this.gameScoreToShare.isDaily) {
+      }
 
       if (this.gameScoreToShare.modeId === 'blitz') {
         _shareText += `\ncurrent streak: ${this.usersBlitzStreakCurrent}`;
