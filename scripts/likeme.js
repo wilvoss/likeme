@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.227',
+    currentVersion: '4.2.228',
     deviceHasTouch: true,
     timeToMidnight: '24h 0m 0s',
     isGettingDailyChallenge: false,
@@ -318,6 +318,7 @@ var app = new Vue({
       if (_score.modeId == '') {
         _score.modeId = _mode.id;
         _score.modeName = _mode.name;
+        _score.numberOfPerfectClears = this.gameCurrentNumberOfPerfectMatches;
       }
       this.gameScoreToShare = _score;
       if (this.appVisualStateShowNotification) {
@@ -332,7 +333,7 @@ var app = new Vue({
     ShareScore() {
       let _shapes = ['▨ ', '▲ ', '◯ '].sort(() => Math.random() - 0.5).join('');
       let _shareText = `${_shapes}${this.gameScoreToShare.isDaily ? 'Daily - ' + this.GetMonthAndDay(this.gameScoreToShare.dailyDate) : this.gameScoreToShare.modeName}
-${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToShare.numberOfClears} lvl${this.gameScoreToShare.numberOfClears === 1 ? '' : 's'} ${this.gameScoreToShare.isDaily ? '(' + this.gameCurrentNumberOfPerfectMatches + ' perfect)' : ''}`;
+${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToShare.numberOfClears} lvl${this.gameScoreToShare.numberOfClears === 1 ? '' : 's'} ${this.gameScoreToShare.isDaily && this.gameScoreToShare.numberOfPerfectClears > 0 ? '(' + this.gameScoreToShare.numberOfPerfectClears + ' perfect)' : ''}`;
 
       if (this.gameScoreToShare.isDaily) {
       }
