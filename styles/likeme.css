@@ -1772,6 +1772,26 @@ gameover h2 {
   margin-top: var(--defaultGap);
 }
 
+confetti {
+  width: 10px;
+  height: 10px;
+  display: block;
+  position: fixed;
+  z-index: 3000;
+  pointer-events: none;
+  /* rotate: 0deg; */
+  top: -20px;
+  opacity: 8;
+  background: black;
+  transform: translate(0px -10px) rotate(0deg);
+  transition-timing-function: ease-in;
+}
+
+confetti.drop {
+  transition-property: all;
+  opacity: 1;
+}
+
 @media only screen and (max-height: 600px) {
   page content {
     padding-top: 0;

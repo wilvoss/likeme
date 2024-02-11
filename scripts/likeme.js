@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.232',
+    currentVersion: '4.2.233',
     deviceHasTouch: true,
     timeToMidnight: '24h 0m 0s',
     isGettingDailyChallenge: false,
@@ -211,6 +211,44 @@ var app = new Vue({
           }
         }
       }
+    },
+
+    RemoveConfetti() {
+      let allConfetti = document.getElementsByTagName('confetti');
+      for (let _x = allConfetti.length - 1; _x >= 0; _x--) {
+        document.body.removeChild(allConfetti[_x]);
+      }
+    },
+
+    CreateConfetti() {
+      this.RemoveConfetti();
+
+      let app = document.getElementsByTagName('app')[0];
+      let count = app.clientWidth;
+      for (let x = 0; x < count; x++) {
+        let confetti = document.createElement('confetti');
+        confetti.style.setProperty('left', getRandomInt(0, app.clientWidth) + (window.innerWidth - app.clientWidth) / 2 + 'px');
+        confetti.style.setProperty('transition-duration', getRandomInt(1600, 3001) + 'ms');
+        confetti.style.setProperty('transition-delay', getRandomInt(0, 800) + 'ms');
+        confetti.style.setProperty('background-color', 'hsl(' + getRandomInt(0, 360) + ',80%, 60%)');
+        confetti.style.setProperty('rotate', +'deg');
+        let width = getRandomInt(40, 100) / 10;
+        let height = getRandomInt(40, 100) / 10;
+        confetti.style.setProperty('width', width + 'px');
+        confetti.style.setProperty('height', height + 'px');
+        document.body.appendChild(confetti);
+        console.log(x);
+      }
+      window.setTimeout(function () {
+        let allConfetti = document.getElementsByTagName('confetti');
+        let app = document.getElementsByTagName('app')[0];
+        for (let _x = 0; _x < allConfetti.length; _x++) {
+          const confetti = allConfetti[_x];
+          confetti.style.setProperty('translate', parseInt(getRandomInt(-20, 20)) + 'px ' + parseInt(document.body.clientHeight - confetti.clientHeight + 20) + 'px');
+          confetti.style.setProperty('rotate', getRandomInt(-360, 360) + 'deg');
+          confetti.className = 'drop';
+        }
+      }, 10);
     },
 
     CalculateDailyChallengeTotalScore() {
@@ -550,7 +588,12 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         _score.dailyDate = this.gameDailyChallenge.date;
         _score.totalPossibleClears = this.gameDailyChallenge.allLevels.length;
         _score.numberOfPerfectClears = this.gameCurrentNumberOfPerfectMatches;
+        this.appSettingsCurrentGameMode.endGameTitle = 'PERFECT!';
+        if (this.gameCurrentNumberOfPerfectMatches === this.gameDailyChallenge.allLevels.length) {
+          this.CreateConfetti();
+        }
       }
+
       if (this.GetModeById('normal').isSelected) {
         this.userHighScoresEasy.push(_score);
         if (_score === this.userScoresHighEasyByValue[0] && _score.value !== 0) {
@@ -769,6 +812,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     ToggleShowHomeOn(event) {
       event.stopPropagation();
       event.preventDefault();
+      this.RemoveConfetti();
       this.appVisualStateShowPageGameOver = false;
       this.appVisualStateShowPageHome = true;
       if (this.usersModeBeforeDailyChallenge !== null) {
