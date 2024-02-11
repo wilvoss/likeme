@@ -214,8 +214,8 @@
             </leftright>
             <leftright v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighBlitzByValue.length"> <left></left>&nbsp;<right></right> </leftright>
           </section>
-          <section v-if="userScoresHighEasyByValue.length > 0 || userScoresHighBlitzByValue.length > 0">
-            <button class="simple danger" @click="ClearAllUserScores">Clear All Scores</button>
+          <section>
+            <button class="simple danger" @click="ClearAllUserScores()">Clear All Scores</button>
           </section>
         </content>
       </modal>
