@@ -1,4 +1,4 @@
-const CACHE_VERSION = '4.2.235';
+const CACHE_VERSION = '4.2.236';
 const CURRENT_CACHE = `main-${CACHE_VERSION}`;
 
 // prettier-ignore
@@ -51,7 +51,7 @@ const cacheFiles = [
 ];
 
 // on activation we clean up the previously registered service workers
-self.addEventListener('activate', (evt) =>
+self.addEventListener('activate', (evt) => {
   evt.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -59,11 +59,14 @@ self.addEventListener('activate', (evt) =>
           if (cacheName !== CURRENT_CACHE) {
             return caches.delete(cacheName);
           }
+          // Return a resolved promise to ensure all caches are checked
+          return Promise.resolve();
         }),
       );
     }),
-  ),
-);
+  );
+  evt.waitUntil(clients.claim());
+});
 
 // on install we download the routes we want to cache for offline
 self.addEventListener('install', (evt) =>
