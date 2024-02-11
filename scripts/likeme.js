@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.238',
+    currentVersion: '4.2.239',
     deviceHasTouch: true,
     timeToMidnight: '24h 0m 0s',
     isGettingDailyChallenge: false,
@@ -237,7 +237,6 @@ var app = new Vue({
         confetti.style.setProperty('width', width + 'px');
         confetti.style.setProperty('height', height + 'px');
         document.body.appendChild(confetti);
-        console.log(x);
       }
       window.setTimeout(function () {
         let allConfetti = document.getElementsByTagName('confetti');
