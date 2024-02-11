@@ -1,4 +1,4 @@
-const CACHE_VERSION = '4.2.237';
+const CACHE_VERSION = '4.2.238';
 const CURRENT_CACHE = `main-${CACHE_VERSION}`;
 
 // prettier-ignore
@@ -84,31 +84,57 @@ self.addEventListener('message', function (event) {
   }
 });
 
-// fetch cache first, but use network if cache fails
 self.addEventListener('fetch', (event) => {
   if (event.request.url.endsWith('.txt')) {
     // Bypass the service worker and always fetch from the network
     event.respondWith(fetch(event.request));
   } else {
-    event.respondWith(
-      caches.open(CURRENT_CACHE).then((cache) => {
-        // Go to the cache first
-        return cache.match(event.request.url).then((cachedResponse) => {
-          // Return a cached response if we have one
-          if (cachedResponse) {
-            return cachedResponse;
-          }
+    // Check the file extension of the request
+    let fileExtension = event.request.url.split('.').pop();
+    if (fileExtension === 'js' || fileExtension === 'css' || fileExtension === 'html') {
+      // Network first for .js, .css, and .html files
+      event.respondWith(
+        caches.open(CURRENT_CACHE).then((cache) => {
+          // Go to the network first
+          return fetch(event.request)
+            .then((fetchedResponse) => {
+              // Add the network response to the cache for later visits
+              cache.put(event.request.url, fetchedResponse.clone());
 
-          // Otherwise, hit the network
-          return fetch(event.request).then((fetchedResponse) => {
-            // Add the network response to the cache for later visits
-            cache.put(event.request.url, fetchedResponse.clone());
+              // Return the network response
+              return fetchedResponse;
+            })
+            .catch((error) => {
+              // If the network request fails, fallback to the cache
+              return cache.match(event.request.url).then((cachedResponse) => {
+                // Return a cached response if we have one, or an error otherwise
+                return cachedResponse || new Response('Network error', { status: 500 });
+              });
+            });
+        }),
+      );
+    } else {
+      // Cache first for everything else
+      event.respondWith(
+        caches.open(CURRENT_CACHE).then((cache) => {
+          // Go to the cache first
+          return cache.match(event.request.url).then((cachedResponse) => {
+            // Return a cached response if we have one
+            if (cachedResponse) {
+              return cachedResponse;
+            }
 
-            // Return the network response
-            return fetchedResponse;
+            // Otherwise, hit the network
+            return fetch(event.request).then((fetchedResponse) => {
+              // Add the network response to the cache for later visits
+              cache.put(event.request.url, fetchedResponse.clone());
+
+              // Return the network response
+              return fetchedResponse;
+            });
           });
-        });
-      }),
-    );
+        }),
+      );
+    }
   }
 });
