@@ -308,13 +308,13 @@
             </leftright>
           </section>
           <section>
-            <button :class="{disabled: gameCurrentTimer > 0}" v-if="!getInfiniteModeComputed.isSelected" title="Click to share your score with your friends." class="tertiary inline" @click="SetScoreForSharingAndShare(gameLastHighScore)">Share!<icon class="share"></icon></button>
+            <button :disabled="gameCurrentTimer > 0 && gameLastHighScore.isDaily" v-if="!getInfiniteModeComputed.isSelected" title="Click to share your score with your friends." class="tertiary inline" @click="SetScoreForSharingAndShare(gameLastHighScore)">Share!<icon class="share"></icon></button>
             <button title="Click to return to the home screen." class="secondary" @click="ToggleShowHomeOn(event)">Home</button>
             <button v-if="!gameLastHighScore.isDaily" title="Click to start a new game" class="primary" @click="RestartGame">New Game</button>
           </section>
         </content>
         <chrome class="footer" v-if="getCurrentGameModeComputed.id != 'infinite'">
-          <button title="Click to adjust the game settings." class="quaternary" @pointerdown="appVisualStateShowGameOverContent = false" @pointerup="appVisualStateShowGameOverContent = true" @pointerout="appVisualStateShowGameOverContent = true">
+          <button :disabled="gameLastHighScore.numberOfClears === gameLastHighScore.totalPossibleClears" title="Click to adjust the game settings." class="quaternary" @pointerdown="appVisualStateShowGameOverContent = gameLastHighScore.numberOfClears === gameLastHighScore.totalPossibleClears ? true : false" @pointerup="appVisualStateShowGameOverContent = true" @pointerout="appVisualStateShowGameOverContent = true">
             <icon class="eye"></icon>
           </button>
         </chrome>

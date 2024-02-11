@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.230',
+    currentVersion: '4.2.231',
     deviceHasTouch: true,
     timeToMidnight: '24h 0m 0s',
     isGettingDailyChallenge: false,
@@ -76,6 +76,7 @@ var app = new Vue({
     appVisualStateShowNotification: false,
     appVisualStateShowElementFlyaway: false,
     appVisualStateShowNewHighScoreElement: false,
+    appVisualStateIsAddingBonusTime: false,
     gameCurrentIsPaused: true,
     gameCurrentIsGameOver: true,
     gameDailyChallenge: new AllLevelsObject({}),
@@ -314,23 +315,27 @@ var app = new Vue({
     },
 
     SetScoreForSharingAndShare(_score, _mode) {
-      this.appVisualStateShowNotification = false;
-      if (_score.modeId == '') {
-        _score.modeId = _mode.id;
-        _score.modeName = _mode.name;
-        _score.numberOfPerfectClears = this.gameCurrentNumberOfPerfectMatches;
-      }
-      this.gameScoreToShare = _score;
-      if (this.appVisualStateShowNotification) {
-        window.setTimeout(function () {
+      note('SetScoreForSharingAndShare() called');
+      if (!this.appVisualStateIsAddingBonusTime) {
+        this.appVisualStateShowNotification = false;
+        if (_score.modeId == '') {
+          _score.modeId = _mode.id;
+          _score.modeName = _mode.name;
+          _score.numberOfPerfectClears = this.gameCurrentNumberOfPerfectMatches;
+        }
+        this.gameScoreToShare = _score;
+        if (this.appVisualStateShowNotification) {
+          window.setTimeout(function () {
+            app.ShareScore();
+          }, 200);
+        } else {
           app.ShareScore();
-        }, 200);
-      } else {
-        app.ShareScore();
+        }
       }
     },
 
     ShareScore() {
+      note('ShareScored() called');
       let _shapes = ['▨ ', '▲ ', '◯ '].sort(() => Math.random() - 0.5).join('');
       let _shareText = `${_shapes}${this.gameScoreToShare.isDaily ? 'Daily - ' + this.GetMonthAndDay(this.gameScoreToShare.dailyDate) : this.gameScoreToShare.modeName}
 ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToShare.numberOfClears} lvl${this.gameScoreToShare.numberOfClears === 1 ? '' : 's'} ${this.gameScoreToShare.isDaily && this.gameScoreToShare.numberOfPerfectClears > 0 ? '(' + this.gameScoreToShare.numberOfPerfectClears + ' perfect)' : ''}`;
@@ -544,6 +549,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       if (this.gameCurrentIsGameDailyChallenge) {
         _score.dailyDate = this.gameDailyChallenge.date;
         _score.totalPossibleClears = this.gameDailyChallenge.allLevels.length;
+        _score.numberOfPerfectClears = this.gameCurrentNumberOfPerfectMatches;
       }
       if (this.GetModeById('normal').isSelected) {
         this.userHighScoresEasy.push(_score);
@@ -583,7 +589,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         localStorage.setItem('userHighScoresInfinite', JSON.stringify(this.userHighScoresInfinite));
       }
 
-      _score.numberOfPerfectClears = this.gameCurrentNumberOfPerfectMatches;
       _score.isCurrent = true;
       this.gameLastHighScore = _score;
       this.gameScoreToShare = this.gameLastHighScore;
@@ -610,6 +615,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     HandleAddBonusToScoreInterval() {
       let _interval = 1000 / (this.gameCurrentTimer / 1000);
       _interval = _interval > 100 ? 100 : _interval;
+      this.appVisualStateIsAddingBonusTime = true;
       this.appSettingsAddBonusToScoreInterval = window.setInterval(function () {
         if (app.gameCurrentTimer > 0) {
           app.gameCurrentTotalScore++;
@@ -621,6 +627,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
           }
           localStorage.setItem('userHighScoresEasy', JSON.stringify(app.userHighScoresEasy));
           window.clearInterval(app.appSettingsAddBonusToScoreInterval);
+          app.appVisualStateIsAddingBonusTime = false;
         }
       }, _interval);
     },
@@ -628,6 +635,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     AddBonusToScore() {
       note('AddBonusToScore() called');
       if (this.gameCurrentTimer > 0 && this.gameLastHighScore.isDaily && this.gameCurrentNumberOfClears === this.gameDailyChallenge.allLevels.length) {
+        this.appVisualStateIsAddingBonusTime = true;
         window.setTimeout(this.HandleAddBonusToScoreInterval, 1000);
       }
     },
@@ -928,7 +936,19 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         if (_userHighScoresEasy !== undefined && _userHighScoresEasy !== null && _userHighScoresEasy !== '[]') {
           _userHighScoresEasy = JSON.parse(_userHighScoresEasy);
           _userHighScoresEasy.forEach((s) => {
-            this.userHighScoresEasy.push(new ScoreObject({ modeId: s.modeId == undefined ? '' : s.modeId, modeName: s.modeName == undefined ? '' : s.modeName, streak: s.streak == undefined ? 0 : s.streak, numberOfClears: s.numberOfClears == undefined ? 0 : s.numberOfClears, date: new Date(s.date), isDaily: s.isDaily, value: s.value, dailyDate: s.dailyDate != undefined ? new Date(s.dailyDate) : new Date(s.date) }));
+            this.userHighScoresEasy.push(
+              new ScoreObject({
+                modeId: s.modeId == undefined ? '' : s.modeId,
+                modeName: s.modeName == undefined ? '' : s.modeName,
+                streak: s.streak == undefined ? 0 : s.streak,
+                numberOfClears: s.numberOfClears == undefined ? 0 : s.numberOfClears,
+                numberOfPerfectClears: s.numberOfPerfectClears == undefined ? 0 : s.numberOfPerfectClears,
+                date: new Date(s.date),
+                isDaily: s.isDaily,
+                value: s.value,
+                dailyDate: s.dailyDate != undefined ? new Date(s.dailyDate) : new Date(s.date),
+              }),
+            );
           });
         }
       } catch (_error) {
