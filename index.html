@@ -199,7 +199,7 @@
           </section>
           <section>
             <h2>Basic Mode</h2>
-            <leftright @click="SetScoreForSharingAndShare(score, getNormalModeComputed)" v-for="score in userScoresHighEasyByValue" :title="score.isDaily ? 'Recorded for the ' + FormatDate(score.dailyDate) + ' daily challange.' : ''" :class="{current: score.isCurrent, daily: score.isDaily}">
+            <leftright @click="SetScoreForSharingAndShare(score, getNormalModeComputed)" v-for="score in userScoresHighEasyByValue" :class="{current: score.isCurrent}">
               <left>{{FormatDate(score.date)}}</left>
               <right>{{NumberWithCommas(score.value)}}</right>
             </leftright>

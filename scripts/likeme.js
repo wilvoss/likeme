@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.231',
+    currentVersion: '4.2.232',
     deviceHasTouch: true,
     timeToMidnight: '24h 0m 0s',
     isGettingDailyChallenge: false,
@@ -1606,7 +1606,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       if (!this.gameCurrentIsGameDailyChallenge && (this.gameDailyChallenge.allLevels.length === 0 || this.GetMonthAndDay(this.gameDailyChallenge.date) !== this.GetMonthAndDay(today))) {
         this.gameDailyChallenge = new AllLevelsObject({});
         this.gameDailyChallenge = new AllLevelsObject({});
-        let seed = parseInt(today.toISOString().slice(0, 10).replace(/-/g, ''));
+        let seed = parseInt(today.toLocaleDateString('en-UK').replace(/\//g, ''));
         constructAllLevels(this.GenerateNumbers(seed), this.gameDailyChallenge);
       }
       app.CheckIfUserHasScoredDailyChallenge(true);
@@ -1841,7 +1841,11 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         if (a.value > b.value) return -1;
         return 0;
       }
-      return this.userHighScoresEasy.sort(compare).flat().slice(0, this.appSettingsNumberOfHighScoresShown);
+      return this.userHighScoresEasy
+        .filter((obj) => !obj.isDaily)
+        .sort(compare)
+        .flat()
+        .slice(0, this.appSettingsNumberOfHighScoresShown);
     },
 
     userScoresHighDailyByDate: function () {
