@@ -19,7 +19,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.239',
+    currentVersion: '4.2.240',
     deviceHasTouch: true,
     timeToMidnight: '24h 0m 0s',
     isGettingDailyChallenge: false,
@@ -104,6 +104,8 @@ var app = new Vue({
     gameLikenessNudgeHasBeenShown: false,
     gameClickMeNudgeHasBeenShown: false,
     userSettingsUseCats: false,
+    userCurrentPerfectScoreCount: 0,
+    userDailyLevel: 0,
     userHighScoresInfinite: [],
     userHighScoresEasy: [],
     userHighScoresBlitz: [],
@@ -1056,6 +1058,8 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         localStorage.setItem('userHighScoresEasy', JSON.stringify(this.userHighScoresEasy));
         localStorage.setItem('userHighScoresBlitz', JSON.stringify(this.userHighScoresBlitz));
         localStorage.setItem('userHighScoresInfinite', JSON.stringify(this.userHighScoresInfinite));
+
+        this.GetDailyChallenge();
       }
     },
 
