@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.244',
+    currentVersion: '4.2.245',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     timeToMidnight: '24h 0m 0s',
@@ -625,6 +625,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
           this.appSettingsCurrentGameMode.endGameTitle = 'PERFECT!';
           this.userNumberOfPerfectDailyChallenges++;
           let targetCount = 3;
+          this.CreateConfetti();
           if (this.userNumberOfPerfectDailyChallenges === targetCount && this.getCurrentPlayerRank !== this.allPlayerRanks[this.allPlayerRanks.length - 1]) {
             this.userRank = this.userRank + 1;
             this.SetUserBasedOnRank(this.userRank, true);
