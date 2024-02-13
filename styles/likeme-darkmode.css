@@ -12,6 +12,8 @@
   --patternHSL: 0, 0%, 0%;
   --patternOpacity: 1;
 
+  --rankLum: 67%;
+
 }
 
 piece gild {
@@ -58,4 +60,16 @@ time {
 
 .quaternary icon {
   background-color: var(--color3);
+}
+
+rank {
+  text-shadow: 0px 0px 10px black;
+}
+
+ranks rank.locked {
+  background-color: hsla(0, 80%, var(--rankLum), .6);
+}
+
+ranks rank.locked name {
+  color: hsla(var(--appForeground), 1)
 }

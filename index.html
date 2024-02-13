@@ -42,7 +42,7 @@
 
   <body>
     <wallpaper onclick="app.ClearEphemeralVisualStates()"></wallpaper>
-    <app id="app" v-cloak :class="{challenge: appVisualStateShowPageChallenge, tutorial: appTutorialIsInPlay, splashboard: splashBoard}" @click="HandleTouchApp">
+    <app id="app" v-cloak :class="[('rank' + getCurrentPlayerRank.rank), {challenge: appVisualStateShowPageChallenge, tutorial: appTutorialIsInPlay, splashboard: splashBoard}]" @click="HandleTouchApp">
       <link v-if="userSettingsUseDarkMode" rel="stylesheet" href="styles/likeme-darkmode.css" media="screen" />
       <link v-if="userSettingsUseCats" rel="stylesheet" href="styles/cats-likeme.css" media="screen" />
       <link v-if="userSettingsUseAltPatterns" rel="stylesheet" href="styles/altpattern1.css" media="screen" />
@@ -71,6 +71,8 @@
             <description v-if="getCurrentGameModeComputed.id === 'blitz'">{{usersBlitzStreakCurrent === 0 ? getCurrentGameModeComputed.description : 'Streak: ' + usersBlitzStreakCurrent + '&nbsp;&nbsp; • &nbsp;&nbsp;Score: ' + NumberWithCommas(usersBlitzStreakScore)}}</description>
           </section>
           <section>
+            <credit>Current Rank</credit>
+            <rank>&rdquo;{{getCurrentPlayerRank.name}}&ldquo;</rank>
             <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="tertiary" @click="StartDailyChallenge">Daily Challenge!</button>
             <button v-if="gameDailyChallengeAlreadyScored || gameDailyChallenge.allLevels.length === 0" title="The next Daily Challenge will be available at midnight tonight." class="tertiary small inline"><icon v-if="isGettingDailyChallenge" class="spinner spin"></icon><span v-if="!isGettingDailyChallenge">Next challenge: {{timeToMidnight}}</span></button>
             <button title="Click to start a new game." class="primary" @click="RestartGame">{{getCurrentGameModeComputed.id === "normal" ? 'Play' : getCurrentGameModeComputed.name}}</button>
@@ -79,7 +81,7 @@
               <button title="Click to adjust the game settings." class="secondary" @click="ToggleSettings(event, true)">
                 <icon class="settings"></icon>
               </button>
-              <button title="Click to see your high scores." class="secondary" @click="ToggleHighScores(event, true)">
+              <button title="Click to see your acheivements." class="secondary" @click="ToggleHighScores(event, true)">
                 <icon class="trophy"></icon>
               </button>
               <button title="Click to see a list of shoutouts." class="secondary" @click="ToggleCredits(event, true)">
@@ -98,7 +100,7 @@
       </page>
       <modal :class="{show: appVisualStateShowPageCredits}">
         <chrome>
-          <button @click="ClearEphemeralVisualStates">done</button>
+          <button @click="ClearEphemeralVisualStates()">done</button>
         </chrome>
         <content>
           <header>
@@ -176,12 +178,34 @@
       </modal>
       <modal :class="{show: appVisualStateShowPageHighScores}">
         <chrome>
-          <button @click="ClearEphemeralVisualStates">done</button>
+          <button @click="ClearEphemeralVisualStates()">done</button>
         </chrome>
         <content>
           <header>
-            <h1>High Scores</h1>
+            <h1>Achievements</h1>
           </header>
+          <section>
+            <h2>Ranks</h2>
+            <credit>3 perfect Daily Challenges unlock the next rank.</credit>
+            <ranks>
+              <rank @click="CreateConfetti(r.hue, r.rank)" v-for="r in allPlayerRanks" v-if="r.rank <= userRank" :style="{backgroundColor: 'hsl(' + r.hue + ', 30%, 50%)'}">
+                <span></span>
+                <name :style="{color: 'hsl(' + r.hue + ', 100%, 92%)'}">
+                  <detail>{{r.name}}</detail>
+                  <credit :style="{textDecoration: r.rank !== userRank ? 'line-through': 'none'}">{{r.levels}} levels {{r.rank === userRank ? 'per Daily Challenge' : ''}}</credit>
+                </name>
+                <span></span>
+              </rank>
+              <rank class="locked" v-for="r in allPlayerRanks" v-if="r.rank > userRank">
+                <span>🔒</span>
+                <name>
+                  <detail>{{r.name}}</detail>
+                  <credit>{{r.levels}} levels</credit>
+                </name>
+                <span>🔒</span>
+              </rank>
+            </ranks>
+          </section>
           <section v-if="gameLastHighScore.isCurrent">
             <h2>Last Game</h2>
             <leftright @click="SetScoreForSharingAndShare(gameLastHighScore)" :title="gameLastHighScore.isDaily ? 'Recorded for the ' + FormatDate(gameLastHighScore.dailyDate) + ' daily challange.' : ''" class="lastscore">
@@ -226,7 +250,7 @@
       </modal>
       <modal :class="{show: appVisualStateShowPageSettings}">
         <chrome>
-          <button @click="ClearEphemeralVisualStates">done</button>
+          <button @click="ClearEphemeralVisualStates()">done</button>
         </chrome>
         <content>
           <header>
@@ -279,8 +303,7 @@
       </modal>
       <modal class="notransition semitransparent" :class="{show: appVisualStateShowPageGameOver, preview: !appVisualStateShowGameOverContent}" @pointerdown="appVisualStateShowNotification = false;">
         <content style="justify-content: center">
-          <h1 v-if="appVisualStateShowPageGameOver" :style="{rotate: getCurrentGameModeComputed.useBatThwap ?  getRandomInt(0, 8) - 4 + 'deg' : '0deg'}">
-            {{getCurrentGameModeComputed.endGameTitle}}
+          <h1 v-if="appVisualStateShowPageGameOver" :style="{rotate: getCurrentGameModeComputed.useBatThwap ?  getRandomInt(0, 8) - 4 + 'deg' : '0deg'}" v-html="getCurrentGameModeComputed.endGameTitle">
             <icon v-if="getCurrentGameModeComputed.id === 'infinite'" class="zen"></icon>
           </h1>
           <p v-if="(gameLastHighScore.isDaily || getCurrentGameModeComputed.endGameConsolationMessage != '') && !appVisualStateShowNewHighScoreElement">{{gameLastHighScore.isDaily ? 'Daily - ' + GetMonthAndDay(gameLastHighScore.dailyDate) : getCurrentGameModeComputed.endGameConsolationMessage}}</p>
@@ -418,6 +441,7 @@
     <script src="helpers/seedrandom.js" type="text/javascript"></script>
     <script src="helpers/howler.js" type="text/javascript"></script>
     <script id=" vue-framework" src="helpers/vue.min.js" type="text/javascript"></script>
+    <script src="models/RankObject.js" type="text/javascript"></script>
     <script src="models/TutorialStepObject.js" type="text/javascript"></script>
     <script src="models/ScoreObject.js" type="text/javascript"></script>
     <script src="models/ThemeObject.js" type="text/javascript"></script>

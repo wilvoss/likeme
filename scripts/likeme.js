@@ -1,3 +1,4 @@
+/// <reference path="../models/RankObject.js" />
 /// <reference path="../models/TutorialStepObject.js" />
 /// <reference path="../models/ThemeObject.js" />
 /// <reference path="../models/PieceObject.js" />
@@ -19,8 +20,9 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.240',
+    currentVersion: '4.2.241',
     deviceHasTouch: true,
+    allPlayerRanks: AllPlayerRanks,
     timeToMidnight: '24h 0m 0s',
     isGettingDailyChallenge: false,
     getDailyTimeThreshold: 86400000,
@@ -112,6 +114,8 @@ var app = new Vue({
     usersBlitzStreakCurrent: 0,
     usersBlitzStreakScore: 0,
     usersBlitzStreakBest: 0,
+    userRank: 0,
+    userNumberOfPerfectDailyChallenges: 0,
     userSettingsUseAltPatterns: false,
     userSettingsUseHints: true,
     userSettingsUseSoundFX: true,
@@ -216,23 +220,39 @@ var app = new Vue({
     },
 
     RemoveConfetti() {
+      note('RemoveConfetti() called');
       let allConfetti = document.getElementsByTagName('confetti');
       for (let _x = allConfetti.length - 1; _x >= 0; _x--) {
         document.body.removeChild(allConfetti[_x]);
       }
     },
 
-    CreateConfetti() {
+    CreateConfetti(_hue = null, _rank = null) {
+      note('CreateConfetti() called');
       this.RemoveConfetti();
-
+      _rank = _rank === null ? this.userRank : _rank;
       let app = document.getElementsByTagName('app')[0];
-      let count = app.clientWidth;
+      let count = (1.5 * app.clientWidth) / (this.allPlayerRanks.length - _rank);
+
+      let useHue = _rank !== this.allPlayerRanks[this.allPlayerRanks.length - 1].rank;
+
+      warn(_rank);
+      if (_rank !== null && _rank === this.allPlayerRanks[this.allPlayerRanks.length - 1].rank) {
+        useHue = false;
+      }
+
       for (let x = 0; x < count; x++) {
         let confetti = document.createElement('confetti');
+        let hue = useHue ? this.getCurrentPlayerRank.hue : getRandomInt(0, 360);
+        if (_hue !== null && useHue) {
+          hue = _hue;
+        }
+
+        let lightness = useHue ? getRandomInt(50, 100) : 60;
         confetti.style.setProperty('left', getRandomInt(0, app.clientWidth) + (window.innerWidth - app.clientWidth) / 2 + 'px');
         confetti.style.setProperty('transition-duration', getRandomInt(1600, 3001) + 'ms');
         confetti.style.setProperty('transition-delay', getRandomInt(0, 800) + 'ms');
-        confetti.style.setProperty('background-color', 'hsl(' + getRandomInt(0, 360) + ',80%, 60%)');
+        confetti.style.setProperty('background-color', 'hsl(' + hue + ',80%, ' + lightness + '%)');
         confetti.style.setProperty('rotate', +'deg');
         let width = getRandomInt(40, 100) / 10;
         let height = getRandomInt(40, 100) / 10;
@@ -252,7 +272,20 @@ var app = new Vue({
       }, 10);
     },
 
+    SetUserBasedOnRank(_rank, _confetti = false) {
+      note('SetUserBasedOnRank() called');
+      this.userRank = _rank;
+      let fullRank = this.allPlayerRanks.find((r) => r.rank === _rank);
+      this.documentCssRoot.style.setProperty('--rankHue', fullRank.hue);
+      if (_confetti) {
+        this.CreateConfetti();
+        this.GetDailyChallenge();
+      }
+      localStorage.setItem('userRank', this.userRank);
+    },
+
     CalculateDailyChallengeTotalScore() {
+      note('CalculateDailyChallengeTotalScore() called');
       let _totalGameScore = 0;
       this.gameDailyChallenge.allLevels.forEach((level, index) => {
         let _totalBoardScore = 0;
@@ -589,10 +622,18 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         _score.dailyDate = this.gameDailyChallenge.date;
         _score.totalPossibleClears = this.gameDailyChallenge.allLevels.length;
         _score.numberOfPerfectClears = this.gameCurrentNumberOfPerfectMatches;
-        this.appSettingsCurrentGameMode.endGameTitle = 'PERFECT!';
-        if (this.gameCurrentNumberOfPerfectMatches === this.gameDailyChallenge.allLevels.length) {
-          this.CreateConfetti();
+        if (_score.numberOfPerfectClears === _score.totalPossibleClears) {
+          this.appSettingsCurrentGameMode.endGameTitle = 'PERFECT!';
+          this.userCurrentPerfectScoreCount++;
+          if (this.userCurrentPerfectScoreCount === 3 && this.getCurrentPlayerRank !== this.allPlayerRanks[this.allPlayerRanks.length - 1]) {
+            this.userRank = this.userRank + 1;
+            this.SetUserBasedOnRank(this.userRank, true);
+            this.appSettingsCurrentGameMode.endGameTitle = "<span class='ranktext'>" + this.getCurrentPlayerRank.name + ' unlocked!!</span>';
+            this.userCurrentPerfectScoreCount === 0;
+          }
         }
+        localStorage.setItem('userRank', this.userRank);
+        localStorage.setItem('userCurrentPerfectScoreCount', this.userCurrentPerfectScoreCount);
       }
 
       if (this.GetModeById('normal').isSelected) {
@@ -902,6 +943,20 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         }
       }
 
+      let _userRank = localStorage.getItem('userRank');
+      note('setting userRank from local storage');
+      if (_userRank !== undefined && _userRank !== null && _userRank !== 'undefined') {
+        this.SetUserBasedOnRank(parseInt(_userRank));
+      } else {
+        this.SetUserBasedOnRank(parseInt(0));
+      }
+
+      let _userNumberOfPerfectDailyChallenges = localStorage.getItem('userNumberOfPerfectDailyChallenges');
+      if (_userNumberOfPerfectDailyChallenges !== undefined && _userNumberOfPerfectDailyChallenges !== null) {
+        _userNumberOfPerfectDailyChallenges = JSON.parse(_userNumberOfPerfectDailyChallenges);
+        this.userNumberOfPerfectDailyChallenges = _userNumberOfPerfectDailyChallenges;
+      }
+
       let _usersBlitzStreakCurrent = localStorage.getItem('usersBlitzStreakCurrent');
       if (_usersBlitzStreakCurrent !== undefined && _usersBlitzStreakCurrent !== null) {
         _usersBlitzStreakCurrent = JSON.parse(_usersBlitzStreakCurrent);
@@ -1055,6 +1110,10 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         this.userHighScoresEasy = [];
         this.userHighScoresBlitz = [];
         this.userHighScoresInfinite = [];
+        this.gameDailyChallenge.allLevels = [];
+        this.gameCurrentIsGameDailyChallenge = false;
+        //this.SetUserBasedOnRank(0);
+        //this.userCurrentPerfectScoreCount = 0;
         localStorage.setItem('userHighScoresEasy', JSON.stringify(this.userHighScoresEasy));
         localStorage.setItem('userHighScoresBlitz', JSON.stringify(this.userHighScoresBlitz));
         localStorage.setItem('userHighScoresInfinite', JSON.stringify(this.userHighScoresInfinite));
@@ -1483,6 +1542,8 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         localStorage.setItem('userSettingsPlayMusic', this.userSettingsPlayMusic);
         localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
         localStorage.setItem('appTutorialUserHasSeen', JSON.stringify(this.appTutorialUserHasSeen));
+        localStorage.setItem('userRank', this.userRank);
+        localStorage.setItem('userNumberOfPerfectDailyChallenges', this.userNumberOfPerfectDailyChallenges);
       }
     },
 
@@ -1622,7 +1683,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
           volume: 0.5,
         });
       } else {
-        log('document hidden');
         if (this.splashBoard) {
           this.splashBoard = false;
           this.EndGame();
@@ -1665,7 +1725,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       var rng = new Math.seedrandom(seed);
       // Generate a series of 51-digit numbers
       var numbers = [];
-      for (var i = 0; i < 10; i++) {
+      for (var i = 0; i < parseInt(this.getCurrentPlayerRank.levels); i++) {
         // Change this to generate more or fewer numbers
         var number = '';
         for (var j = 0; j < 51; j++) {
@@ -1794,6 +1854,8 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     },
 
     ClearEphemeralVisualStates() {
+      note('ClearEphemeralVisualStates() called');
+      this.RemoveConfetti();
       app.appVisualStateShowNotification = false;
       app.appVisualStateShowElementHint = false;
       if (app.gameCurrentIsGameOver) {
@@ -1956,6 +2018,11 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     getNormalModeComputed: function () {
       note('getNormalModeComputed() called');
       return this.GetModeById('normal');
+    },
+
+    getCurrentPlayerRank: function () {
+      note('getCurrentPlayerRank() called');
+      return this.allPlayerRanks.find((r) => r.rank === this.userRank);
     },
   },
 });
