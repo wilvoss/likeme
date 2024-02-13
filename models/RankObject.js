@@ -11,7 +11,7 @@ class RankObject {
 let AllPlayerRanks = [
   new RankObject({
     rank: 0,
-    levels: 1,
+    levels: 5,
     emoji: '🧺',
     name: 'Casual Classifier',
     hue: 50,
