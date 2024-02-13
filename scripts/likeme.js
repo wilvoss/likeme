@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.242',
+    currentVersion: '4.2.243',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     timeToMidnight: '24h 0m 0s',
@@ -106,7 +106,6 @@ var app = new Vue({
     gameLikenessNudgeHasBeenShown: false,
     gameClickMeNudgeHasBeenShown: false,
     userSettingsUseCats: false,
-    userCurrentPerfectScoreCount: 0,
     userDailyLevel: 0,
     userHighScoresInfinite: [],
     userHighScoresEasy: [],
@@ -624,16 +623,17 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         _score.numberOfPerfectClears = this.gameCurrentNumberOfPerfectMatches;
         if (_score.numberOfPerfectClears === _score.totalPossibleClears) {
           this.appSettingsCurrentGameMode.endGameTitle = 'PERFECT!';
-          this.userCurrentPerfectScoreCount++;
-          if (this.userCurrentPerfectScoreCount === 3 && this.getCurrentPlayerRank !== this.allPlayerRanks[this.allPlayerRanks.length - 1]) {
+          this.userNumberOfPerfectDailyChallenges++;
+          let targetCount = 3;
+          if (this.userNumberOfPerfectDailyChallenges === targetCount && this.getCurrentPlayerRank !== this.allPlayerRanks[this.allPlayerRanks.length - 1]) {
             this.userRank = this.userRank + 1;
             this.SetUserBasedOnRank(this.userRank, true);
             this.appSettingsCurrentGameMode.endGameTitle = "<span class='ranktext'>" + this.getCurrentPlayerRank.name + ' unlocked!!</span>';
-            this.userCurrentPerfectScoreCount === 0;
+            this.userNumberOfPerfectDailyChallenges = 0;
           }
         }
         localStorage.setItem('userRank', this.userRank);
-        localStorage.setItem('userCurrentPerfectScoreCount', this.userCurrentPerfectScoreCount);
+        localStorage.setItem('userNumberOfPerfectDailyChallenges', this.userNumberOfPerfectDailyChallenges);
       }
 
       if (this.GetModeById('normal').isSelected) {
@@ -1112,8 +1112,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         this.userHighScoresInfinite = [];
         this.gameDailyChallenge.allLevels = [];
         this.gameCurrentIsGameDailyChallenge = false;
-        //this.SetUserBasedOnRank(0);
-        //this.userCurrentPerfectScoreCount = 0;
         localStorage.setItem('userHighScoresEasy', JSON.stringify(this.userHighScoresEasy));
         localStorage.setItem('userHighScoresBlitz', JSON.stringify(this.userHighScoresBlitz));
         localStorage.setItem('userHighScoresInfinite', JSON.stringify(this.userHighScoresInfinite));
