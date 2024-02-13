@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.241',
+    currentVersion: '4.2.242',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     timeToMidnight: '24h 0m 0s',

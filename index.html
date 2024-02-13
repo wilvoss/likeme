@@ -72,7 +72,7 @@
           </section>
           <section>
             <credit>Current Rank</credit>
-            <rank>&rdquo;{{getCurrentPlayerRank.name}}&ldquo;</rank>
+            <rank @click="ToggleHighScores(event, true)">&rdquo;{{getCurrentPlayerRank.name}}&ldquo;</rank>
             <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="tertiary" @click="StartDailyChallenge">Daily Challenge!</button>
             <button v-if="gameDailyChallengeAlreadyScored || gameDailyChallenge.allLevels.length === 0" title="The next Daily Challenge will be available at midnight tonight." class="tertiary small inline"><icon v-if="isGettingDailyChallenge" class="spinner spin"></icon><span v-if="!isGettingDailyChallenge">Next challenge: {{timeToMidnight}}</span></button>
             <button title="Click to start a new game." class="primary" @click="RestartGame">{{getCurrentGameModeComputed.id === "normal" ? 'Play' : getCurrentGameModeComputed.name}}</button>
