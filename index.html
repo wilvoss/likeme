@@ -188,7 +188,7 @@
             <h2>Ranks</h2>
             <credit>3 perfect Daily Challenges unlock the next rank.</credit>
             <ranks>
-              <rank @click="CreateConfetti(r.hue, r.rank)" v-for="r in allPlayerRanks" v-if="r.rank <= userRank" :style="{backgroundColor: 'hsl(' + r.hue + ', 30%, 50%)'}">
+              <rank @click="CreateConfetti(r.hue, r.rank)" v-for="r in allPlayerRanks" :class="[getLastRank.rank === r.rank ? 'last' : '']" v-if="r.rank <= userRank" :style="{backgroundColor: 'hsl(' + r.hue + ', 50%, 50%)'}">
                 <span></span>
                 <name :style="{color: 'hsl(' + r.hue + ', 100%, 92%)'}">
                   <detail>{{r.name}}</detail>
@@ -196,7 +196,7 @@
                 </name>
                 <span></span>
               </rank>
-              <credit>Just {{3 - userNumberOfPerfectDailyChallenges }} more perfect games till next Rank</credit>
+              <credit v-if="userRank!== allPlayerRanks[allPlayerRanks.length -1].rank">Just {{3 - userNumberOfPerfectDailyChallenges }} more perfect games till next Rank</credit>
               <rank class="locked" v-for="r in allPlayerRanks" v-if="r.rank > userRank">
                 <span>🔒</span>
                 <name>
@@ -317,6 +317,10 @@
             <leftright v-if="getCurrentGameModeComputed.id === 'blitz'">
               <left>Current streak</left>
               <right>{{usersBlitzStreakCurrent}}</right>
+            </leftright>
+            <leftright v-if="gameLastHighScore.isDaily">
+              <left>Perfect games</left>
+              <right>{{tempPerfectDailyChallenges}}{{userRank === allPlayerRanks[allPlayerRanks.length-1].rank ? '' : '/3'}}</right>
             </leftright>
             <leftright>
               <left>Time {{getInfiniteModeComputed.isSelected ? 'played' : 'remaining'}}</left>

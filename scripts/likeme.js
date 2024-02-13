@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.245',
+    currentVersion: '4.2.246',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     timeToMidnight: '24h 0m 0s',
@@ -79,6 +79,7 @@ var app = new Vue({
     appVisualStateShowElementFlyaway: false,
     appVisualStateShowNewHighScoreElement: false,
     appVisualStateIsAddingBonusTime: false,
+    gameConfettiCount: 0,
     gameCurrentIsPaused: true,
     gameCurrentIsGameOver: true,
     gameDailyChallenge: new AllLevelsObject({}),
@@ -115,6 +116,7 @@ var app = new Vue({
     usersBlitzStreakBest: 0,
     userRank: 0,
     userNumberOfPerfectDailyChallenges: 0,
+    tempPerfectDailyChallenges: 0,
     userSettingsUseAltPatterns: false,
     userSettingsUseHints: true,
     userSettingsUseSoundFX: true,
@@ -141,6 +143,7 @@ var app = new Vue({
       });
 
       this.appVisualStateShowNewHighScoreElement = false;
+      this.tempPerfectDailyChallenges = this.userNumberOfPerfectDailyChallenges;
       this.gameCurrentTotalScore = this.getCurrentGameModeComputed.id === 'blitz' ? this.usersBlitzStreakScore : 0;
       this.gameCurrentIsGameOver = false;
     },
@@ -230,13 +233,12 @@ var app = new Vue({
       note('CreateConfetti() called');
       this.RemoveConfetti();
       _rank = _rank === null ? this.userRank : _rank;
-      let app = document.getElementsByTagName('app')[0];
-      let count = (1.5 * app.clientWidth) / (this.allPlayerRanks.length - _rank);
+      let domApp = document.getElementsByTagName('app')[0];
+      let count = domApp.clientWidth / (this.allPlayerRanks.length - _rank);
 
-      let useHue = _rank !== this.allPlayerRanks[this.allPlayerRanks.length - 1].rank;
+      let useHue = _rank !== this.getLastRank.rank;
 
-      warn(_rank);
-      if (_rank !== null && _rank === this.allPlayerRanks[this.allPlayerRanks.length - 1].rank) {
+      if (_rank !== null && _rank === this.getLastRank.rank) {
         useHue = false;
       }
 
@@ -248,7 +250,7 @@ var app = new Vue({
         }
 
         let lightness = useHue ? getRandomInt(50, 100) : 60;
-        confetti.style.setProperty('left', getRandomInt(0, app.clientWidth) + (window.innerWidth - app.clientWidth) / 2 + 'px');
+        confetti.style.setProperty('left', getRandomInt(0, domApp.clientWidth) + (window.innerWidth - domApp.clientWidth) / 2 + 'px');
         confetti.style.setProperty('transition-duration', getRandomInt(1600, 3001) + 'ms');
         confetti.style.setProperty('transition-delay', getRandomInt(0, 800) + 'ms');
         confetti.style.setProperty('background-color', 'hsl(' + hue + ',80%, ' + lightness + '%)');
@@ -261,7 +263,6 @@ var app = new Vue({
       }
       window.setTimeout(function () {
         let allConfetti = document.getElementsByTagName('confetti');
-        let app = document.getElementsByTagName('app')[0];
         for (let _x = 0; _x < allConfetti.length; _x++) {
           const confetti = allConfetti[_x];
           confetti.style.setProperty('translate', parseInt(getRandomInt(-20, 20)) + 'px ' + parseInt(document.body.clientHeight - confetti.clientHeight + 20) + 'px');
@@ -624,9 +625,10 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         if (_score.numberOfPerfectClears === _score.totalPossibleClears) {
           this.appSettingsCurrentGameMode.endGameTitle = 'PERFECT!';
           this.userNumberOfPerfectDailyChallenges++;
+          this.tempPerfectDailyChallenges = this.userNumberOfPerfectDailyChallenges;
           let targetCount = 3;
           this.CreateConfetti();
-          if (this.userNumberOfPerfectDailyChallenges === targetCount && this.getCurrentPlayerRank !== this.allPlayerRanks[this.allPlayerRanks.length - 1]) {
+          if (this.userNumberOfPerfectDailyChallenges === targetCount && this.getCurrentPlayerRank !== this.getLastRank) {
             this.userRank = this.userRank + 1;
             this.SetUserBasedOnRank(this.userRank, true);
             this.appSettingsCurrentGameMode.endGameTitle = "<span class='ranktext'>" + this.getCurrentPlayerRank.name + ' unlocked!!</span>';
@@ -1113,6 +1115,8 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         this.userHighScoresInfinite = [];
         this.gameDailyChallenge.allLevels = [];
         this.gameCurrentIsGameDailyChallenge = false;
+        this.userNumberOfPerfectDailyChallenges = 0;
+        localStorage.setItem('userNumberOfPerfectDailyChallenges', this.userNumberOfPerfectDailyChallenges);
         localStorage.setItem('userHighScoresEasy', JSON.stringify(this.userHighScoresEasy));
         localStorage.setItem('userHighScoresBlitz', JSON.stringify(this.userHighScoresBlitz));
         localStorage.setItem('userHighScoresInfinite', JSON.stringify(this.userHighScoresInfinite));
@@ -1855,22 +1859,24 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     ClearEphemeralVisualStates() {
       note('ClearEphemeralVisualStates() called');
       this.RemoveConfetti();
-      app.appVisualStateShowNotification = false;
-      app.appVisualStateShowElementHint = false;
-      if (app.gameCurrentIsGameOver) {
-        app.appVisualStateShowPageHome = true;
+      this.gameConfettiCount = 0;
+      this.appVisualStateShowNotification = false;
+      this.appVisualStateShowElementHint = false;
+      this.tempPerfectDailyChallenges = this.userNumberOfPerfectDailyChallenges;
+      if (this.gameCurrentIsGameOver) {
+        this.appVisualStateShowPageHome = true;
       }
-      if (app.appTutorialIsInPlay) {
-        app.HandleSkipTutorial();
+      if (this.appTutorialIsInPlay) {
+        this.HandleSkipTutorial();
       }
-      app.appVisualStateShowGameOverContent = true;
-      app.appVisualStateShowPageSettings = false;
-      app.appVisualStateShowPageHighScores = false;
-      app.appVisualStateShowPageHowToPlay = false;
-      app.appVisualStateShowPageCredits = false;
-      app.appVisualStateShowPageChallenge = false;
-      app.appVisualStateShowElementHint = false;
-      app.appVisualStateShowPageGameOver = false;
+      this.appVisualStateShowGameOverContent = true;
+      this.appVisualStateShowPageSettings = false;
+      this.appVisualStateShowPageHighScores = false;
+      this.appVisualStateShowPageHowToPlay = false;
+      this.appVisualStateShowPageCredits = false;
+      this.appVisualStateShowPageChallenge = false;
+      this.appVisualStateShowElementHint = false;
+      this.appVisualStateShowPageGameOver = false;
     },
 
     HandleUpdateAppButtonClick() {
@@ -2022,6 +2028,9 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     getCurrentPlayerRank: function () {
       note('getCurrentPlayerRank() called');
       return this.allPlayerRanks.find((r) => r.rank === this.userRank);
+    },
+    getLastRank: function () {
+      return this.allPlayerRanks[this.allPlayerRanks.length - 1];
     },
   },
 });
