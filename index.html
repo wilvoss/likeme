@@ -70,27 +70,27 @@
             <credit v-if="getNextPlayerRank !== undefined">Next Rank: &rdquo;{{getNextPlayerRank.name}}&ldquo;</credit>
           </section>
           <section>
-            <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="secondary" @click="StartDailyChallenge">Daily Challenge!</button>
+            <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="secondary" @click="StartDailyChallenge()">Daily Challenge!</button>
             <button v-if="gameDailyChallengeAlreadyScored || gameDailyChallenge.allLevels.length === 0" title="The next Daily Challenge will be available at midnight tonight." class="tertiary small inline"><icon v-if="isGettingDailyChallenge" class="spinner spin"></icon><span v-if="!isGettingDailyChallenge">Next challenge: {{timeToMidnight}}</span></button>
-            <button title="Click to start a new game." class="primary" @click="RestartGame">{{getCurrentGameModeComputed.id === "normal" ? 'Play' : getCurrentGameModeComputed.name}}</button>
-            <button title="Click to learn how to play Like Me?" class="inline" @click="ToggleHowToPlay(event, true)">Tutorial</button>
-            <smallbuttons>
+            <button class="primary" title="Click to start a new game." @click="RestartGame">Play</button>
+            <button title="Click to toggle Zen Mode on." class="inline" :class="{secondary: getCurrentGameModeComputed.id === 'infinite'}" @click="ToggleZenMode()">Zen Mode: {{getCurrentGameModeComputed.id === 'infinite' ? 'On' : 'Off'}}</button>
+            <button class="inline" title="Click to adjust the game settings." @click="ToggleSettings(event, true)"><icon class="settings"></icon>Settings</button>
+            <button class="inline" title="Click to see your achievements." @click="ToggleHighScores(event, true)"><icon class="trophy"></icon>Achievements</button>
+            <button title="Click to learn how to play Like Me?" class="inline" @click="ToggleHowToPlay(event, true)"><icon class="help"></icon>Tutorial</button>
+            <button class="inline" title="Click to see a list of shoutouts." @click="ToggleCredits(event, true)"><icon class="bullhorn"></icon>Shoutouts</button>
+            <button class="inline" v-if="isInNativeAppWebView" title="Click to share this game with your friends." @click="ShareApp"><icon class="share"></icon>Share</button>
+            <a v-if="!isInNativeAppWebView" title="Click to buy me a cup of coffee." class="button" href="https://www.buymeacoffee.com/wilvoss" target="_blank"> Donate! </a>
+            <!-- <smallbuttons>
               <button title="Click to adjust the game settings." @click="ToggleSettings(event, true)">
                 <icon class="settings"></icon>
               </button>
-              <button title="Click to see your acheivements." @click="ToggleHighScores(event, true)">
-                <icon class="trophy"></icon>
-              </button>
-              <button title="Click to see a list of shoutouts." @click="ToggleCredits(event, true)">
-                <icon class="bullhorn"></icon>
-              </button>
-              <button v-if="isInNativeAppWebView" title="Click to share this game with your friends." @click="ShareApp">
-                <icon class="share"></icon>
-              </button>
+              <button title="Click to see your acheivements." @click="ToggleHighScores(event, true)"></button>
+              <button title="Click to see a list of shoutouts." @click="ToggleCredits(event, true)"></button>
+              <button v-if="isInNativeAppWebView" title="Click to share this game with your friends." @click="ShareApp"></button>
               <a v-if="!isInNativeAppWebView" title="Click to buy me a cup of coffee." class="button" href="https://www.buymeacoffee.com/wilvoss" target="_blank">
                 <icon class="bmc"></icon>
               </a>
-            </smallbuttons>
+            </smallbuttons> -->
             <version :style="{fontStyle: window.location.host !== 'likeme.games' ? 'italic' : ''}"><a href="https://github.com/wilvoss/likeme/commits/main/" target="_blank">{{currentVersion}}</a></version>
           </section>
         </content>
@@ -255,20 +255,6 @@
             <h1>Settings</h1>
           </header>
           <section>
-            <modes>
-              <mode v-for="mode in appSettingsModes" v-if="!mode.isHidden" :class="{selected: mode.isSelected}">
-                <container :title="mode.name + ' mode. ' + mode.description + ' Click to select.'" @click="SelectMode(mode)">
-                  <piece :style="{maskImage: mode.piece.shape, webkitMaskImage: mode.piece.shape, backgroundColor: mode.piece.color}">
-                    <gild :style="{backgroundImage: mode.piece.backgroundImage }" />
-                  </piece>
-                </container>
-                <value>{{mode.name}}</value>
-              </mode>
-            </modes>
-            <description v-if="getCurrentGameModeComputed.id !== 'blitz'">{{getCurrentGameModeComputed.description}} </description>
-            <description v-if="getCurrentGameModeComputed.id === 'blitz'">{{usersBlitzStreakCurrent === 0 ? getCurrentGameModeComputed.description : 'Streak: ' + usersBlitzStreakCurrent + '&nbsp;&nbsp; • &nbsp;&nbsp;Score: ' + NumberWithCommas(usersBlitzStreakScore)}}</description>
-          </section>
-          <section>
             <controlgroup>
               <leftright>
                 <checkbox :class="{on: userSettingsPlayMusic}" @click="TogglePlayingMusic(event)">
@@ -373,6 +359,7 @@
           <gameinfo>
             <labelsmall v-if="getCurrentGameModeComputed.id==='normal'"> level {{parseInt(gameCurrentNumberOfClears + 1)}} <span>of</span> {{getCurrentPlayerRank.levels}} </labelsmall>
             <time @click="ToggleGamePause(event, false)" v-if="!getInfiniteModeComputed.isSelected">{{gameCurrentIsPaused ? 'Paused' : NumberWithCommas(gameCurrentTotalScore) + ' pts'}}</time>
+            <time v-if="getInfiniteModeComputed.isSelected">Zen Mode</time>
           </gameinfo>
           <button @click="ToggleChallenge(event, true)">Quit</button>
         </chrome>

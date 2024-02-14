@@ -54,6 +54,10 @@ button.secondary, a.button.secondary {
   border-color: var(--color1);
 }
 
+page button, page a.button {
+  background-color: hsla(var(--appForeground), .4);
+}
+
 time {
   color: var(--color3);
 }

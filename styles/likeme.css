@@ -316,6 +316,11 @@ content {
   overflow-y: scroll;
 }
 
+page content {
+  margin-top: 0;
+  padding-top: 0;
+}
+
 modal content {
   margin-top: var(--defaultGap);
 }
@@ -337,8 +342,8 @@ content::-webkit-scrollbar {
 page content {
   gap: var(--defaultGap);
   padding-bottom: var(--defaultGap);
-  justify-content: space-around;
-  overflow: hidden;
+  justify-content: start;
+  overflow-y: scroll;
 }
 
 stage playarea,
@@ -450,6 +455,14 @@ button.tertiary, a.button.tertiary {
   border-color: var(--color3);
   color: var(--color3contrast);
   box-shadow: none;
+}
+
+page button, page a.button {
+  background-color: hsl(var(--appForeground));
+}
+
+page button icon {
+  width: 24px;
 }
 
 .show button.quaternary.pulse {
@@ -1944,7 +1957,7 @@ confetti.drop {
 @media only screen and (max-height: 600px) {
   page content {
     padding-top: 0;
-    margin-top: var(--defaultGap);
+    /* margin-top: var(--defaultGap); */
     overflow-y: scroll;
   }
 

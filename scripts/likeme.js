@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.254',
+    currentVersion: '4.2.255',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     timeToMidnight: '24h 0m 0s',
@@ -463,6 +463,7 @@ ${_rankedUp ? 'I just unlocked ' + this.getCurrentPlayerRank.name + '!' : ''}`;
 
     SelectMode(_mode) {
       note('SelectMode(mode) called for:  "' + _mode.name + '"');
+      this.gameCurrentBoardPieces = [];
       this.appSettingsModes.forEach((mode) => {
         mode.isSelected = _mode === mode;
       });
@@ -750,6 +751,15 @@ ${_rankedUp ? 'I just unlocked ' + this.getCurrentPlayerRank.name + '!' : ''}`;
       return this.gameDailyChallengeAlreadyScored;
     },
 
+    ToggleZenMode() {
+      note('ToggleZenMode() called');
+      if (this.getCurrentGameModeComputed === this.getInfiniteModeComputed) {
+        this.SelectMode(this.getNormalModeComputed);
+      } else {
+        this.SelectMode(this.getInfiniteModeComputed);
+      }
+    },
+
     ToggleUsingHints(event) {
       note('ToggleUsingHints(event) called');
       event.stopPropagation();
@@ -922,8 +932,6 @@ ${_rankedUp ? 'I just unlocked ' + this.getCurrentPlayerRank.name + '!' : ''}`;
     GetUserSettings() {
       note('GetUserSettings() called');
 
-      let _defaultsKept = true;
-
       if (localStorage.length === 0) {
         this.appTutorialUserHasSeen = false;
         this.appTutorialIsInPlay = true;
@@ -936,10 +944,10 @@ ${_rankedUp ? 'I just unlocked ' + this.getCurrentPlayerRank.name + '!' : ''}`;
         _modes = JSON.parse(_modes);
 
         if (_modes.easy != undefined && _modes.easy != null) {
-          this.GetModeById('infinite').isSelected = _modes.infinite.isSelected;
+          this.GetModeById('normal').isSelected = _modes.infinite.isSelected;
           this.GetModeById('normal').isSelected = _modes.easy.isSelected || _modes.hard.isSelected;
           if (_modes.blitz != undefined) {
-            this.GetModeById('blitz').isSelected = _modes.blitz.isSelected;
+            this.GetModeById('normal').isSelected = _modes.blitz.isSelected;
           }
           if (_modes.hard.isSelected) {
             this.gameCurrentIsGameOver = true;
