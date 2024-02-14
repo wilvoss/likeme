@@ -11,14 +11,14 @@ class RankObject {
 let AllPlayerRanks = [
   new RankObject({
     rank: 0,
-    levels: 1,
+    levels: 5,
     emoji: '🧺',
     name: 'Casual Classifier',
     hue: 50,
   }),
   new RankObject({
     rank: 1,
-    levels: 2,
+    levels: 10,
     emoji: '🧸',
     name: 'Serviceable Spotter',
     hue: 80,
