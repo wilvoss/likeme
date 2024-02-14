@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.248',
+    currentVersion: '4.2.249',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     timeToMidnight: '24h 0m 0s',
@@ -115,8 +115,8 @@ var app = new Vue({
     usersBlitzStreakScore: 0,
     usersBlitzStreakBest: 0,
     userRank: 0,
-    userNumberOfPerfectDailyChallenges: 0,
-    tempPerfectDailyChallenges: 0,
+    userNumberOfPerfectBasicGames: 0,
+    tempPerfectBasicGames: 0,
     userSettingsUseAltPatterns: false,
     userSettingsUseHints: true,
     userSettingsUseSoundFX: true,
@@ -143,7 +143,7 @@ var app = new Vue({
       });
 
       this.appVisualStateShowNewHighScoreElement = false;
-      this.tempPerfectDailyChallenges = this.userNumberOfPerfectDailyChallenges;
+      this.tempPerfectBasicGames = this.userNumberOfPerfectBasicGames;
       this.gameCurrentTotalScore = this.getCurrentGameModeComputed.id === 'blitz' ? this.usersBlitzStreakScore : 0;
       this.gameCurrentIsGameOver = false;
     },
@@ -325,7 +325,7 @@ var app = new Vue({
         });
       }
 
-      if (_board === null && this.gameDailyChallengeHasBeenStarted) {
+      if (_board === null && (this.gameDailyChallengeHasBeenStarted || (this.GetCurrentGameMode().id === 'normal' && this.gameCurrentAllLevels.length === this.getCurrentPlayerRank.levels))) {
         this.EndGame();
         return;
       } else if (_board === null) {
@@ -333,6 +333,7 @@ var app = new Vue({
       }
       this.gameCurrentMePiece = _board.me;
       this.gameCurrentLevel = _board;
+      this.gameCurrentAllLevels.push(this.gameCurrentLevel);
 
       _board.board.forEach((_piece, x) => {
         _piece.delay = (_board.board.length - x) * 40;
@@ -386,7 +387,7 @@ var app = new Vue({
       }
     },
 
-    SetScoreForSharingAndShare(_score, _mode) {
+    SetScoreForSharingAndShare(_score, _mode, _rankedUp = false) {
       note('SetScoreForSharingAndShare() called');
       if (!this.appVisualStateIsAddingBonusTime) {
         this.appVisualStateShowNotification = false;
@@ -398,21 +399,23 @@ var app = new Vue({
         this.gameScoreToShare = _score;
         if (this.appVisualStateShowNotification) {
           window.setTimeout(function () {
-            app.ShareScore();
+            app.ShareScore(_rankedUp);
           }, 200);
         } else {
-          app.ShareScore();
+          app.ShareScore(_rankedUp);
         }
       }
     },
 
-    ShareScore() {
+    ShareScore(_rankedUp = false) {
       note('ShareScored() called');
       let _shapes = ['▨ ', '▲ ', '◯ '].sort(() => Math.random() - 0.5).join('');
       let _shareText = `${_shapes}${this.gameScoreToShare.isDaily ? 'Daily - ' + this.GetMonthAndDay(this.gameScoreToShare.dailyDate) : this.gameScoreToShare.modeName}
-${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToShare.numberOfClears} lvl${this.gameScoreToShare.numberOfClears === 1 ? '' : 's'} ${this.gameScoreToShare.isDaily && this.gameScoreToShare.numberOfPerfectClears > 0 ? '(' + this.gameScoreToShare.numberOfPerfectClears + ' perfect)' : ''}`;
-
-      if (this.gameScoreToShare.isDaily) {
+${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToShare.numberOfClears} lvl${this.gameScoreToShare.numberOfClears === 1 ? '' : 's'} ${this.gameScoreToShare.modeId === 'normal' && this.gameScoreToShare.numberOfPerfectClears > 0 ? '(' + this.gameScoreToShare.numberOfPerfectClears + ' perfect)' : null}`;
+      if (_rankedUp) {
+        _shareText = `${_shapes}${this.gameScoreToShare.isDaily ? 'Daily - ' + this.GetMonthAndDay(this.gameScoreToShare.dailyDate) : this.gameScoreToShare.modeName}
+${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToShare.numberOfClears} lvl${this.gameScoreToShare.numberOfClears === 1 ? '' : 's'} ${this.gameScoreToShare.modeId === 'normal' && this.gameScoreToShare.numberOfPerfectClears > 0 ? '(' + this.gameScoreToShare.numberOfPerfectClears + ' perfect)' : null}
+${_rankedUp ? 'I just unlocked ' + this.getCurrentPlayerRank.name + '!' : ''}`;
       }
 
       if (this.gameScoreToShare.modeId === 'blitz') {
@@ -621,27 +624,27 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
 
       if (this.GetModeById('normal').isSelected) {
         this.appSettingsCurrentGameMode.endGameTitle = 'Nicely done!';
+        _score.totalPossibleClears = this.getCurrentPlayerRank.levels;
+        _score.numberOfPerfectClears = this.gameCurrentNumberOfPerfectMatches;
+        if (_score.numberOfPerfectClears === _score.totalPossibleClears) {
+          this.appSettingsCurrentGameMode.endGameTitle = 'PERFECT!';
+          this.userNumberOfPerfectBasicGames++;
+          this.tempPerfectBasicGames = this.userNumberOfPerfectBasicGames;
+          let targetCount = 3;
+          this.CreateConfetti();
+          if (this.userNumberOfPerfectBasicGames === targetCount && this.getCurrentPlayerRank !== this.getLastRank) {
+            this.userRank = this.userRank + 1;
+            this.SetUserBasedOnRank(this.userRank, true);
+            this.appSettingsCurrentGameMode.endGameTitle = "<span class='ranktext'>" + this.getCurrentPlayerRank.name + ' unlocked!!</span>';
+            this.userNumberOfPerfectBasicGames = 0;
+          }
+        }
+        localStorage.setItem('userRank', this.userRank);
+        localStorage.setItem('userNumberOfPerfectBasicGames', this.userNumberOfPerfectBasicGames);
       }
 
       if (this.gameCurrentIsGameDailyChallenge) {
         _score.dailyDate = this.gameDailyChallenge.date;
-        _score.totalPossibleClears = this.gameDailyChallenge.allLevels.length;
-        _score.numberOfPerfectClears = this.gameCurrentNumberOfPerfectMatches;
-        if (_score.numberOfPerfectClears === _score.totalPossibleClears) {
-          this.appSettingsCurrentGameMode.endGameTitle = 'PERFECT!';
-          this.userNumberOfPerfectDailyChallenges++;
-          this.tempPerfectDailyChallenges = this.userNumberOfPerfectDailyChallenges;
-          let targetCount = 3;
-          this.CreateConfetti();
-          if (this.userNumberOfPerfectDailyChallenges === targetCount && this.getCurrentPlayerRank !== this.getLastRank) {
-            this.userRank = this.userRank + 1;
-            this.SetUserBasedOnRank(this.userRank, true);
-            this.appSettingsCurrentGameMode.endGameTitle = "<span class='ranktext'>" + this.getCurrentPlayerRank.name + ' unlocked!!</span>';
-            this.userNumberOfPerfectDailyChallenges = 0;
-          }
-        }
-        localStorage.setItem('userRank', this.userRank);
-        localStorage.setItem('userNumberOfPerfectDailyChallenges', this.userNumberOfPerfectDailyChallenges);
       }
 
       if (this.GetModeById('normal').isSelected) {
@@ -959,10 +962,10 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         this.SetUserBasedOnRank(parseInt(0));
       }
 
-      let _userNumberOfPerfectDailyChallenges = localStorage.getItem('userNumberOfPerfectDailyChallenges');
-      if (_userNumberOfPerfectDailyChallenges !== undefined && _userNumberOfPerfectDailyChallenges !== null) {
-        _userNumberOfPerfectDailyChallenges = JSON.parse(_userNumberOfPerfectDailyChallenges);
-        this.userNumberOfPerfectDailyChallenges = _userNumberOfPerfectDailyChallenges;
+      let _userNumberOfPerfectBasicGames = localStorage.getItem('userNumberOfPerfectBasicGames');
+      if (_userNumberOfPerfectBasicGames !== undefined && _userNumberOfPerfectBasicGames !== null) {
+        _userNumberOfPerfectBasicGames = JSON.parse(_userNumberOfPerfectBasicGames);
+        this.userNumberOfPerfectBasicGames = _userNumberOfPerfectBasicGames;
       }
 
       let _usersBlitzStreakCurrent = localStorage.getItem('usersBlitzStreakCurrent');
@@ -1120,8 +1123,8 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         this.userHighScoresInfinite = [];
         this.gameDailyChallenge.allLevels = [];
         this.gameCurrentIsGameDailyChallenge = false;
-        this.userNumberOfPerfectDailyChallenges = 0;
-        localStorage.setItem('userNumberOfPerfectDailyChallenges', this.userNumberOfPerfectDailyChallenges);
+        this.userNumberOfPerfectBasicGames = 0;
+        localStorage.setItem('userNumberOfPerfectBasicGames', this.userNumberOfPerfectBasicGames);
         localStorage.setItem('userHighScoresEasy', JSON.stringify(this.userHighScoresEasy));
         localStorage.setItem('userHighScoresBlitz', JSON.stringify(this.userHighScoresBlitz));
         localStorage.setItem('userHighScoresInfinite', JSON.stringify(this.userHighScoresInfinite));
@@ -1551,7 +1554,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
         localStorage.setItem('appTutorialUserHasSeen', JSON.stringify(this.appTutorialUserHasSeen));
         localStorage.setItem('userRank', this.userRank);
-        localStorage.setItem('userNumberOfPerfectDailyChallenges', this.userNumberOfPerfectDailyChallenges);
+        localStorage.setItem('userNumberOfPerfectBasicGames', this.userNumberOfPerfectBasicGames);
       }
     },
 
@@ -1720,7 +1723,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       let today = new Date();
       if (!this.gameCurrentIsGameDailyChallenge && (this.gameDailyChallenge.allLevels.length === 0 || this.GetMonthAndDay(this.gameDailyChallenge.date) !== this.GetMonthAndDay(today))) {
         this.gameDailyChallenge = new AllLevelsObject({});
-        this.gameDailyChallenge = new AllLevelsObject({});
         let seed = parseInt(today.toLocaleDateString('en-UK').replace(/\//g, ''));
         constructAllLevels(this.GenerateNumbers(seed), this.gameDailyChallenge);
       }
@@ -1867,7 +1869,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       this.gameConfettiCount = 0;
       this.appVisualStateShowNotification = false;
       this.appVisualStateShowElementHint = false;
-      this.tempPerfectDailyChallenges = this.userNumberOfPerfectDailyChallenges;
+      this.tempPerfectBasicGames = this.userNumberOfPerfectBasicGames;
       if (this.gameCurrentIsGameOver) {
         this.appVisualStateShowPageHome = true;
       }

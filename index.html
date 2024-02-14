@@ -186,7 +186,7 @@
           </header>
           <section>
             <h2>Ranks</h2>
-            <credit>3 perfect Daily Challenges unlock the next rank.</credit>
+            <credit>3 perfect Basic Games to unlock the next rank.</credit>
             <ranks>
               <rank @click="CreateConfetti(r.hue, r.rank)" v-for="r in allPlayerRanks" :class="[getLastRank.rank === r.rank ? 'last' : '']" v-if="r.rank <= userRank" :style="{backgroundColor: 'hsl(' + r.hue + ', 50%, 50%)'}">
                 <span></span>
@@ -196,7 +196,7 @@
                 </name>
                 <span></span>
               </rank>
-              <credit v-if="userRank!== allPlayerRanks[allPlayerRanks.length -1].rank">Just {{3 - userNumberOfPerfectDailyChallenges }} more perfect games till next Rank</credit>
+              <credit v-if="userRank!== allPlayerRanks[allPlayerRanks.length -1].rank">Just {{3 - userNumberOfPerfectBasicGames }} more perfect games till next Rank</credit>
               <rank class="locked" v-for="r in allPlayerRanks" v-if="r.rank > userRank">
                 <span>🔒</span>
                 <name>
@@ -318,9 +318,9 @@
               <left>Current streak</left>
               <right>{{usersBlitzStreakCurrent}}</right>
             </leftright>
-            <leftright v-if="gameLastHighScore.isDaily">
+            <leftright v-if="getCurrentGameModeComputed.id === 'normal'">
               <left>Perfect games</left>
-              <right>{{tempPerfectDailyChallenges}}{{userRank === allPlayerRanks[allPlayerRanks.length-1].rank ? '' : '/3'}}</right>
+              <right>{{tempPerfectBasicGames}}{{userRank === allPlayerRanks[allPlayerRanks.length-1].rank ? '' : '/3'}}</right>
             </leftright>
             <leftright>
               <left>Time {{getInfiniteModeComputed.isSelected ? 'played' : 'remaining'}}</left>
@@ -336,7 +336,7 @@
             </leftright>
           </section>
           <section>
-            <button :disabled="gameCurrentTimer > 0 && gameLastHighScore.isDaily && gameLastHighScore.numberOfClears === gameLastHighScore.totalPossibleClears" v-if="!getInfiniteModeComputed.isSelected" title="Click to share your score with your friends." class="tertiary inline" @click="SetScoreForSharingAndShare(gameLastHighScore)">Share!<icon class="share"></icon></button>
+            <button :disabled="gameCurrentTimer > 0 && gameLastHighScore.isDaily && gameLastHighScore.numberOfClears === gameLastHighScore.totalPossibleClears" v-if="!getInfiniteModeComputed.isSelected" title="Click to share your score with your friends." class="tertiary inline" @click="SetScoreForSharingAndShare(gameLastHighScore, getCurrentGameModeComputed, getCurrentGameModeComputed.id === 'normal' && tempPerfectBasicGames === 3)">Share!<icon class="share"></icon></button>
             <button title="Click to return to the home screen." class="secondary" @click="ToggleShowHomeOn(event)">Home</button>
             <button v-if="!gameLastHighScore.isDaily" title="Click to start a new game" class="primary" @click="RestartGame">New Game</button>
           </section>
@@ -360,7 +360,7 @@
         <chrome :class="{hide: !appVisualStateShowGameOverContent, alert: gameCurrentTimer < 6000 && !getInfiniteModeComputed.isSelected}">
           <button @click="appVisualStateShowPageSettings = true">Settings</button>
           <gameinfo>
-            <labelsmall v-if="gameDailyChallengeHasBeenStarted"> level {{parseInt(gameCurrentNumberOfClears + 1)}} <span>of</span> {{gameDailyChallenge.allLevels.length}} </labelsmall>
+            <labelsmall v-if="getCurrentGameModeComputed.id==='normal'"> level {{parseInt(gameCurrentNumberOfClears + 1)}} <span>of</span> {{getCurrentPlayerRank.levels}} </labelsmall>
             <time @click="ToggleGamePause(event, false)" v-if="!getInfiniteModeComputed.isSelected">{{gameCurrentIsPaused ? 'Paused' : NumberWithCommas(gameCurrentTotalScore) + ' pts'}}</time>
           </gameinfo>
           <button @click="ToggleChallenge(event, true)">Quit</button>
