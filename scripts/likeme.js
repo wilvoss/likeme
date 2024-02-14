@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.251',
+    currentVersion: '4.2.252',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     timeToMidnight: '24h 0m 0s',
@@ -235,7 +235,7 @@ var app = new Vue({
       this.RemoveConfetti();
       _rank = _rank === null ? this.userRank : _rank;
       let domApp = document.getElementsByTagName('app')[0];
-      let count = domApp.clientWidth / (this.allPlayerRanks.length - _rank);
+      let count = domApp.clientWidth;
 
       let useHue = _rank !== this.getLastRank.rank;
 
