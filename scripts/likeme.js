@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.247',
+    currentVersion: '4.2.248',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     timeToMidnight: '24h 0m 0s',
@@ -618,6 +618,11 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         numberOfClears: this.gameCurrentNumberOfClears,
         streak: this.GetCurrentGameMode().id == 'blitz' ? this.usersBlitzStreakCurrent : 0,
       });
+
+      if (this.GetModeById('normal').isSelected) {
+        this.appSettingsCurrentGameMode.endGameTitle = 'Nicely done!';
+      }
+
       if (this.gameCurrentIsGameDailyChallenge) {
         _score.dailyDate = this.gameDailyChallenge.date;
         _score.totalPossibleClears = this.gameDailyChallenge.allLevels.length;
