@@ -186,13 +186,13 @@
           </header>
           <section>
             <h2>Ranks</h2>
-            <credit>3 perfect Basic Games to unlock the next rank.</credit>
+            <credit>3 perfect Basic games unlock the next rank.</credit>
             <ranks>
               <rank @click="CreateConfetti(r.hue, r.rank)" v-for="r in allPlayerRanks" :class="[getLastRank.rank === r.rank ? 'last' : '']" v-if="r.rank <= userRank" :style="{backgroundColor: 'hsl(' + r.hue + ', 50%, 50%)'}">
                 <span></span>
                 <name :style="{color: 'hsl(' + r.hue + ', 100%, 92%)'}">
                   <detail>{{r.name}}</detail>
-                  <credit :style="{textDecoration: r.rank !== userRank ? 'line-through': 'none'}">{{r.levels}} levels {{r.rank === userRank ? 'per Daily Challenge' : ''}}</credit>
+                  <credit :style="{textDecoration: r.rank !== userRank ? 'line-through': 'none'}">{{r.levels}} levels {{r.rank === userRank ? 'per Basic game' : ''}}</credit>
                 </name>
                 <span></span>
               </rank>
