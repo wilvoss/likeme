@@ -57,42 +57,37 @@
             <p>{{ userSettingsUseCats ? 'A game of matching cat likenesses.' : 'A game of matching likenesses.'}}</p>
           </section>
           <section>
-            <modes>
-              <mode v-for="mode in appSettingsModes" v-if="!mode.isHidden" :class="{selected: mode.isSelected}">
-                <container :title="mode.name + ' mode. ' + mode.description + ' Click to select.'" @click="SelectMode(mode)">
-                  <piece :style="{maskImage: mode.piece.shape, webkitMaskImage: mode.piece.shape, backgroundColor: mode.piece.color}">
-                    <gild :style="{backgroundImage: mode.piece.backgroundImage }" />
-                  </piece>
-                </container>
-                <value>{{mode.name}}</value>
-              </mode>
-            </modes>
-            <description v-if="getCurrentGameModeComputed.id !== 'blitz'">{{getCurrentGameModeComputed.description}} </description>
-            <description v-if="getCurrentGameModeComputed.id === 'blitz'">{{usersBlitzStreakCurrent === 0 ? getCurrentGameModeComputed.description : 'Streak: ' + usersBlitzStreakCurrent + '&nbsp;&nbsp; • &nbsp;&nbsp;Score: ' + NumberWithCommas(usersBlitzStreakScore)}}</description>
+            <emoji>{{getCurrentPlayerRank.emoji}}</emoji>
+            <ranks style="cursor: pointer" @click="ToggleHighScores(event, true)">
+              <rank :class="[getLastRank.rank === getCurrentPlayerRank.rank ? 'last' : '']" :style="{backgroundColor: 'hsl(' + getCurrentPlayerRank.hue + ', 50%, 50%)'}">
+                <ranklabel>Current Rank</ranklabel>
+                <name :style="{color: 'hsl(' + getCurrentPlayerRank.hue + ', 100%, 92%)'}">
+                  <detail>{{getCurrentPlayerRank.name}}</detail>
+                  <credit>{{getCurrentPlayerRank.levels}} levels per game</credit>
+                </name>
+              </rank>
+            </ranks>
+            <credit v-if="getNextPlayerRank !== undefined">Next Rank: &rdquo;{{getNextPlayerRank.name}}&ldquo;</credit>
           </section>
           <section>
-            <span style="cursor: pointer" @click="ToggleHighScores(event, true)">
-              <credit>Current Rank</credit>
-              <rank>&rdquo;{{getCurrentPlayerRank.name}}&ldquo;</rank>
-            </span>
-            <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="tertiary" @click="StartDailyChallenge">Daily Challenge!</button>
+            <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="secondary" @click="StartDailyChallenge">Daily Challenge!</button>
             <button v-if="gameDailyChallengeAlreadyScored || gameDailyChallenge.allLevels.length === 0" title="The next Daily Challenge will be available at midnight tonight." class="tertiary small inline"><icon v-if="isGettingDailyChallenge" class="spinner spin"></icon><span v-if="!isGettingDailyChallenge">Next challenge: {{timeToMidnight}}</span></button>
             <button title="Click to start a new game." class="primary" @click="RestartGame">{{getCurrentGameModeComputed.id === "normal" ? 'Play' : getCurrentGameModeComputed.name}}</button>
-            <button title="Click to learn how to play Like Me?" class="secondary inline" @click="ToggleHowToPlay(event, true)">Tutorial</button>
+            <button title="Click to learn how to play Like Me?" class="inline" @click="ToggleHowToPlay(event, true)">Tutorial</button>
             <smallbuttons>
-              <button title="Click to adjust the game settings." class="secondary" @click="ToggleSettings(event, true)">
+              <button title="Click to adjust the game settings." @click="ToggleSettings(event, true)">
                 <icon class="settings"></icon>
               </button>
-              <button title="Click to see your acheivements." class="secondary" @click="ToggleHighScores(event, true)">
+              <button title="Click to see your acheivements." @click="ToggleHighScores(event, true)">
                 <icon class="trophy"></icon>
               </button>
-              <button title="Click to see a list of shoutouts." class="secondary" @click="ToggleCredits(event, true)">
+              <button title="Click to see a list of shoutouts." @click="ToggleCredits(event, true)">
                 <icon class="bullhorn"></icon>
               </button>
-              <button v-if="isInNativeAppWebView" title="Click to share this game with your friends." class="secondary" @click="ShareApp">
+              <button v-if="isInNativeAppWebView" title="Click to share this game with your friends." @click="ShareApp">
                 <icon class="share"></icon>
               </button>
-              <a v-if="!isInNativeAppWebView" title="Click to buy me a cup of coffee." class="button secondary" href="https://www.buymeacoffee.com/wilvoss" target="_blank">
+              <a v-if="!isInNativeAppWebView" title="Click to buy me a cup of coffee." class="button" href="https://www.buymeacoffee.com/wilvoss" target="_blank">
                 <icon class="bmc"></icon>
               </a>
             </smallbuttons>
@@ -191,12 +186,12 @@
             <credit>3 perfect Basic games unlock the next rank.</credit>
             <ranks>
               <rank @click="CreateConfetti(r.hue, r.rank)" v-for="r in allPlayerRanks" :class="[getLastRank.rank === r.rank ? 'last' : '']" v-if="r.rank <= userRank" :style="{backgroundColor: 'hsl(' + r.hue + ', 50%, 50%)'}">
-                <span></span>
+                <span>{{r.emoji}}</span>
                 <name :style="{color: 'hsl(' + r.hue + ', 100%, 92%)'}">
                   <detail>{{r.name}}</detail>
                   <credit :style="{textDecoration: r.rank !== userRank ? 'line-through': 'none'}">{{r.levels}} levels {{r.rank === userRank ? 'per Basic game' : ''}}</credit>
                 </name>
-                <span></span>
+                <span>{{r.emoji}}</span>
               </rank>
               <credit v-if="userRank!== allPlayerRanks[allPlayerRanks.length -1].rank">Just {{3 - userNumberOfPerfectBasicGames }} more perfect games till next Rank</credit>
               <rank class="locked" v-for="r in allPlayerRanks" v-if="r.rank > userRank">
@@ -259,6 +254,20 @@
           <header>
             <h1>Settings</h1>
           </header>
+          <section>
+            <modes>
+              <mode v-for="mode in appSettingsModes" v-if="!mode.isHidden" :class="{selected: mode.isSelected}">
+                <container :title="mode.name + ' mode. ' + mode.description + ' Click to select.'" @click="SelectMode(mode)">
+                  <piece :style="{maskImage: mode.piece.shape, webkitMaskImage: mode.piece.shape, backgroundColor: mode.piece.color}">
+                    <gild :style="{backgroundImage: mode.piece.backgroundImage }" />
+                  </piece>
+                </container>
+                <value>{{mode.name}}</value>
+              </mode>
+            </modes>
+            <description v-if="getCurrentGameModeComputed.id !== 'blitz'">{{getCurrentGameModeComputed.description}} </description>
+            <description v-if="getCurrentGameModeComputed.id === 'blitz'">{{usersBlitzStreakCurrent === 0 ? getCurrentGameModeComputed.description : 'Streak: ' + usersBlitzStreakCurrent + '&nbsp;&nbsp; • &nbsp;&nbsp;Score: ' + NumberWithCommas(usersBlitzStreakScore)}}</description>
+          </section>
           <section>
             <controlgroup>
               <leftright>

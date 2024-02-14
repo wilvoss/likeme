@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.253',
+    currentVersion: '4.2.254',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     timeToMidnight: '24h 0m 0s',
@@ -2036,6 +2036,10 @@ ${_rankedUp ? 'I just unlocked ' + this.getCurrentPlayerRank.name + '!' : ''}`;
     getCurrentPlayerRank: function () {
       note('getCurrentPlayerRank() called');
       return this.allPlayerRanks.find((r) => r.rank === this.userRank);
+    },
+    getNextPlayerRank: function () {
+      note('getNextPlayerRank() called');
+      return this.allPlayerRanks.find((r) => r.rank === parseInt(this.userRank + 1));
     },
     getLastRank: function () {
       return this.allPlayerRanks[this.allPlayerRanks.length - 1];

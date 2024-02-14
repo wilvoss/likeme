@@ -1300,6 +1300,7 @@ container {
 container.dropped,
 me container,
 page container,
+modal modes container,
 modal me container {
   transition: 200ms ease-out;
   transition-property: transform, opacity;
@@ -1815,6 +1816,10 @@ rank {
   cursor: pointer;
 }
 
+span.locked rank {
+  color: hsl(var(--appForeground));
+}
+
 ranks rank {
   color: hsl(var(--appBackgroundStrong));
   /* background-color: hsl(var(--appBackgroundStrongest)); */
@@ -1824,9 +1829,49 @@ ranks rank {
   max-width: 300px;
   text-shadow: none;
   margin-bottom: 0px;
-  padding: 14px 20px 10px;
+  padding: 14px 20px 14px;
   gap: 0px;
   box-shadow: inset 0px 1px 4px hsla(0, 0%, 0%, 0.4);
+}
+
+page ranks {
+  margin: 0px;
+  /* margin-bottom: var(--defaultGap); */
+}
+
+page ranklabel {
+  background: hsla(var(--appForeground), .6);
+  color: hsla(var(--appBackground), 1);
+  padding: 2px var(--defaultGap) 1px;
+  border-radius: calc(.5 * var(--borderRadius));
+  height: var(--defaultGap);
+  display: flex;
+  width: calc(100% - 2 * var(--defaultGap));
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 14px;
+  font-size: .8em;
+  /* font-weight: 800; */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  /* position: absolute;
+  transform: translateY(calc(-1 * var(--defaultGap) + 4px)); */
+}
+
+page ranks rank {
+  overflow: hidden;
+  width: 250px;
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  flex-direction: column;
+}
+
+page emoji {
+  position: relative;
+  display: block;
+  font-size: 4em;
+  line-height: 1.4em;
 }
 
 ranks rank.last {
@@ -1857,7 +1902,7 @@ ranks rank name {
   /* text-shadow: none; */
 }
 
-ranks rank.locked {
+rank.locked {
   background-color: hsla(0, 80%, var(--rankLum), .4);
   filter: grayscale(1);
 }
