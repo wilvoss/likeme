@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.250',
+    currentVersion: '4.2.251',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     timeToMidnight: '24h 0m 0s',
@@ -62,6 +62,7 @@ var app = new Vue({
     appSettingsPieceSize: 10,
     appSettingsScoreTwinIncrement: 10,
     appSettingsScoreSiblingIncrement: 20,
+    appSettingsShowSimpleRankPlaques: false,
     appSettingsThemes: Themes,
     appSettingsTotalNumberOfBoardPieces: 16, // never change this
     appSettingsBoardGridSize: 4, // never change this
@@ -311,7 +312,6 @@ var app = new Vue({
     NewBoard() {
       note('NewBoard() called');
       this.AdjustPieceSizeBasedOnViewport();
-      this.gameCurrentBoardPieces = [];
       this.gameCurrentBoardScore = 0;
       this.gameCurrentNumberOfMisses = 0;
 
@@ -329,6 +329,7 @@ var app = new Vue({
         this.EndGame();
         return;
       } else if (_board === null) {
+        this.gameCurrentBoardPieces = [];
         _board = constructLevel(createLevelSource(), true);
       }
       this.gameCurrentMePiece = _board.me;

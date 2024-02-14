@@ -1868,8 +1868,21 @@ ranks rank.locked name {
 
 ranks rank credit {
   line-height: 100%;
-  ;
 }
+
+.simpleranks ranks rank {
+  padding: 20px 20px 20px;
+
+}
+
+.simpleranks ranks rank name {
+  font-size: 1.4em;
+}
+
+.simpleranks ranks rank credit {
+  display: none;
+}
+
 
 ranks rank name detail {
   font-family: 'Bangers';

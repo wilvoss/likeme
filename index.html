@@ -71,8 +71,10 @@
             <description v-if="getCurrentGameModeComputed.id === 'blitz'">{{usersBlitzStreakCurrent === 0 ? getCurrentGameModeComputed.description : 'Streak: ' + usersBlitzStreakCurrent + '&nbsp;&nbsp; • &nbsp;&nbsp;Score: ' + NumberWithCommas(usersBlitzStreakScore)}}</description>
           </section>
           <section>
-            <credit>Current Rank</credit>
-            <rank @click="ToggleHighScores(event, true)">&rdquo;{{getCurrentPlayerRank.name}}&ldquo;</rank>
+            <span style="cursor: pointer" @click="ToggleHighScores(event, true)">
+              <credit>Current Rank</credit>
+              <rank>&rdquo;{{getCurrentPlayerRank.name}}&ldquo;</rank>
+            </span>
             <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="tertiary" @click="StartDailyChallenge">Daily Challenge!</button>
             <button v-if="gameDailyChallengeAlreadyScored || gameDailyChallenge.allLevels.length === 0" title="The next Daily Challenge will be available at midnight tonight." class="tertiary small inline"><icon v-if="isGettingDailyChallenge" class="spinner spin"></icon><span v-if="!isGettingDailyChallenge">Next challenge: {{timeToMidnight}}</span></button>
             <button title="Click to start a new game." class="primary" @click="RestartGame">{{getCurrentGameModeComputed.id === "normal" ? 'Play' : getCurrentGameModeComputed.name}}</button>
@@ -184,7 +186,7 @@
           <header>
             <h1>Achievements</h1>
           </header>
-          <section>
+          <section :class="{simpleranks: appSettingsShowSimpleRankPlaques}">
             <h2>Ranks</h2>
             <credit>3 perfect Basic games unlock the next rank.</credit>
             <ranks>
@@ -342,7 +344,7 @@
           </section>
         </content>
         <chrome class="footer" v-if="getCurrentGameModeComputed.id != 'infinite'">
-          <button :disabled="gameLastHighScore.numberOfClears === gameLastHighScore.totalPossibleClears" title="Click to adjust the game settings." class="quaternary" @pointerdown="appVisualStateShowGameOverContent = gameLastHighScore.numberOfClears === gameLastHighScore.totalPossibleClears ? true : false" @pointerup="appVisualStateShowGameOverContent = true" @pointerout="appVisualStateShowGameOverContent = true">
+          <button title="Click to adjust the game settings." class="quaternary" @pointerdown="appVisualStateShowGameOverContent = false" @pointerup="appVisualStateShowGameOverContent = true" @pointerout="appVisualStateShowGameOverContent = true">
             <icon class="eye"></icon>
           </button>
         </chrome>
