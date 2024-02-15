@@ -27,7 +27,7 @@ let AllPlayerRanks = [
     rank: 2,
     levels: 15,
     emoji: '📚',
-    name: 'Decent Describer',
+    name: 'Decent Discerner',
     hue: 200,
   }),
   new RankObject({
@@ -55,7 +55,7 @@ let AllPlayerRanks = [
     rank: 6,
     levels: 75,
     emoji: '🦄',
-    name: 'Super Selector',
+    name: 'Super Selector!',
     hue: 140,
   }),
 ];
