@@ -70,9 +70,9 @@
             <credit>{{getNextPlayerRank !== undefined? 'Next rank: &rdquo;' + getNextPlayerRank.name + '&ldquo;' : ''}}</credit>
           </section>
           <section>
-            <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="secondary" @click="StartDailyChallenge()">New Daily Challenge</button>
+            <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="secondary" @click="StartDailyChallenge()">✨ New Daily Challenge</button>
             <button v-if="gameDailyChallengeAlreadyScored || gameDailyChallenge.allLevels.length === 0" title="The next Daily Challenge will be available at midnight tonight." class="tertiary small inline"><icon v-if="isGettingDailyChallenge" class="spinner spin"></icon><span v-if="!isGettingDailyChallenge">Next challenge: {{timeToMidnight}}</span></button>
-            <button class="primary" title="Click to start a new game." @click="RestartGame">Play!</button>
+            <button class="primary" title="Click to start a new game." @click="RestartGame">{{getCurrentGameModeComputed.id === 'infinite'? 'Play Zen' : 'Play!'}}</button>
             <button title="Click to toggle Zen Mode on." :class="{on: getCurrentGameModeComputed.id === 'infinite'}" @click="ToggleZenMode()">Zen Mode: {{getCurrentGameModeComputed.id === 'infinite' ? 'On' : 'Off'}}</button>
             <!-- <button class="inline" title="Click to see your ranks." @click="ToggleAchievements(event, true)">Ranks</button> -->
             <smallbuttons>

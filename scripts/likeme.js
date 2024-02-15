@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.260',
+    currentVersion: '4.2.261',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     timeToMidnight: '24h 0m 0s',
@@ -326,13 +326,18 @@ var app = new Vue({
         });
       }
 
-      if (_board === null && (this.gameDailyChallengeHasBeenStarted || (this.GetCurrentGameMode().id === 'normal' && this.gameCurrentAllLevels.length === this.getCurrentPlayerRank.levels))) {
+      let noMoreLevels = this.GetCurrentGameMode().id !== 'infinite' && this.gameCurrentAllLevels.length === this.getCurrentPlayerRank.levels;
+      if (!noMoreLevels) {
+        this.gameCurrentBoardPieces = [];
+      }
+
+      if (_board === null && noMoreLevels) {
         this.EndGame();
         return;
       } else if (_board === null) {
-        this.gameCurrentBoardPieces = [];
         _board = constructLevel(createLevelSource(), true);
       }
+
       this.gameCurrentMePiece = _board.me;
       this.gameCurrentLevel = _board;
       this.gameCurrentAllLevels.push(this.gameCurrentLevel);
@@ -1477,7 +1482,7 @@ ${_rankedUp ? 'I just unlocked ' + this.getCurrentPlayerRank.name + '!' : ''}`;
           _onemoretime = JSON.parse(_onemoretime);
           if (_onemoretime) {
             localStorage.setItem('onemoretime', false);
-            window.location.reload(true);
+            // window.location.reload(true);
           }
         }
       } catch (_error) {
