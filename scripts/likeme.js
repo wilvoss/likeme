@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.264',
+    currentVersion: '4.2.265',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     timeToMidnight: '24h 0m 0s',
@@ -1488,7 +1488,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       let _newVersionAvailable = localStorage.getItem('newVersionAvailable');
       try {
         if (_newVersionAvailable !== undefined && _newVersionAvailable !== null) {
-          this.newVersionAvailable = JSON.parse(_newVersionAvailable);
+          // this.newVersionAvailable = JSON.parse(_newVersionAvailable);
         }
       } catch (_error) {
         error('_newVersionAvailable error: ' + _error);
@@ -1910,7 +1910,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     HandleUpdateAppButtonClick() {
       note('HandleUpdateAppButtonClick() called');
       this.newVersionAvailable = false;
-      localStorage.setItem('newVersionAvailable', this.newVersionAvailable);
+      // localStorage.setItem('newVersionAvailable', this.newVersionAvailable);
       if (this.serviceWorker !== '') {
         this.serviceWorker.postMessage({ action: 'skipWaiting' });
       } else {
@@ -1933,7 +1933,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
                   // There is a new service worker available, show the notification
                   if (navigator.serviceWorker.controller) {
                     this.newVersionAvailable = true;
-                    localStorage.setItem('newVersionAvailable', this.newVersionAvailable);
+                    // localStorage.setItem('newVersionAvailable', this.newVersionAvailable);
                   }
                   break;
               }
