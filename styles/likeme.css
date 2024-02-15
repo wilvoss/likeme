@@ -458,11 +458,12 @@ button.tertiary, a.button.tertiary {
 }
 
 page button, page a.button {
-  background-color: hsl(var(--appForeground));
+  background-color: hsla(var(--appForeground), .64);
 }
 
-page button icon {
+page button.inline icon, page a.inline.button icon {
   width: 24px;
+  display: none;
 }
 
 .show button.quaternary.pulse {

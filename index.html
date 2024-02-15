@@ -73,13 +73,13 @@
             <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="secondary" @click="StartDailyChallenge()">Daily Challenge!</button>
             <button v-if="gameDailyChallengeAlreadyScored || gameDailyChallenge.allLevels.length === 0" title="The next Daily Challenge will be available at midnight tonight." class="tertiary small inline"><icon v-if="isGettingDailyChallenge" class="spinner spin"></icon><span v-if="!isGettingDailyChallenge">Next challenge: {{timeToMidnight}}</span></button>
             <button class="primary" title="Click to start a new game." @click="RestartGame">Play</button>
-            <button title="Click to toggle Zen Mode on." class="inline" :class="{secondary: getCurrentGameModeComputed.id === 'infinite'}" @click="ToggleZenMode()">Zen Mode: {{getCurrentGameModeComputed.id === 'infinite' ? 'On' : 'Off'}}</button>
-            <button class="inline" title="Click to adjust the game settings." @click="ToggleSettings(event, true)"><icon class="settings"></icon>Settings</button>
+            <button title="Click to toggle Zen Mode on." :class="{secondary: getCurrentGameModeComputed.id === 'infinite'}" @click="ToggleZenMode()">Zen Mode: {{getCurrentGameModeComputed.id === 'infinite' ? 'On' : 'Off'}}</button>
             <button class="inline" title="Click to see your achievements." @click="ToggleHighScores(event, true)"><icon class="trophy"></icon>Achievements</button>
+            <button class="inline" title="Click to adjust the game settings." @click="ToggleSettings(event, true)"><icon class="settings"></icon>Settings</button>
             <button title="Click to learn how to play Like Me?" class="inline" @click="ToggleHowToPlay(event, true)"><icon class="help"></icon>Tutorial</button>
             <button class="inline" title="Click to see a list of shoutouts." @click="ToggleCredits(event, true)"><icon class="bullhorn"></icon>Shoutouts</button>
             <button class="inline" v-if="isInNativeAppWebView" title="Click to share this game with your friends." @click="ShareApp"><icon class="share"></icon>Share</button>
-            <a v-if="!isInNativeAppWebView" title="Click to buy me a cup of coffee." class="button" href="https://www.buymeacoffee.com/wilvoss" target="_blank"> Donate! </a>
+            <a v-if="!isInNativeAppWebView" title="Click to buy me a cup of coffee." class="button inline" href="https://www.buymeacoffee.com/wilvoss" target="_blank"><icon class="bmc"></icon>Donate! </a>
             <!-- <smallbuttons>
               <button title="Click to adjust the game settings." @click="ToggleSettings(event, true)">
                 <icon class="settings"></icon>
