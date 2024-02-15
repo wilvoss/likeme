@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.262',
+    currentVersion: '4.2.263',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     timeToMidnight: '24h 0m 0s',
@@ -1959,7 +1959,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       navigator.serviceWorker.addEventListener('controllerchange', function () {
         if (refreshing) return;
         localStorage.setItem('onemoretime', true);
-        window.location.reload();
+        // window.location.reload();
         refreshing = true;
       });
     }
