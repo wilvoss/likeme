@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.256',
+    currentVersion: '4.2.257',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     timeToMidnight: '24h 0m 0s',
@@ -392,7 +392,7 @@ var app = new Vue({
       note('SetScoreForSharingAndShare() called');
       if (!this.appVisualStateIsAddingBonusTime) {
         this.appVisualStateShowNotification = false;
-        if (_score.modeId == '') {
+        if (_score.modeId !== '') {
           _score.modeId = _mode.id;
           _score.modeName = _mode.name;
           _score.numberOfPerfectClears = this.gameCurrentNumberOfPerfectMatches;

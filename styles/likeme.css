@@ -91,7 +91,6 @@ wallpaper {
   width: 300%;
   height: 300%;
   translate: -40vw -50vw;
-  /*z-index: -1;*/
   background-color: rgba(0, 0, 0, 0.92);
   opacity: 0.7;
   background-size: 170px;
@@ -234,7 +233,6 @@ page,
 modal,
 challenge,
 tutorial {
-  /* opacity: 0; */
   pointer-events: none;
   display: flex;
   max-width: var(--appMaxWidth);
@@ -267,7 +265,6 @@ modal.semitransparent.preview {
 
 modal.semitransparent.preview content {
   opacity: 0;
-  /* visibility: none; */
 }
 
 .notransition {
@@ -522,7 +519,6 @@ page.show button.tertiary.inline.small {
   font-size: .8em;
   background: hsla(0, 0%, 50%, .15);
   opacity: .8;
-  /* background: var(--color3) linear-gradient(hsla(var(--appBackground), .8), hsla(var(--appBackground), .8)); */
   border-color: transparent;
   color: var(--appForeground);
 }
@@ -688,8 +684,6 @@ icon.coffee {
 
 
 icon.bmc {
-  /* mask-size: 23px;
-  -webkit-mask-size: 23px; */
   mask-image: url(../images/icon_bmc.svg);
   -webkit-mask-image: url(../images/icon_bmc.svg);
 }
@@ -908,7 +902,6 @@ chrome.footer button {
 }
 
 .show chrome.footer button, .show chrome.footer button:active, .show chrome.footer button:focus {
-  /* width: 100%; */
   height: 100%;
   align-items: end;
   justify-content: end;
@@ -996,7 +989,6 @@ leftright {
   width: calc(70%);
   flex-direction: row;
   justify-content: space-between;
-  /* border: 1px solid hsl(var(--appBackgroundStronger)); */
   margin: 0px;
   font-size: 0.9em;
   padding: 1px 9px;
@@ -1124,19 +1116,16 @@ mode.selected {
 }
 
 mode value {
-  /* text-transform: capitalize; */
   margin-top: 6px;
   display: block;
   width: 100%;
   padding: 1px 0px;
   text-transform: uppercase;
   line-height: 100%;
-  /* color: var(--color1); */
 }
 
 description {
   display: block;
-  /* font-style: italic; */
   font-size: 0.8em;
   padding: 0px 40px;
   margin: 10px 0 0;
@@ -1446,7 +1435,6 @@ app.splashboard stage playarea {
 examples {
   display: flex;
   flex-direction: row;
-  /* transform: scale(0.8); */
   column-gap: 8px;
 }
 
@@ -1502,7 +1490,6 @@ checkbox {
   flex-direction: row;
   justify-content: space-between;
   padding: 9px 6px 9px 14px;
-  /* margin-top: 6px; */
   cursor: pointer;
   width: calc(100% - 20px);
   border-radius: var(--borderRadius);
@@ -1796,7 +1783,6 @@ confetti {
   position: fixed;
   z-index: 3000;
   pointer-events: none;
-  /* rotate: 0deg; */
   top: -20px;
   opacity: 8;
   background: black;
@@ -1836,21 +1822,18 @@ span.locked rank {
 
 ranks rank {
   color: hsl(var(--appBackgroundStrong));
-  /* background-color: hsl(var(--appBackgroundStrongest)); */
   background-image: linear-gradient(-45deg, rgba(0, 0, 0, .2), rgba(0, 0, 0, 0), rgba(0, 0, 0, .2), rgba(0, 0, 0, 0));
-  /* background-image: linear-gradient(-45deg, rgba(255, 255, 255, .3), rgba(255, 255, 255, 0), rgba(255, 255, 255, .3), rgba(255, 255, 255, 0)); */
   width: calc(86%);
   max-width: 300px;
   text-shadow: none;
   margin-bottom: 0px;
-  padding: 14px 20px 14px;
+  padding: 16px 20px 14px;
   gap: 0px;
   box-shadow: inset 0px 1px 4px hsla(0, 0%, 0%, 0.4);
 }
 
 page ranks {
   margin: 0px;
-  /* margin-bottom: var(--defaultGap); */
 }
 
 page ranklabel {
@@ -1865,11 +1848,8 @@ page ranklabel {
   align-items: center;
   margin-bottom: 14px;
   font-size: .8em;
-  /* font-weight: 800; */
   text-transform: uppercase;
   letter-spacing: 1px;
-  /* position: absolute;
-  transform: translateY(calc(-1 * var(--defaultGap) + 4px)); */
 }
 
 page ranks rank {
@@ -1895,8 +1875,12 @@ ranks rank.last {
 
 ranks rank span {
   display: inline-block;
-  font-size: 1.6em;
+  font-size: 2.4em;
   padding-bottom: 4px;
+}
+
+ranks rank.locked span {
+  font-size: 1.6em;
 }
 
 ranks rank span:last-of-type {
@@ -1912,8 +1896,6 @@ ranks rank name {
   justify-content: space-between;
   color: hsl(var(--appBackgroundStrong));
   text-shadow: 0px -1px 0px rgba(0, 0, 0, .3);
-  /* opacity: .9; */
-  /* text-shadow: none; */
 }
 
 rank.locked {
@@ -1958,7 +1940,6 @@ confetti.drop {
 @media only screen and (max-height: 600px) {
   page content {
     padding-top: 0;
-    /* margin-top: var(--defaultGap); */
     overflow-y: scroll;
   }
 
