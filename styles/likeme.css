@@ -493,7 +493,7 @@ button.quaternary,
 button:active.quaternary,
 .show button:focus.quaternary,
 button:focus.quaternary {
-  background: transparent;
+  background: hsl(var(--appBackground));
   border-color: var(--color2);
   color: var(--color2);
   box-shadow: none;
