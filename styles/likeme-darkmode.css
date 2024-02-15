@@ -44,7 +44,7 @@ labelsmall {
   color: var(--color3);
 }
 
-button.primary, a.button.primary {
+page button.primary, button.primary, a.button.primary {
   background-color: var(--color2);
   border-color: var(--color2);
 }
@@ -56,6 +56,11 @@ button.secondary, a.button.secondary {
 
 page button, page a.button {
   background-color: hsla(var(--appForeground), .4);
+}
+
+
+page button.on {
+  background-color: hsla(var(--appForeground), .7);
 }
 
 time {
@@ -76,4 +81,13 @@ ranks rank.locked {
 
 ranks rank.locked name {
   color: hsla(var(--appForeground), 1)
+}
+
+page ranklabel {
+  color: hsla(var(--appForegroundStrongest), .8);
+  background: hsla(var(--appBackground), .4);
+}
+
+page ranklabel icon {
+  background: hsla(var(--appForegroundStrongest), .8);
 }

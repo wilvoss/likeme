@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.257',
+    currentVersion: '4.2.258',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     timeToMidnight: '24h 0m 0s',
@@ -73,6 +73,7 @@ var app = new Vue({
     appVisualStateShowPageHome: true,
     appVisualStateShowPageOOBE: false,
     appVisualStateShowPageHowToPlay: false,
+    appVisualStateShowPageAchievements: false,
     appVisualStateShowPageSettings: false,
     appVisualStateShowGameOverContent: true,
     appVisualStateShowElementHint: false,
@@ -911,6 +912,15 @@ ${_rankedUp ? 'I just unlocked ' + this.getCurrentPlayerRank.name + '!' : ''}`;
       this.appVisualStateShowPageGameOver = false;
       this.appVisualStateShowPageHome = true;
       this.appVisualStateShowPageHighScores = _value;
+    },
+
+    ToggleAchievements(event, _value) {
+      event.stopPropagation();
+      event.preventDefault();
+      this.ResetModalContentScrollPositions();
+      this.appVisualStateShowPageGameOver = false;
+      this.appVisualStateShowPageHome = true;
+      this.appVisualStateShowPageAchievements = _value;
     },
 
     ToggleSettings(event, _value) {
@@ -1888,6 +1898,7 @@ ${_rankedUp ? 'I just unlocked ' + this.getCurrentPlayerRank.name + '!' : ''}`;
       this.appVisualStateShowGameOverContent = true;
       this.appVisualStateShowPageSettings = false;
       this.appVisualStateShowPageHighScores = false;
+      this.appVisualStateShowPageAchievements = false;
       this.appVisualStateShowPageHowToPlay = false;
       this.appVisualStateShowPageCredits = false;
       this.appVisualStateShowPageChallenge = false;
