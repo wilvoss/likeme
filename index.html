@@ -67,7 +67,7 @@
                 </name>
               </rank>
             </ranks>
-            <credit>{{getNextPlayerRank !== undefined? 'Next Rank: &rdquo;' + getNextPlayerRank.name + '&ldquo;' : ''}}</credit>
+            <credit>{{getNextPlayerRank !== undefined? 'Next rank: &rdquo;' + getNextPlayerRank.name + '&ldquo;' : ''}}</credit>
           </section>
           <section>
             <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="secondary" @click="StartDailyChallenge()">New Daily Challenge</button>
