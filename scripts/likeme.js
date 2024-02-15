@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.266',
+    currentVersion: '4.2.267',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     timeToMidnight: '24h 0m 0s',
@@ -398,7 +398,7 @@ var app = new Vue({
       note('SetScoreForSharingAndShare() called');
       if (!this.appVisualStateIsAddingBonusTime) {
         this.appVisualStateShowNotification = false;
-        if (_score.modeId !== '') {
+        if (_score.modeId === '') {
           _score.modeId = _mode.id;
           _score.modeName = _mode.name;
           _score.numberOfPerfectClears = this.gameCurrentNumberOfPerfectMatches;
@@ -418,7 +418,7 @@ var app = new Vue({
       note('ShareScored() called');
       let _shapes = ['▨ ', '▲ ', '◯ '].sort(() => Math.random() - 0.5).join('');
       let _shareText = `${_shapes}${this.gameScoreToShare.isDaily ? 'Daily - ' + this.GetMonthAndDay(this.gameScoreToShare.dailyDate) : this.gameScoreToShare.modeName}
-${_rankedUp ? 'I just unlocked ' + this.getCurrentPlayerRank.name + '!' : 'Rank: ' + this.getCurrentPlayerRank.name}
+${_rankedUp ? 'I just unlocked ' + this.getCurrentPlayerRank.name + '!' : '"' + this.GetRankById(this.gameScoreToShare.rankId).name + '"'}
 ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToShare.numberOfClears} lvl${this.gameScoreToShare.numberOfClears === 1 ? '' : 's'} ${this.gameScoreToShare.numberOfPerfectClears > 0 ? '(' + this.gameScoreToShare.numberOfPerfectClears + ' perfect)' : null}`;
 
       if (this.gameScoreToShare.modeId === 'blitz') {
@@ -499,6 +499,10 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       if (_mode != null) {
         return _mode;
       }
+    },
+
+    GetRankById(_id) {
+      return this.allPlayerRanks.find((r) => r.rank === _id);
     },
 
     SelectTheme(_theme) {
@@ -621,6 +625,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         value: this.gameCurrentTotalScore,
         isDaily: this.gameCurrentIsGameDailyChallenge,
         modeId: this.GetCurrentGameMode().id,
+        rankId: this.getCurrentPlayerRank.rank,
         modeName: this.GetCurrentGameMode().name,
         numberOfClears: this.gameCurrentNumberOfClears,
         streak: this.GetCurrentGameMode().id == 'blitz' ? this.usersBlitzStreakCurrent : 0,
@@ -1076,6 +1081,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
                 numberOfPerfectClears: s.numberOfPerfectClears == undefined ? 0 : s.numberOfPerfectClears,
                 date: new Date(s.date),
                 isDaily: s.isDaily,
+                rankId: s.rankId,
                 value: s.value,
                 dailyDate: s.dailyDate != undefined ? new Date(s.dailyDate) : new Date(s.date),
               }),
@@ -1483,15 +1489,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         }
       } catch (_error) {
         error('_onemoretime error: ' + _error);
-      }
-
-      let _newVersionAvailable = localStorage.getItem('newVersionAvailable');
-      try {
-        if (_newVersionAvailable !== undefined && _newVersionAvailable !== null) {
-          // this.newVersionAvailable = JSON.parse(_newVersionAvailable);
-        }
-      } catch (_error) {
-        error('_newVersionAvailable error: ' + _error);
       }
 
       let _storedVersion = localStorage.getItem('storedVersion');
@@ -1910,7 +1907,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     HandleUpdateAppButtonClick() {
       note('HandleUpdateAppButtonClick() called');
       this.newVersionAvailable = false;
-      // localStorage.setItem('newVersionAvailable', this.newVersionAvailable);
       if (this.serviceWorker !== '') {
         this.serviceWorker.postMessage({ action: 'skipWaiting' });
       } else {
@@ -1933,7 +1929,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
                   // There is a new service worker available, show the notification
                   if (navigator.serviceWorker.controller) {
                     this.newVersionAvailable = true;
-                    // localStorage.setItem('newVersionAvailable', this.newVersionAvailable);
                   }
                   break;
               }
@@ -2057,10 +2052,12 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       note('getCurrentPlayerRank() called');
       return this.allPlayerRanks.find((r) => r.rank === this.userRank);
     },
+
     getNextPlayerRank: function () {
       note('getNextPlayerRank() called');
       return this.allPlayerRanks.find((r) => r.rank === parseInt(this.userRank + 1));
     },
+
     getLastRank: function () {
       return this.allPlayerRanks[this.allPlayerRanks.length - 1];
     },

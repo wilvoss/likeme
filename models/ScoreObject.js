@@ -2,6 +2,7 @@ class ScoreObject {
   constructor(spec) {
     this.date = spec.date === undefined ? new Date() : spec.date;
     this.modeId = spec.modeId === undefined ? '' : spec.modeId;
+    this.rankId = spec.rankId === undefined ? 0 : spec.rankId;
     this.modeName = spec.modeName === undefined ? '' : spec.modeName;
     this.numberOfClears = spec.numberOfClears === undefined ? 0 : spec.numberOfClears;
     this.numberOfPerfectClears = spec.numberOfPerfectClears === undefined ? 0 : spec.numberOfPerfectClears;
