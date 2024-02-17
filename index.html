@@ -42,7 +42,7 @@
 
   <body>
     <wallpaper onclick="app.ClearEphemeralVisualStates()"></wallpaper>
-    <app id="app" v-cloak :class="[('rank' + getCurrentPlayerRank.rank), {challenge: appVisualStateShowPageChallenge, tutorial: appTutorialIsInPlay, splashboard: splashBoard}]" @click="HandleTouchApp">
+    <app id="app" v-cloak :class="[{hardcore: userSettingsUseHardCoreMode},('rank' + getCurrentPlayerRank.rank), {challenge: appVisualStateShowPageChallenge, tutorial: appTutorialIsInPlay, splashboard: splashBoard}]" @click="HandleTouchApp()">
       <link v-if="userSettingsUseDarkMode" rel="stylesheet" href="styles/likeme-darkmode.css" media="screen" />
       <link v-if="userSettingsUseCats" rel="stylesheet" href="styles/cats-likeme.css" media="screen" />
       <link v-if="userSettingsUseAltPatterns" rel="stylesheet" href="styles/altpattern1.css" media="screen" />
@@ -50,7 +50,7 @@
         <message v-html="appNotificationMessage"></message>
       </notification>
       <page :class="{show: appVisualStateShowPageHome}" @pointerdown="appVisualStateShowNotification = false;">
-        <button v-if="newVersionAvailable" title="There is an update available. Click to apply the update." class="quaternary pulse update inline small" @click="HandleUpdateAppButtonClick">In-App Update<icon class="download"></icon></button>
+        <button v-if="newVersionAvailable" title="There is an update available. Click to apply the update." class="quaternary pulse update inline small" @click="HandleUpdateAppButtonClick()">In-App Update<icon class="download"></icon></button>
         <content>
           <section>
             <h1>Like Me?</h1>
@@ -60,21 +60,20 @@
             <emoji>{{getCurrentPlayerRank.emoji}}</emoji>
             <ranks style="cursor: pointer" @click="ToggleAchievements(event, true)">
               <rank :class="[getLastRank.rank === getCurrentPlayerRank.rank ? 'last' : '']" :style="{backgroundColor: 'hsl(' + getCurrentPlayerRank.hue + ', 50%, 50%)'}">
-                <ranklabel>Rank<icon class="info"></icon></ranklabel>
+                <ranklabel>{{userSettingsUseHardCoreMode ? 'Hardcore Rank' : 'Rank'}}<icon class="info"></icon></ranklabel>
                 <name :style="{color: 'hsl(' + getCurrentPlayerRank.hue + ', 100%, 92%)'}">
                   <detail>{{getCurrentPlayerRank.name}}</detail>
                   <credit>{{getCurrentPlayerRank.levels}} levels per game</credit>
                 </name>
               </rank>
             </ranks>
-            <credit>{{getNextPlayerRank !== undefined? 'Next rank: &rdquo;' + getNextPlayerRank.name + '&ldquo;' : ''}}</credit>
+            <credit v-html="getHomePageRankSubcredit"></credit>
           </section>
           <section>
             <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="secondary" @click="StartDailyChallenge()">✨ New Daily Challenge</button>
             <button v-if="gameDailyChallengeAlreadyScored || gameDailyChallenge.allLevels.length === 0" title="The next Daily Challenge will be available at midnight tonight." class="tertiary small inline"><icon v-if="isGettingDailyChallenge" class="spinner spin"></icon><span v-if="!isGettingDailyChallenge">Next challenge: {{timeToMidnight}}</span></button>
-            <button class="primary" title="Click to start a new game." @click="RestartGame">{{getCurrentGameModeComputed.id === 'infinite'? 'Play Zen' : 'Play!'}}</button>
+            <button class="primary" title="Click to start a new game." @click="RestartGame()">{{getCurrentGameModeComputed.id === 'infinite'? 'Play Zen' : 'Play!'}}</button>
             <button title="Click to toggle Zen Mode on." :class="{on: getCurrentGameModeComputed.id === 'infinite'}" @click="ToggleZenMode()">Zen Mode: {{getCurrentGameModeComputed.id === 'infinite' ? 'On' : 'Off'}}</button>
-            <!-- <button class="inline" title="Click to see your ranks." @click="ToggleAchievements(event, true)">Ranks</button> -->
             <smallbuttons>
               <button class="inline" title="Click to adjust the game settings." @click="ToggleSettings(event, true)">Settings</button>
               <button title="Click to learn how to play Like Me?" class="inline" @click="ToggleHowToPlay(event, true)">Tutorial</button>
@@ -83,20 +82,8 @@
               <button class="inline" title="Click to see your high scores." @click="ToggleHighScores(event, true)">Scores</button>
               <button class="inline" title="Click to see a list of shoutouts." @click="ToggleCredits(event, true)">Shout Outs</button>
             </smallbuttons>
-            <button class="inline" v-if="isInNativeAppWebView" title="Click to share this game with your friends." @click="ShareApp">Share</button>
+            <button class="inline" v-if="isInNativeAppWebView" title="Click to share this game with your friends." @click="ShareApp()">Share</button>
             <a v-if="!isInNativeAppWebView" title="Click to buy me a cup of coffee." class="button inline" href="https://www.buymeacoffee.com/wilvoss" target="_blank">Donate! </a>
-            <!-- <smallbuttons>
-              <button title="Click to adjust the game settings." @click="ToggleSettings(event, true)">
-                <icon class="settings"></icon>
-              </button>
-              <button title="Click to see your acheivements." @click="ToggleHighScores(event, true)"></button>
-              <button title="Click to see a list of shoutouts." @click="ToggleCredits(event, true)"></button>
-              <button v-if="isInNativeAppWebView" title="Click to share this game with your friends." @click="ShareApp"></button>
-              <a v-if="!isInNativeAppWebView" title="Click to buy me a cup of coffee." class="button" href="https://www.buymeacoffee.com/wilvoss" target="_blank">
-                <icon class="bmc"></icon>
-              </a>
-            </smallbuttons> -->
-            <version :style="{fontStyle: window.location.host !== 'likeme.games' ? 'italic' : ''}"><a href="https://github.com/wilvoss/likeme/commits/main/" target="_blank">{{currentVersion}}</a></version>
           </section>
         </content>
       </page>
@@ -136,7 +123,7 @@
           <section>
             <h2>How can you help?</h2>
             <credit> You can share this game with your friends!</credit>
-            <button title="Click to share this game with your friends." class="quaternary isolate inline simple" @click="ShareApp"><icon class="share"></icon>Share this game!</button>
+            <button title="Click to share this game with your friends." class="quaternary isolate inline simple" @click="ShareApp()"><icon class="share"></icon>Share this game!</button>
           </section>
           <section v-if="!deviceHasTouch" style="display: none">
             <h2>Keyboard shortcuts</h2>
@@ -184,26 +171,41 @@
         </chrome>
         <content>
           <header>
-            <h1>Ranks</h1>
-            <credit>Get 3 perfect games to unlock the next rank.</credit>
-            <credit>A perfect game is when every level in that game is cleared on the first attempt.</credit>
+            <h1>{{userSettingsUseHardCoreMode ? 'Hardcore Ranks' : 'Ranks'}}</h1>
+            <credit v-html="getRankPageSubcredt"></credit>
           </header>
           <section :class="{simpleranks: appSettingsShowSimpleRankPlaques}">
             <ranks>
+              <rank @click="SetUseHardCoreModeToTrue(event)" v-if="userSettingsUseHardCoreMode || (getCurrentPlayerRank === getLastRank && userNumberOfPerfectBasicGames >= 3)" class="unlocked" :class="{enabled: userSettingsUseHardCoreMode}">
+                <span>{{appSettingsHardcoreEmoji}}</span>
+                <name>
+                  <detail>{{userSettingsUseHardCoreMode ? 'Hardcore enabled!' : 'Enable hardcore'}}</detail>
+                  <credit>Ranks only unlock after 3 perfect games in a row.</credit>
+                </name>
+                <span :class="{cleared: userSettingsUseHardCoreMode}">{{userSettingsUseHardCoreMode ? appSettingsHardcoreEmoji : '🔒'}}</span>
+              </rank>
               <rank @click="CreateConfetti(r.hue, r.rank)" v-for="r in allPlayerRanks" :class="[getLastRank.rank === r.rank ? 'last' : '']" v-if="r.rank <= userRank" :style="{backgroundColor: 'hsl(' + r.hue + ', 50%, 50%)'}">
                 <span>{{r.emoji}}</span>
                 <name :style="{color: 'hsl(' + r.hue + ', 100%, 92%)'}">
                   <detail>{{r.name}}</detail>
                   <credit :style="{textDecoration: r.rank !== userRank ? 'line-through': 'none'}">{{r.levels}} levels {{r.rank === userRank ? 'per game' : ''}}</credit>
                 </name>
-                <span>{{r.emoji}}</span>
+                <span :class="{cleared: r.rank < userRank || userNumberOfPerfectBasicGames >= 3}">{{appSettingsHardcoreEmoji}}</span>
               </rank>
-              <credit v-if="userRank!== allPlayerRanks[allPlayerRanks.length -1].rank">Just {{3 - userNumberOfPerfectBasicGames }} more perfect games till the next Rank</credit>
+              <credit v-if="getNextRankRequirementsText !== ''" v-html="getNextRankRequirementsText"></credit>
               <rank class="locked" v-for="r in allPlayerRanks" v-if="r.rank > userRank">
                 <span>🔒</span>
                 <name>
                   <detail>{{r.name}}</detail>
                   <credit>{{r.levels}} levels</credit>
+                </name>
+                <span>🔒</span>
+              </rank>
+              <rank v-if="!userSettingsUseHardCoreMode && getCurrentPlayerRank === getLastRank && userNumberOfPerfectBasicGames < 3" class="locked">
+                <span>🔒</span>
+                <name>
+                  <detail>????????</detail>
+                  <credit>Only the best players can unlock this mystery!</credit>
                 </name>
                 <span>🔒</span>
               </rank>
@@ -235,21 +237,12 @@
             <leftright v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighDailyByDate.length"> <left></left>&nbsp;<right></right> </leftright>
           </section>
           <section>
-            <h2>Basic Mode</h2>
+            <h2>Ranked Games</h2>
             <leftright @click="SetScoreForSharingAndShare(score, getNormalModeComputed)" v-for="score in userScoresHighEasyByValue" :class="{current: score.isCurrent}">
               <left>{{FormatDate(score.date)}}</left>
               <right>{{NumberWithCommas(score.value)}}</right>
             </leftright>
             <leftright v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighEasyByValue.length"> <left></left>&nbsp;<right></right> </leftright>
-          </section>
-          <section>
-            <h2>Sudden Death</h2>
-            <credit>Streaks: Current - {{usersBlitzStreakCurrent}}, Best - {{usersBlitzStreakBest}}</credit>
-            <leftright @click="SetScoreForSharingAndShare(score, getBlitzModeComputed)" v-for="score in userScoresHighBlitzByValue" :class="{current: score.isCurrent}">
-              <left>Streak - {{score.streak}}</left>
-              <right>{{NumberWithCommas(score.value)}}</right>
-            </leftright>
-            <leftright v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighBlitzByValue.length"> <left></left>&nbsp;<right></right> </leftright>
           </section>
           <section>
             <button class="simple danger" @click="ClearAllUserScores()">Clear All Scores</button>
@@ -312,48 +305,49 @@
               </theme>
             </themes>
           </section>
+          <version :style="{fontStyle: window.location.host !== 'likeme.games' ? 'italic' : ''}"><a href="https://github.com/wilvoss/likeme/commits/main/" target="_blank">{{currentVersion}}</a></version>
         </content>
       </modal>
       <modal class="notransition semitransparent" :class="{show: appVisualStateShowPageGameOver, preview: !appVisualStateShowGameOverContent}" @pointerdown="appVisualStateShowNotification = false;">
-        <content style="justify-content: center">
-          <h1 v-if="appVisualStateShowPageGameOver" :style="{rotate: getCurrentGameModeComputed.useBatThwap ?  getRandomInt(0, 8) - 4 + 'deg' : '0deg'}" v-html="getCurrentGameModeComputed.endGameTitle">
-            <icon v-if="getCurrentGameModeComputed.id === 'infinite'" class="zen"></icon>
-          </h1>
-          <p v-if="(gameLastHighScore.isDaily || getCurrentGameModeComputed.endGameConsolationMessage != '') && !appVisualStateShowNewHighScoreElement">{{gameLastHighScore.isDaily ? 'Daily - ' + GetMonthAndDay(gameLastHighScore.dailyDate) : getCurrentGameModeComputed.endGameConsolationMessage}}</p>
-          <newhigh v-if="appVisualStateShowNewHighScoreElement">{{gameLastHighScore.isDaily ? 'Daily - ' + GetMonthAndDay(gameLastHighScore.dailyDate) : 'A NEW high score!'}}</newhigh>
+        <content :style="{justifyContent: getNormalModeComputed.isSelected ? '' : 'center'}">
+          <emoji>{{getNormalModeComputed.isSelected ? getCurrentPlayerRank.emoji : '☯'}}</emoji>
+          <h1 v-html="getGameOverTitle"></h1>
+          <p v-html="getGameOverSubtitle"></p>
           <section>
-            <leftright class="impress" v-if="getCurrentGameModeComputed.id !== 'blitz' || getCurrentGameModeComputed.id === 'blitz' && gameLastHighScore.value > 0">
-              <left> {{!getInfiniteModeComputed.isSelected ? 'Final score ' : 'Total levels cleared '}} </left>
-              <right> {{!getInfiniteModeComputed.isSelected ? NumberWithCommas(gameLastHighScore.value) + ' pts' : gameLastHighScore.numberOfClears}} </right>
+            <leftright class="impress">
+              <left> {{getNormalModeComputed.isSelected ? 'Final score ' : 'Total levels cleared '}} </left>
+              <right> {{getNormalModeComputed.isSelected? NumberWithCommas(gameLastHighScore.value) + ' pts' : gameLastHighScore.numberOfClears}} </right>
             </leftright>
-            <leftright v-if="getCurrentGameModeComputed.id === 'blitz'">
-              <left>Current streak</left>
-              <right>{{usersBlitzStreakCurrent}}</right>
-            </leftright>
-            <leftright v-if="getCurrentGameModeComputed.id === 'normal'">
+            <leftright v-if="getNormalModeComputed.isSelected">
               <left>Perfect games</left>
-              <right>{{tempPerfectBasicGames}}{{userRank === allPlayerRanks[allPlayerRanks.length-1].rank ? '' : '/3'}}</right>
+              <right>{{tempPerfectBasicGames}}{{gameLastHighScore.rankId === getLastRank.rank ? '' : '/3'}}</right>
+            </leftright>
+            <leftright v-if="getNormalModeComputed.isSelected">
+              <left>Game rank</left>
+              <right>{{getLastHighScoreRank.name}}</right>
             </leftright>
             <leftright>
               <left>Time {{getInfiniteModeComputed.isSelected ? 'played' : 'remaining'}}</left>
               <right>{{GetMsToTime(gameCurrentTimer)}}</right>
             </leftright>
-            <leftright v-if="!getInfiniteModeComputed.isSelected">
+            <leftright v-if="getNormalModeComputed.isSelected">
               <left>Levels cleared</left>
-              <right> {{gameLastHighScore.numberOfClears}}{{gameLastHighScore.isDaily ? '/' + gameLastHighScore.totalPossibleClears : ''}} </right>
+              <right> {{gameLastHighScore.numberOfClears}}/{{gameLastHighScore.totalPossibleClears}} </right>
             </leftright>
-            <leftright v-if="getCurrentGameModeComputed.bonustime > 0">
+            <leftright v-if="getNormalModeComputed.isSelected0">
               <left>Bonus time added</left>
               <right>{{GetMsToTime(gameCurrentNumberOfPerfectMatches * 3000)}}</right>
             </leftright>
           </section>
           <section>
-            <button :disabled="gameCurrentTimer > 0 && gameLastHighScore.isDaily && gameLastHighScore.numberOfClears === gameLastHighScore.totalPossibleClears" v-if="!getInfiniteModeComputed.isSelected" title="Click to share your score with your friends." class="tertiary inline" @click="SetScoreForSharingAndShare(gameLastHighScore, getCurrentGameModeComputed, getCurrentGameModeComputed.id === 'normal' && tempPerfectBasicGames === 3)">Share!<icon class="share"></icon></button>
+            <button :disabled="gameCurrentTimer > 0 && gameLastHighScore.isDaily && gameLastHighScore.numberOfClears === gameLastHighScore.totalPossibleClears" v-if="!getInfiniteModeComputed.isSelected" title="Click to share your score with your friends." class="tertiary inline" @click="SetScoreForSharingAndShare(gameLastHighScore, getCurrentGameModeComputed, gameLastHighScore.rankId !== getLastRank.rank && getNormalModeComputed.isSelected && tempPerfectBasicGames === 3)">
+              Share!<icon class="share"></icon>
+            </button>
             <button title="Click to return to the home screen." class="secondary" @click="ToggleShowHomeOn(event)">Home</button>
-            <button v-if="!gameLastHighScore.isDaily" title="Click to start a new game" class="primary" @click="RestartGame">New Game</button>
+            <button v-if="!gameLastHighScore.isDaily" title="Click to start a new game" class="primary" @click="RestartGame()">New Game</button>
           </section>
         </content>
-        <chrome class="footer" v-if="getCurrentGameModeComputed.id != 'infinite'">
+        <chrome class="footer" v-if="getNormalModeComputed.isSelected">
           <button title="Click to adjust the game settings." class="quaternary" @pointerdown="appVisualStateShowGameOverContent = false" @pointerup="appVisualStateShowGameOverContent = true" @pointerout="appVisualStateShowGameOverContent = true">
             <icon class="eye"></icon>
           </button>
@@ -365,7 +359,7 @@
         </section>
         <smallbuttons>
           <button @click="ToggleChallenge(event, false)">No</button>
-          <button class="secondary" @click="EndGame">Yes</button>
+          <button class="secondary" @click="EndGame()">Yes</button>
         </smallbuttons>
       </challenge>
       <stage v-if="!appVisualStateShowPageHome && !appTutorialIsInPlay" :class="{paused: gameCurrentIsPaused}">
@@ -395,7 +389,7 @@
           </board>
           <addtime :class="{flyaway: appVisualStateShowElementFlyaway}">+3 seconds!</addtime>
           <me :class="{nope: gameCurrentIsUserGuessWrong}">
-            <container @click="CheckBoard">
+            <container @click="CheckBoard()">
               <piece :style="{maskImage: gameCurrentMePiece.shape, webkitMaskImage: gameCurrentMePiece.shape, backgroundColor: gameCurrentMePiece.color}">
                 <gild :style="{backgroundImage: gameCurrentMePiece.backgroundImage }"> </gild>
               </piece>
@@ -405,7 +399,7 @@
       </stage>
       <tutorial :class="{show: appTutorialIsInPlay}">
         <chrome v-if="appTutorialCurrentStepIndex !== appTutorialSteps.length - 1">
-          <button @click="HandleSkipTutorial">{{!appTutorialUserHasSeen ? 'Skip Tutorial' : 'Done'}}</button>
+          <button @click="HandleSkipTutorial()">{{!appTutorialUserHasSeen ? 'Skip Tutorial' : 'Done'}}</button>
         </chrome>
         <playarea>
           <h2>{{ChangeTutorialPiecesToCats(appTutorialSteps[appTutorialCurrentStepIndex].title)}}</h2>
@@ -420,7 +414,7 @@
           </board>
           <addtime :class="{flyaway: appVisualStateShowElementFlyaway}">+3 seconds</addtime>
           <me v-if="appTutorialCurrentStepIndex !== appTutorialSteps.length - 1 && !appTutorialSteps[appTutorialCurrentStepIndex].checkBoard">
-            <container @click="HandleTutorialNext">
+            <container @click="HandleTutorialNext()">
               <piece v-if="appTutorialCurrentStepIndex === 0" :style="{maskImage: 'var(--shape4)', webkitMaskImage: 'var(--shape4)', backgroundColor: 'var(--color1)'}">
                 <gild :style="{backgroundImage: 'var(--bgImage1)' }"> </gild>
               </piece>
@@ -430,14 +424,14 @@
             </container>
           </me>
           <me v-if="appTutorialCurrentStepIndex === appTutorialSteps.length - 1">
-            <container @click="HandleDoneTutorial">
+            <container @click="HandleDoneTutorial()">
               <piece :style="{maskImage: appTutorialMePiece.shape, webkitMaskImage: appTutorialMePiece.shape, backgroundColor: appTutorialMePiece.color}">
                 <gild :style="{backgroundImage: appTutorialMePiece.backgroundImage }"> </gild>
               </piece>
             </container>
           </me>
           <me v-if="appTutorialSteps[appTutorialCurrentStepIndex].checkBoard" :class="{nope: gameCurrentIsUserGuessWrong}">
-            <container @click="HandleTutorialCheck">
+            <container @click="HandleTutorialCheck()">
               <piece :style="{maskImage: appTutorialMePiece.shape, webkitMaskImage: appTutorialMePiece.shape, backgroundColor: appTutorialMePiece.color}">
                 <gild :style="{backgroundImage: appTutorialMePiece.backgroundImage }"> </gild>
               </piece>
@@ -446,11 +440,11 @@
         </playarea>
         <section>
           <smallbuttons>
-            <button v-if="appTutorialCurrentStepIndex < appTutorialSteps.length - 1" :class="{disabled: appTutorialCurrentStepIndex === 0}" @click="HandleTutorialBack" class="secondary">Back</button>
-            <button v-if="appTutorialCurrentStepIndex < appTutorialSteps.length - 1 && appTutorialCurrentStepIndex === 4" class="secondary" @click="HandleTutorialNext ">Next</button>
-            <button v-if="appTutorialCurrentStepIndex < appTutorialSteps.length - 1 && appTutorialCurrentStepIndex !== 4" class="secondary" @click="HandleTutorialNext">Next</button>
-            <button v-if="!appTutorialUserHasSeen && appTutorialCurrentStepIndex === appTutorialSteps.length - 1" class="primary" @click="HandleDoneTutorial">Let's Go!</button>
-            <button v-if="appTutorialUserHasSeen && appTutorialCurrentStepIndex === appTutorialSteps.length - 1" class="secondary" @click="HandleSkipTutorial">Done</button>
+            <button v-if="appTutorialCurrentStepIndex < appTutorialSteps.length - 1" :class="{disabled: appTutorialCurrentStepIndex === 0}" @click="HandleTutorialBack()" class="secondary">Back</button>
+            <button v-if="appTutorialCurrentStepIndex < appTutorialSteps.length - 1 && appTutorialCurrentStepIndex === 4" class="secondary" @click="HandleTutorialNext()">Next</button>
+            <button v-if="appTutorialCurrentStepIndex < appTutorialSteps.length - 1 && appTutorialCurrentStepIndex !== 4" class="secondary" @click="HandleTutorialNext()">Next</button>
+            <button v-if="!appTutorialUserHasSeen && appTutorialCurrentStepIndex === appTutorialSteps.length - 1" class="primary" @click="HandleDoneTutorial()">Let's Go!</button>
+            <button v-if="appTutorialUserHasSeen && appTutorialCurrentStepIndex === appTutorialSteps.length - 1" class="secondary" @click="HandleSkipTutorial()">Done</button>
           </smallbuttons>
         </section>
       </tutorial>

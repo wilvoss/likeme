@@ -20,7 +20,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.268',
+    currentVersion: '4.2.269',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     timeToMidnight: '24h 0m 0s',
@@ -56,6 +56,8 @@ var app = new Vue({
       loop: true,
       id: 'theme',
     }),
+    appSettingsHardcoreEmoji: '🤯',
+    appSettingsHardcoreFinishedEmoji: '🤯',
     appSettingsSaveSettings: true,
     appSettingsModeIntervalIncrement: 100,
     appSettingsNumberOfHighScoresShown: 5,
@@ -92,6 +94,7 @@ var app = new Vue({
     gameCurrentLevel: new SingleLevelObject({}),
     gameCurrentMePiece: { shape: 'square' },
     gameCurrentBoardPieces: [],
+    gameCurrentJustRankedUp: false,
     gameCurrentBoardScore: 0,
     gameCurrentTotalScore: 0,
     gameLastHighScore: new ScoreObject({}),
@@ -112,10 +115,6 @@ var app = new Vue({
     userDailyLevel: 0,
     userHighScoresInfinite: [],
     userHighScoresEasy: [],
-    userHighScoresBlitz: [],
-    usersBlitzStreakCurrent: 0,
-    usersBlitzStreakScore: 0,
-    usersBlitzStreakBest: 0,
     userRank: 0,
     userNumberOfPerfectBasicGames: 0,
     tempPerfectBasicGames: 0,
@@ -124,6 +123,7 @@ var app = new Vue({
     userSettingsUseSoundFX: true,
     userSettingsPlayMusic: true,
     userSettingsUseDarkMode: false,
+    userSettingsUseHardCoreMode: false,
     usersModeBeforeDailyChallenge: null,
     userTutorialCheckCount: 0,
     documentCssRoot: document.querySelector(':root'),
@@ -137,16 +137,13 @@ var app = new Vue({
       this.userHighScoresEasy.forEach((s) => {
         s.isCurrent = false;
       });
-      this.userHighScoresBlitz.forEach((s) => {
-        s.isCurrent = false;
-      });
       this.userHighScoresInfinite.forEach((s) => {
         s.isCurrent = false;
       });
 
       this.appVisualStateShowNewHighScoreElement = false;
       this.tempPerfectBasicGames = this.userNumberOfPerfectBasicGames;
-      this.gameCurrentTotalScore = this.getCurrentGameModeComputed.id === 'blitz' ? this.usersBlitzStreakScore : 0;
+      this.gameCurrentTotalScore = 0;
       this.gameCurrentIsGameOver = false;
     },
 
@@ -177,7 +174,7 @@ var app = new Vue({
         }
         if (_perfectMatch) {
           this.gameLikenessNudgeHasBeenShown = true;
-          this.gameCurrentTotalScore = this.gameCurrentTotalScore + this.appSettingsCurrentGameMode.scoreMultiplier * _totalBoardScore;
+          this.gameCurrentTotalScore = this.gameCurrentTotalScore + _totalBoardScore;
           this.appVisualStateShowElementHint = false;
           this.gameCurrentHasAnyPieceEverBeenSelected = true;
           if (this.gameCurrentNumberOfMisses === 0 && !this.GetModeById('infinite').isSelected) {
@@ -194,31 +191,27 @@ var app = new Vue({
           this.gameCurrentLevel.completed = true;
           this.NewBoard();
         } else {
-          if (this.GetModeById('blitz').isSelected) {
-            this.EndGame();
-          } else {
-            if (this.gameCurrentNumberOfMisses >= 1) {
-              this.appVisualStateShowElementHint = true;
-              if (_totalPossibleLikePieces === 0) {
-                this.gameCurrentHintText = 'Some levels have zero matches.';
-              } else {
-                this.gameCurrentHintText = _totalPossibleLikePieces === 1 ? 'There is only <b>' + _totalPossibleLikePieces + '</b> piece like me.' : 'There are a total of <b>' + _totalPossibleLikePieces + '</b> pieces like me.';
-              }
-              let _mismatchFound = false;
-              this.gameCurrentBoardPieces.forEach((piece) => {
-                piece.nudge = false;
-                if (!_mismatchFound && ((piece.isMatch && !piece.isSelected) || (!piece.isMatch && piece.isSelected))) {
-                  piece.nudge = true;
-                  _mismatchFound = true;
-                }
-              });
+          if (this.gameCurrentNumberOfMisses >= 1) {
+            this.appVisualStateShowElementHint = true;
+            if (_totalPossibleLikePieces === 0) {
+              this.gameCurrentHintText = 'Some levels have zero matches.';
+            } else {
+              this.gameCurrentHintText = _totalPossibleLikePieces === 1 ? 'There is only <b>' + _totalPossibleLikePieces + '</b> piece like me.' : 'There are a total of <b>' + _totalPossibleLikePieces + '</b> pieces like me.';
             }
-            this.gameCurrentNumberOfMisses++;
-            this.gameCurrentNumberOfFails++;
-            window.setTimeout(function () {
-              app.gameCurrentIsUserGuessWrong = true;
-            }, 5);
+            let _mismatchFound = false;
+            this.gameCurrentBoardPieces.forEach((piece) => {
+              piece.nudge = false;
+              if (!_mismatchFound && ((piece.isMatch && !piece.isSelected) || (!piece.isMatch && piece.isSelected))) {
+                piece.nudge = true;
+                _mismatchFound = true;
+              }
+            });
           }
+          this.gameCurrentNumberOfMisses++;
+          this.gameCurrentNumberOfFails++;
+          window.setTimeout(function () {
+            app.gameCurrentIsUserGuessWrong = true;
+          }, 5);
         }
       }
     },
@@ -263,15 +256,18 @@ var app = new Vue({
         confetti.style.setProperty('height', height + 'px');
         document.body.appendChild(confetti);
       }
-      window.setTimeout(function () {
-        let allConfetti = document.getElementsByTagName('confetti');
-        for (let _x = 0; _x < allConfetti.length; _x++) {
-          const confetti = allConfetti[_x];
-          confetti.style.setProperty('translate', parseInt(getRandomInt(-20, 20)) + 'px ' + parseInt(document.body.clientHeight - confetti.clientHeight + 20) + 'px');
-          confetti.style.setProperty('rotate', getRandomInt(-360, 360) + 'deg');
-          confetti.className = 'drop';
-        }
-      }, 10);
+      window.setTimeout(
+        function () {
+          let allConfetti = document.getElementsByTagName('confetti');
+          for (let _x = 0; _x < allConfetti.length; _x++) {
+            const confetti = allConfetti[_x];
+            confetti.style.setProperty('translate', parseInt(getRandomInt(-20, 20)) + 'px ' + parseInt(document.body.clientHeight - confetti.clientHeight + 20) + 'px');
+            confetti.style.setProperty('rotate', getRandomInt(-360, 360) + 'deg');
+            confetti.className = 'drop';
+          }
+        },
+        this.appVisualStateShowPageGameOver ? 300 : 10,
+      );
     },
 
     SetUserBasedOnRank(_rank, _confetti = false) {
@@ -305,7 +301,7 @@ var app = new Vue({
         if (_totalPossibleLikePieces === 0) {
           _totalBoardScore = this.appSettingsScoreTwinIncrement + this.appSettingsScoreSiblingIncrement;
         }
-        _totalGameScore = _totalGameScore + this.appSettingsCurrentGameMode.scoreMultiplier * _totalBoardScore;
+        _totalGameScore = _totalGameScore + _totalBoardScore;
       });
       return _totalGameScore;
     },
@@ -417,13 +413,12 @@ var app = new Vue({
     ShareScore(_rankedUp = false) {
       note('ShareScored() called');
       let _shapes = ['▨ ', '▲ ', '◯ '].sort(() => Math.random() - 0.5).join('');
-      let _shareText = `${_shapes}${this.gameScoreToShare.isDaily ? 'Daily - ' + this.GetMonthAndDay(this.gameScoreToShare.dailyDate) : this.gameScoreToShare.modeName}
+      let modeName = this.userSettingsUseHardCoreMode ? 'Hardcore Mode' : this.gameScoreToShare.modeName;
+      let _shareText = `${_shapes}${this.gameScoreToShare.isDaily ? 'Daily - ' + this.GetMonthAndDay(this.gameScoreToShare.dailyDate) : modeName}
 ${_rankedUp ? 'I just unlocked ' + this.getCurrentPlayerRank.name + '!' : '"' + this.GetRankById(this.gameScoreToShare.rankId).name + '"'}
-${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToShare.numberOfClears} lvl${this.gameScoreToShare.numberOfClears === 1 ? '' : 's'} ${this.gameScoreToShare.numberOfPerfectClears > 0 ? '(' + this.gameScoreToShare.numberOfPerfectClears + ' perfect)' : null}`;
+${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToShare.numberOfClears} lvl${this.gameScoreToShare.numberOfClears === 1 ? '' : 's'} ${this.gameScoreToShare.numberOfPerfectClears > 0 ? '(' + this.gameScoreToShare.numberOfPerfectClears + ' perfect)' : ''}`;
 
-      if (this.gameScoreToShare.modeId === 'blitz') {
-        _shareText += `\ncurrent streak: ${this.usersBlitzStreakCurrent}`;
-      }
+      announce(_shareText);
 
       if (navigator.share) {
         let _shareObject = {
@@ -445,10 +440,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       note('RestartGame() called');
 
       this.gameCurrentStartingTime = this.appSettingsCurrentGameMode.starttime;
-      if (this.appSettingsCurrentGameMode.useBatThwap) {
-        this.appSettingsCurrentGameMode.endGameTitle = BatThwaps[getRandomInt(0, BatThwaps.length)];
-        this.getCurrentGameModeComputed.endGameConsolationMessage = 'Better luck next time!';
-      }
       this.gameCurrentTimer = this.GetModeById('infinite').isSelected ? 0 : this.gameCurrentStartingTime;
       this.gameCurrentNumberOfFails = 0;
       this.gameCurrentNumberOfClears = 0;
@@ -628,25 +619,29 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         rankId: this.getCurrentPlayerRank.rank,
         modeName: this.GetCurrentGameMode().name,
         numberOfClears: this.gameCurrentNumberOfClears,
-        streak: this.GetCurrentGameMode().id == 'blitz' ? this.usersBlitzStreakCurrent : 0,
       });
+      this.appVisualStateShowPageGameOver = true;
 
-      if (this.GetModeById('normal').isSelected) {
-        this.appSettingsCurrentGameMode.endGameTitle = 'Nicely done!';
+      if (this.getNormalModeComputed.isSelected) {
         _score.totalPossibleClears = this.getCurrentPlayerRank.levels;
         _score.numberOfPerfectClears = this.gameCurrentNumberOfPerfectMatches;
         if (_score.numberOfPerfectClears === _score.totalPossibleClears) {
-          this.appSettingsCurrentGameMode.endGameTitle = 'PERFECT!';
           this.userNumberOfPerfectBasicGames++;
           this.tempPerfectBasicGames = this.userNumberOfPerfectBasicGames;
           let targetCount = 3;
           this.CreateConfetti();
-          if (this.userNumberOfPerfectBasicGames === targetCount && this.getCurrentPlayerRank !== this.getLastRank) {
-            this.userRank = this.userRank + 1;
-            this.SetUserBasedOnRank(this.userRank, true);
-            this.appSettingsCurrentGameMode.endGameTitle = "<span class='ranktext'>" + this.getCurrentPlayerRank.name + ' unlocked!!</span>';
-            this.userNumberOfPerfectBasicGames = 0;
+          if (this.userNumberOfPerfectBasicGames === targetCount) {
+            if (this.getCurrentPlayerRank !== this.getLastRank) {
+              this.userRank = this.userRank + 1;
+              this.SetUserBasedOnRank(this.userRank, true);
+              this.userNumberOfPerfectBasicGames = 0;
+            }
+            this.gameCurrentJustRankedUp = true;
           }
+        } else if (this.userSettingsUseHardCoreMode && this.userNumberOfPerfectBasicGames < 3) {
+          this.userNumberOfPerfectBasicGames = 0;
+          _score.numberOfPerfectClears = 0;
+          this.tempPerfectBasicGames = 0;
         }
         localStorage.setItem('userRank', this.userRank);
         localStorage.setItem('userNumberOfPerfectBasicGames', this.userNumberOfPerfectBasicGames);
@@ -662,33 +657,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
           this.appVisualStateShowNewHighScoreElement = true;
         }
         localStorage.setItem('userHighScoresEasy', JSON.stringify(this.userHighScoresEasy));
-      } else if (this.GetModeById('blitz').isSelected) {
-        this.userHighScoresBlitz.push(_score);
-        if (this.gameCurrentTimer === 0 && _score.value > 0) {
-          this.usersBlitzStreakScore = _score.value;
-          this.usersBlitzStreakCurrent++;
-          _score.streak = this.usersBlitzStreakCurrent;
-          if (this.appSettingsCurrentGameMode.useBatThwap) {
-            this.appSettingsCurrentGameMode.endGameTitle = 'Nicely done!';
-            this.getCurrentGameModeComputed.endGameConsolationMessage = _score.streak === 1 ? 'Your streak begins!' : 'Your streak continues.';
-          }
-        } else {
-          _score.value = 0;
-          _score.streak = 0;
-          this.usersBlitzStreakScore = 0;
-          this.usersBlitzStreakCurrent = 0;
-        }
-        if (this.usersBlitzStreakBest < this.usersBlitzStreakCurrent) {
-          this.usersBlitzStreakBest = this.usersBlitzStreakCurrent;
-        }
-        localStorage.setItem('usersBlitzStreakBest', JSON.stringify(this.usersBlitzStreakBest));
-        localStorage.setItem('usersBlitzStreakCurrent', JSON.stringify(this.usersBlitzStreakCurrent));
-        localStorage.setItem('usersBlitzStreakScore', JSON.stringify(this.usersBlitzStreakScore));
-
-        if (_score === this.userScoresHighBlitzByValue[0] && _score.value !== 0) {
-          this.appVisualStateShowNewHighScoreElement = true;
-        }
-        localStorage.setItem('userHighScoresBlitz', JSON.stringify(this.userHighScoresBlitz));
       } else if (this.GetModeById('infinite').isSelected) {
         this.userHighScoresInfinite.push(_score);
         localStorage.setItem('userHighScoresInfinite', JSON.stringify(this.userHighScoresInfinite));
@@ -706,7 +674,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       this.gameCurrentIsGameOver = true;
       this.gameDailyChallengeHasBeenStarted = false;
       this.appVisualStateShowPageChallenge = false;
-      this.appVisualStateShowPageGameOver = true;
 
       this.HandleOnPageHideEvent(false);
     },
@@ -765,6 +732,31 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       } else {
         this.SelectMode(this.getInfiniteModeComputed);
       }
+    },
+
+    SetUseHardCoreModeToTrue(event) {
+      note('SetUseHardCoreModeToTrue(event) called');
+      if (!this.userSettingsUseHardCoreMode) {
+        let _confirm = window.confirm('Are you sure you want to enable Hardcore Mode? This will reset your ranks and cannot be undone.');
+        if (_confirm) {
+          event.stopPropagation();
+          event.preventDefault();
+          this.userSettingsUseHardCoreMode = true;
+          this.SetUserBasedOnRank(0);
+          this.userNumberOfPerfectBasicGames = 0;
+          this.CreateConfetti();
+        }
+        localStorage.setItem('userSettingsUseHardCoreMode', this.userSettingsUseHardCoreMode);
+      }
+    },
+
+    SetUseHardCoreModeToFalse() {
+      note('SetUseHardCoreModeToFalse(event) called');
+      this.userSettingsUseHardCoreMode = false;
+      this.userNumberOfPerfectBasicGames = 0;
+      this.SetUserBasedOnRank(0);
+
+      localStorage.setItem('userSettingsUseHardCoreMode', this.userSettingsUseHardCoreMode);
     },
 
     ToggleUsingHints(event) {
@@ -881,6 +873,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     },
 
     ToggleShowHomeOn(event) {
+      note('ToggleShowHomeOn(event) called');
       event.stopPropagation();
       event.preventDefault();
       this.RemoveConfetti();
@@ -890,6 +883,10 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         this.SelectMode(this.usersModeBeforeDailyChallenge);
         this.usersModeBeforeDailyChallenge = null;
       }
+      if (this.gameCurrentJustRankedUp && this.getCurrentPlayerRank === this.getLastRank && this.userNumberOfPerfectBasicGames >= 3) {
+        this.ToggleAchievements(event, true);
+      }
+      this.gameCurrentJustRankedUp = false;
     },
 
     ToggleHowToPlay(event, _value) {
@@ -921,8 +918,11 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     },
 
     ToggleAchievements(event, _value) {
-      event.stopPropagation();
-      event.preventDefault();
+      note('ToggleAchievements(event, value) called');
+      if (event !== undefined && event !== null) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
       this.ResetModalContentScrollPositions();
       this.appVisualStateShowPageGameOver = false;
       this.appVisualStateShowPageHome = true;
@@ -961,13 +961,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
 
         if (_modes.easy != undefined && _modes.easy != null) {
           this.GetModeById('normal').isSelected = _modes.infinite.isSelected;
-          this.GetModeById('normal').isSelected = _modes.easy.isSelected || _modes.hard.isSelected;
-          if (_modes.blitz != undefined) {
-            this.GetModeById('normal').isSelected = _modes.blitz.isSelected;
-          }
-          if (_modes.hard.isSelected) {
-            this.gameCurrentIsGameOver = true;
-          }
+          this.GetModeById('normal').isSelected = _modes.easy.isSelected;
         } else {
           _modes.forEach((_mode) => {
             this.appSettingsModes.forEach((mode) => {
@@ -987,28 +981,15 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         this.SetUserBasedOnRank(parseInt(0));
       }
 
+      let _userSettingsUseHardCoreMode = localStorage.getItem('userSettingsUseHardCoreMode');
+      if (_userSettingsUseHardCoreMode !== undefined && _userSettingsUseHardCoreMode !== null) {
+        this.userSettingsUseHardCoreMode = JSON.parse(_userSettingsUseHardCoreMode);
+      }
+
       let _userNumberOfPerfectBasicGames = localStorage.getItem('userNumberOfPerfectBasicGames');
       if (_userNumberOfPerfectBasicGames !== undefined && _userNumberOfPerfectBasicGames !== null) {
         _userNumberOfPerfectBasicGames = JSON.parse(_userNumberOfPerfectBasicGames);
         this.userNumberOfPerfectBasicGames = _userNumberOfPerfectBasicGames;
-      }
-
-      let _usersBlitzStreakCurrent = localStorage.getItem('usersBlitzStreakCurrent');
-      if (_usersBlitzStreakCurrent !== undefined && _usersBlitzStreakCurrent !== null) {
-        _usersBlitzStreakCurrent = JSON.parse(_usersBlitzStreakCurrent);
-        this.usersBlitzStreakCurrent = _usersBlitzStreakCurrent;
-      }
-
-      let _usersBlitzStreakScore = localStorage.getItem('usersBlitzStreakScore');
-      if (_usersBlitzStreakScore !== undefined && _usersBlitzStreakScore !== null) {
-        _usersBlitzStreakScore = JSON.parse(_usersBlitzStreakScore);
-        this.usersBlitzStreakScore = _usersBlitzStreakScore;
-      }
-
-      let _usersBlitzStreakBest = localStorage.getItem('usersBlitzStreakBest');
-      if (_usersBlitzStreakBest !== undefined && _usersBlitzStreakBest !== null) {
-        _usersBlitzStreakBest = JSON.parse(_usersBlitzStreakBest);
-        this.usersBlitzStreakBest = _usersBlitzStreakBest;
       }
 
       let _hints = localStorage.getItem('userSettingsUseHints');
@@ -1093,19 +1074,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         _gameDataCorrupt = true;
       }
 
-      let _userHighScoresBlitz = localStorage.getItem('userHighScoresBlitz');
-      try {
-        if (_userHighScoresBlitz !== undefined && _userHighScoresBlitz !== null && _userHighScoresBlitz !== '[]') {
-          _userHighScoresBlitz = JSON.parse(_userHighScoresBlitz);
-          _userHighScoresBlitz.forEach((s) => {
-            this.userHighScoresBlitz.push(new ScoreObject({ modeId: s.modeId == undefined ? '' : s.modeId, modeName: s.modeName == undefined ? '' : s.modeName, streak: s.streak == undefined ? 0 : s.streak, numberOfClears: s.numberOfClears == undefined ? 0 : s.numberOfClears, date: new Date(s.date), isDaily: s.isDaily, value: s.value, dailyDate: s.dailyDate != undefined ? new Date(s.dailyDate) : new Date(s.date) }));
-          });
-        }
-      } catch (_error) {
-        error('_userHighScoresBlitz error: ' + _error);
-        _gameDataCorrupt = true;
-      }
-
       let _gameCurrentHasAnyPieceEverBeenSelected = localStorage.getItem('gameCurrentHasAnyPieceEverBeenSelected');
       try {
         if (_gameCurrentHasAnyPieceEverBeenSelected !== undefined && _gameCurrentHasAnyPieceEverBeenSelected !== null) {
@@ -1145,14 +1113,12 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         this.gameLastHighScore = new ScoreObject({});
         this.gameScoreToShare = new ScoreObject({});
         this.userHighScoresEasy = [];
-        this.userHighScoresBlitz = [];
         this.userHighScoresInfinite = [];
         this.gameDailyChallenge.allLevels = [];
         this.gameCurrentIsGameDailyChallenge = false;
         this.userNumberOfPerfectBasicGames = 0;
         localStorage.setItem('userNumberOfPerfectBasicGames', this.userNumberOfPerfectBasicGames);
         localStorage.setItem('userHighScoresEasy', JSON.stringify(this.userHighScoresEasy));
-        localStorage.setItem('userHighScoresBlitz', JSON.stringify(this.userHighScoresBlitz));
         localStorage.setItem('userHighScoresInfinite', JSON.stringify(this.userHighScoresInfinite));
 
         this.GetDailyChallenge();
@@ -1558,11 +1524,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         localStorage.setItem('gameCurrentHasAnyPieceEverBeenSelected', JSON.stringify(this.gameCurrentHasAnyPieceEverBeenSelected));
         localStorage.setItem('gameLikenessNudgeHasBeenShown', JSON.stringify(this.gameLikenessNudgeHasBeenShown));
         localStorage.setItem('gameClickMeNudgeHasBeenShown', JSON.stringify(this.gameClickMeNudgeHasBeenShown));
-        localStorage.setItem('usersBlitzStreakBest', JSON.stringify(this.usersBlitzStreakBest));
         localStorage.setItem('userHighScoresEasy', JSON.stringify(this.userHighScoresEasy));
-        localStorage.setItem('userHighScoresBlitz', JSON.stringify(this.userHighScoresBlitz));
-        localStorage.setItem('usersBlitzStreakCurrent', JSON.stringify(this.usersBlitzStreakCurrent));
-        localStorage.setItem('usersBlitzStreakScore', JSON.stringify(this.usersBlitzStreakScore));
         localStorage.setItem('userSettingsUseCats', this.userSettingsUseCats);
         localStorage.setItem('userSettingsUseAltPatterns', this.userSettingsUseAltPatterns);
         localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
@@ -1621,7 +1583,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
           this.appTutorialBoardPieces.board.forEach((piece, i) => {
             piece.isSelected = false;
           });
-          // this.appTutorialCurrentStepIndex = this.appTutorialSteps.length - 2;
           this.HandleTutorialNext();
         } else {
           if (this.userTutorialCheckCount > 2) {
@@ -1961,16 +1922,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
   },
 
   computed: {
-    userScoresHighBlitzByValue: function () {
-      note('userScoresHighBlitzByValue() called');
-      function compare(a, b) {
-        if (a.value < b.value) return 1;
-        if (a.value > b.value) return -1;
-        return 0;
-      }
-      return this.userHighScoresBlitz.sort(compare).flat().slice(0, this.appSettingsNumberOfHighScoresShown);
-    },
-
     userScoresHighEasyByValue: function () {
       note('userScoresHighEasyByValue() called');
       function compare(a, b) {
@@ -2038,11 +1989,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       return this.GetModeById('infinite');
     },
 
-    getBlitzModeComputed: function () {
-      note('getBlitzModeComputed() called');
-      return this.GetModeById('blitz');
-    },
-
     getNormalModeComputed: function () {
       note('getNormalModeComputed() called');
       return this.GetModeById('normal');
@@ -2053,13 +1999,96 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       return this.allPlayerRanks.find((r) => r.rank === this.userRank);
     },
 
+    getLastHighScoreRank: function () {
+      note('getLastHighScoreRank() called');
+      return this.GetRankById(this.gameLastHighScore.rankId);
+    },
+
     getNextPlayerRank: function () {
       note('getNextPlayerRank() called');
       return this.allPlayerRanks.find((r) => r.rank === parseInt(this.userRank + 1));
     },
 
     getLastRank: function () {
+      note('getLastRank() called');
       return this.allPlayerRanks[this.allPlayerRanks.length - 1];
+    },
+
+    getGameOverTitle: function () {
+      note('getGameOverTitle() called');
+      let title = '';
+      if (this.getNormalModeComputed.isSelected) {
+        title = 'Game over';
+        if (this.gameLastHighScore.numberOfPerfectClears === this.gameLastHighScore.totalPossibleClears) {
+          title = 'PERFECT!';
+          if (this.gameCurrentJustRankedUp && this.userNumberOfPerfectBasicGames < 3) {
+            title = "<span class='ranktext'>" + this.getCurrentPlayerRank.name + ' unlocked!!</span>';
+          }
+        }
+      } else {
+        title = this.gameLastHighScore.numberOfClears > 0 ? 'Success' : 'No worry';
+      }
+      return title;
+    },
+
+    getGameOverSubtitle: function () {
+      note('getGameOverSubtitle() called');
+      let message = '';
+      if (this.getNormalModeComputed.isSelected) {
+        if (this.gameLastHighScore.isDaily && !this.appVisualStateShowNewHighScoreElement) {
+          message = 'Daily - ' + this.GetMonthAndDay(this.gameLastHighScore.dailyDate);
+        } else if (!this.userSettingsUseHardCoreMode && this.userNumberOfPerfectBasicGames >= 3) {
+          message = 'Hardcore Mode Unlocked!';
+        } else if (!this.gameLastHighScore.isDaily && !this.appVisualStateShowNewHighScoreElement) {
+          message = this.gameLastHighScore.numberOfPerfectClears === this.gameLastHighScore.totalPossibleClears ? 'Very nicely done.' : 'Better luck next time!';
+        }
+      } else {
+        message = this.gameLastHighScore.numberOfClears > 0 ? 'You are present and connected.' : 'There will always be time.';
+      }
+      return message;
+    },
+
+    getHomePageRankSubcredit: function () {
+      note('getHomePageRankSubcredit() called');
+      let subcredit = '';
+      if (!this.userSettingsUseHardCoreMode && this.userNumberOfPerfectBasicGames < 3 && this.getNextPlayerRank !== undefined) {
+        subcredit = 'Next rank: &rdquo;' + this.getNextPlayerRank.name + '&ldquo;';
+      } else if (!this.userSettingsUseHardCoreMode && this.userNumberOfPerfectBasicGames < 3 && this.getNextPlayerRank === undefined) {
+        subcredit = 'The next rank is a mystery!';
+      } else if (!this.userSettingsUseHardCoreMode && this.userNumberOfPerfectBasicGames >= 3) {
+        subcredit = 'Hardcore Mode Unlocked!';
+      } else if (this.userSettingsUseHardCoreMode && this.userNumberOfPerfectBasicGames < 3 && this.getNextPlayerRank !== undefined) {
+        subcredit = 'Next Hardcore rank: &rdquo;' + this.getNextPlayerRank.name + '&ldquo;';
+      }
+      return subcredit;
+    },
+
+    getRankPageSubcredt: function () {
+      note('getRankPageSubcredt() called');
+      let subcredit = '';
+      if (!this.userSettingsUseHardCoreMode && this.userNumberOfPerfectBasicGames < 3) {
+        subcredit = 'Get 3 perfect games to unlock the next rank. Perfect games are only earned when every level in that game is cleared on the <b>first</b> attempt.';
+      } else if (!this.userSettingsUseHardCoreMode && this.userRank === this.getLastRank.rank && this.userNumberOfPerfectBasicGames >= 3) {
+        subcredit = "Amazing! You've done at least 3 perfect games as a <b>" + this.getLastRank.name + '</b> But if you truly want a challenge, enable Hardcore mode and start over.';
+      } else if (this.userSettingsUseHardCoreMode && this.userRank < this.getLastRank.rank) {
+        subcredit = 'Get 3 perfect games in a row to unlock the next rank. Perfect games are only earned when every level in that game is cleared on the <b>first</b> attempt.';
+      } else if (this.userSettingsUseHardCoreMode && this.userRank === this.getLastRank.rank && this.userNumberOfPerfectBasicGames < 3) {
+        subcredit = 'Wow! It takes some serious skill to achieve the <b>' + this.getLastRank.name + '</b> rank while in Hardcore Mode.';
+      } else if (this.userSettingsUseHardCoreMode && this.userRank === this.getLastRank.rank && this.userNumberOfPerfectBasicGames >= 3) {
+        subcredit = this.appSettingsHardcoreFinishedEmoji + ' You are beyond impressive: <br /><b>' + this.getLastRank.name + '</b> rank while in Hardcore Mode with at least 3 consecutive perfect games. <br />They should sing songs about you!';
+      }
+      return subcredit;
+    },
+
+    getNextRankRequirementsText: function () {
+      note('getRankPageSubcredt() called');
+      let text = '';
+      if (this.userRank !== this.getLastRank.rank) {
+        text = 'Just ' + (3 - this.userNumberOfPerfectBasicGames) + ' more perfect ' + (this.userNumberOfPerfectBasicGames === 2 ? 'game' : 'games') + ' till the next Rank';
+      } else if (!this.userSettingsUseHardCoreMode && this.userRank === this.getLastRank.rank && this.userNumberOfPerfectBasicGames < 3) {
+        text = 'Just ' + (3 - this.userNumberOfPerfectBasicGames) + ' more perfect ' + (this.userNumberOfPerfectBasicGames === 2 ? 'game' : 'games');
+      }
+      return text;
     },
   },
 });

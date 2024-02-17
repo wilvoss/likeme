@@ -168,6 +168,10 @@ tutorial h1 {
   text-shadow: 0px -1px 0px hsl(var(--appBackground)), 0px 0px 20px hsl(var(--appBackground));
 }
 
+modal h1 {
+  width: 320px;
+}
+
 p,
 subheader {
   display: block;
@@ -267,7 +271,7 @@ modal.semitransparent.preview content {
   opacity: 0;
 }
 
-.notransition {
+modal.notransition, .notransition {
   transition: 0ms none none;
 }
 
@@ -306,7 +310,7 @@ content {
   margin-top: var(--chromeHeight);
   padding-top: calc(var(--defaultGap));
   padding-bottom: calc(var(--defaultGap));
-  height: calc(100% - 50px);
+  height: calc(100% - 0px);
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
@@ -883,8 +887,10 @@ chrome.hide {
 
 .show chrome.footer {
   height: calc(1.5 * var(--chromeHeight));
-  position: relative;
   background: transparent;
+  position: fixed;
+  bottom: 2px;
+  right: 2px;
 }
 
 .show chrome button,
@@ -892,7 +898,7 @@ chrome button {
   font-size: 1.1em;
   font-family: -apple-system, Arial, sans-serif;
   background: none;
-  background-color: hsl(var(--appBackground));
+  background-color: hsla(var(--appBackground), 1);
   color: var(--color2);
   border: none;
   border-color: hsl(var(--appBackground));
@@ -914,9 +920,10 @@ chrome.footer button {
   transition: none;
 }
 
-.show chrome.footer button, .show chrome.footer button:active, .show chrome.footer button:focus {
+.show chrome.footer button.quaternary, .show chrome.footer button:active.quaternary, .show chrome.footer buttony:focus.quaternar {
   height: 100%;
   align-items: end;
+  background-color: hsla(var(--appBackground), 0);
   justify-content: end;
   padding: 0px;
 }
@@ -1000,6 +1007,7 @@ modal img {
 leftright {
   display: flex;
   width: calc(70%);
+  min-width: 260px;
   flex-direction: row;
   justify-content: space-between;
   margin: 0px;
@@ -1102,6 +1110,10 @@ credit {
   font-size: 0.8em;
 }
 
+header credit, ranks>credit {
+  margin-top: calc(.5 * var(--defaultGap));
+  max-width: 300px;
+}
 
 page img {
   width: 50%;
@@ -1818,7 +1830,7 @@ ranks {
 
 rank {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: var(--defaultGap);
   color: hsl(var(--rankHue), 80%, var(--rankLum));
@@ -1840,8 +1852,8 @@ ranks rank {
   max-width: 300px;
   text-shadow: none;
   margin-bottom: 0px;
-  padding: 17px 20px 14px;
-  gap: 0px;
+  padding: 17px 20px 10px;
+  gap: var(--defaultGap);
   box-shadow: inset 0px 1px 4px hsla(0, 0%, 0%, 0.4);
 }
 
@@ -1883,13 +1895,14 @@ page ranklabel icon {
 page ranks rank {
   overflow: hidden;
   width: 280px;
+  gap: 2px;
   padding-top: 0px;
   padding-left: 0px;
   padding-right: 0px;
   flex-direction: column;
 }
 
-page emoji {
+emoji {
   position: relative;
   display: block;
   font-size: 4em;
@@ -1903,16 +1916,17 @@ ranks rank.last {
 
 ranks rank span {
   display: inline-block;
-  font-size: 2.4em;
+  font-size: 2em;
   padding-bottom: 4px;
+  width: 40px;
 }
 
-ranks rank.locked span {
-  font-size: 1.6em;
-}
-
-ranks rank span:last-of-type {
+ranks rank span:last-of-type, .hardcore ranks rank.locked span:last-of-type {
   opacity: 0;
+}
+
+.hardcore ranks rank span.cleared:last-of-type {
+  opacity: 1;
 }
 
 ranks rank name {
@@ -1931,12 +1945,22 @@ rank.locked {
   filter: grayscale(1);
 }
 
+ranks rank.unlocked {
+  background-color: hsla(0, 0%, var(--rankLum), 1);
+  gap: var(--defaultGap);
+  margin-bottom: var(--defaultGap);
+}
+
+ranks rank.unlocked credit {
+  line-height: 1.25em;
+}
+
 ranks rank.locked name {
   opacity: .7;
 }
 
 ranks rank credit {
-  line-height: 100%;
+  line-height: 1.25em;
 }
 
 .simpleranks ranks rank {
@@ -2000,6 +2024,7 @@ confetti.drop {
 
   app {
     margin: 0 auto;
+    box-shadow: none;
   }
 
   wallpaper {
@@ -2107,6 +2132,9 @@ confetti.drop {
 
   chrome.footer {
     display: none;
+    position: fixed;
+    bottom: var(--defaultGap);
+    right: var(--defaultGap);
   }
 
   page content section description,
