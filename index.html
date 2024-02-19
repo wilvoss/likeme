@@ -75,12 +75,12 @@
             <button class="primary" title="Click to start a new game." @click="RestartGame()">{{getCurrentGameModeComputed.id === 'infinite'? 'Play Zen' : 'Play!'}}</button>
             <button title="Click to toggle Zen Mode on." :class="{on: getCurrentGameModeComputed.id === 'infinite'}" @click="ToggleZenMode()">Zen Mode: {{getCurrentGameModeComputed.id === 'infinite' ? 'On' : 'Off'}}</button>
             <smallbuttons>
-              <button class="inline" title="Click to adjust the game settings." @click="ToggleSettings(event, true)">Settings</button>
+              <button class="inline" title="Click to adjust the game settings." @click="ToggleSettings(event, true)">Options</button>
               <button title="Click to learn how to play Like Me?" class="inline" @click="ToggleHowToPlay(event, true)">Tutorial</button>
             </smallbuttons>
             <smallbuttons>
               <button class="inline" title="Click to see your high scores." @click="ToggleHighScores(event, true)">Scores</button>
-              <button class="inline" title="Click to see a list of shoutouts." @click="ToggleCredits(event, true)">Shout Outs</button>
+              <button class="inline" title="Click to see a list of credits." @click="ToggleCredits(event, true)">Credits</button>
             </smallbuttons>
             <button class="inline" v-if="isInNativeAppWebView" title="Click to share this game with your friends." @click="ShareApp()">Share</button>
             <a v-if="!isInNativeAppWebView" title="Click to buy me a cup of coffee." class="button inline" href="https://www.buymeacoffee.com/wilvoss" target="_blank">Donate! </a>
@@ -93,7 +93,7 @@
         </chrome>
         <content>
           <header>
-            <h1>Shout outs</h1>
+            <h1>Credits</h1>
           </header>
           <section>
             <h2>Created by</h2>
@@ -364,7 +364,7 @@
       </challenge>
       <stage v-if="!appVisualStateShowPageHome && !appTutorialIsInPlay" :class="{paused: gameCurrentIsPaused}">
         <chrome :class="{hide: !appVisualStateShowGameOverContent, alert: gameCurrentTimer < 6000 && !getInfiniteModeComputed.isSelected}">
-          <button @click="appVisualStateShowPageSettings = true">Settings</button>
+          <button @click="appVisualStateShowPageSettings = true">Options</button>
           <gameinfo>
             <labelsmall v-if="getCurrentGameModeComputed.id==='normal'"> level {{parseInt(gameCurrentNumberOfClears + 1)}} <span>of</span> {{getCurrentPlayerRank.levels}} </labelsmall>
             <time @click="ToggleGamePause(event, false)" v-if="!getInfiniteModeComputed.isSelected">{{gameCurrentIsPaused ? 'Paused' : NumberWithCommas(gameCurrentTotalScore) + ' pts'}}</time>
