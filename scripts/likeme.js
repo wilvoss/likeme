@@ -1,11 +1,13 @@
+/// <reference path="../helpers/console-enhancer.js" />
 /// <reference path="../models/RankObject.js" />
+/// <reference path="../models/CurrencyObject.js" />
+/// <reference path="../models/ActionItemObject.js" />
 /// <reference path="../models/TutorialStepObject.js" />
 /// <reference path="../models/ThemeObject.js" />
 /// <reference path="../models/PieceObject.js" />
 /// <reference path="../models/ModeObject.js" />
 /// <reference path="../models/LevelsObject.js" />
 /// <reference path="../helpers/getDailyChallenge.js" />
-/// <reference path="../helpers/console-enhancer.js" />
 /// <reference path="../helpers/howler.js" />
 
 Vue.config.devtools = UseDebug;
@@ -20,9 +22,10 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.271',
+    currentVersion: '4.2.272',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
+    currency: new Currency(),
     timeToMidnight: '24h 0m 0s',
     isGettingDailyChallenge: false,
     getDailyTimeThreshold: 86400000,
@@ -40,6 +43,7 @@ var app = new Vue({
     appNotificationMessage: '',
     appSettingsAddBonusToScoreInterval: null,
     appSettingsModes: Modes,
+    appSettingsEnableEconomy: UseDebug,
     appSettingsCurrentGameMode: null,
     appSettingsInfiniteMode: null,
     appSettingsSoundFX: new Howl({
@@ -77,6 +81,7 @@ var app = new Vue({
     appVisualStateShowPageHowToPlay: false,
     appVisualStateShowPageAchievements: false,
     appVisualStateShowPageSettings: false,
+    appVisualStateShowPageManageCurrency: false,
     appVisualStateShowGameOverContent: true,
     appVisualStateShowElementHint: false,
     appVisualStateShowNotification: false,
@@ -91,6 +96,7 @@ var app = new Vue({
     gameDailyChallengeAlreadyScored: false,
     gameDailyChallengeHasBeenStarted: false,
     gameCurrentAllLevels: [],
+    gameCurrentUpdatedCurrencyDeltas: [],
     gameCurrentLevel: new SingleLevelObject({}),
     gameCurrentMePiece: { shape: 'square' },
     gameCurrentBoardPieces: [],
@@ -118,11 +124,13 @@ var app = new Vue({
     userRank: 0,
     userNumberOfPerfectBasicGames: 0,
     tempPerfectBasicGames: 0,
+    userSettingsActionItems: ActonItems,
     userSettingsUseAltPatterns: false,
     userSettingsUseHints: true,
     userSettingsUseSoundFX: true,
     userSettingsPlayMusic: true,
     userSettingsUseDarkMode: false,
+    userCurrency: Currencies,
     userSettingsUseHardCoreMode: false,
     usersModeBeforeDailyChallenge: null,
     userTutorialCheckCount: 0,
@@ -141,6 +149,7 @@ var app = new Vue({
         s.isCurrent = false;
       });
 
+      this.gameCurrentUpdatedCurrencyDeltas = 0;
       this.appVisualStateShowNewHighScoreElement = false;
       this.tempPerfectBasicGames = this.userNumberOfPerfectBasicGames;
       this.gameCurrentTotalScore = 0;
@@ -179,17 +188,14 @@ var app = new Vue({
           this.gameCurrentHasAnyPieceEverBeenSelected = true;
           if (this.gameCurrentNumberOfMisses === 0 && !this.GetModeById('infinite').isSelected) {
             this.gameCurrentNumberOfPerfectMatches++;
-            this.gameCurrentTimer = this.gameCurrentTimer + this.appSettingsCurrentGameMode.bonustime;
-            if (this.appSettingsCurrentGameMode.bonustime > 0) {
-              this.appVisualStateShowElementFlyaway = true;
-              window.setTimeout(function () {
-                app.appVisualStateShowElementFlyaway = false;
-              }, 100);
-            }
+            this.AddTimeBonus();
           }
           this.gameCurrentNumberOfClears++;
           this.gameCurrentLevel.completed = true;
           this.NewBoard();
+        } else if (this.appSettingsEnableEconomy && this.userSettingsActionItems[0].count > 0) {
+          this.IdentifyMismatches();
+          this.userSettingsActionItems[0].count--;
         } else {
           if (this.gameCurrentNumberOfMisses >= 1) {
             this.appVisualStateShowElementHint = true;
@@ -198,14 +204,8 @@ var app = new Vue({
             } else {
               this.gameCurrentHintText = _totalPossibleLikePieces === 1 ? 'There is only <b>' + _totalPossibleLikePieces + '</b> piece like me.' : 'There are a total of <b>' + _totalPossibleLikePieces + '</b> pieces like me.';
             }
-            let _mismatchFound = false;
-            this.gameCurrentBoardPieces.forEach((piece) => {
-              piece.nudge = false;
-              if (!_mismatchFound && ((piece.isMatch && !piece.isSelected) || (!piece.isMatch && piece.isSelected))) {
-                piece.nudge = true;
-                _mismatchFound = true;
-              }
-            });
+
+            this.IdentifyMismatches();
           }
           this.gameCurrentNumberOfMisses++;
           this.gameCurrentNumberOfFails++;
@@ -610,6 +610,27 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       return this.GetMsToHMS(this.GetTimeUntilMidnightInMS());
     },
 
+    AwardCurrency() {
+      note('AwardCurrency() called');
+      if (this.appSettingsEnableEconomy) {
+        this.gameCurrentUpdatedCurrencyDeltas = [];
+        if (this.appSettingsEnableEconomy && this.getNormalModeComputed.isSelected) {
+          let gemsToAdd = 0;
+          if (this.gameCurrentNumberOfClears === this.getCurrentPlayerRank.levels) {
+            gemsToAdd = gemsToAdd + 1000;
+          }
+          for (let index = 0; index < this.gameCurrentNumberOfClears; index++) {
+            gemsToAdd = gemsToAdd + 10;
+          }
+          this.gameCurrentUpdatedCurrencyDeltas.push({ currency: this.userCurrency.gem, delta: gemsToAdd });
+          this.userCurrency.gem.count = this.userCurrency.gem.count + gemsToAdd;
+          if (this.userCurrency.gem.count > this.userCurrency.gem.maxCount) {
+            this.userCurrency.gem.count > this.userCurrency.gem.maxCount;
+          }
+        }
+      }
+    },
+
     EndGame() {
       note('EndGame() called');
       let _score = new ScoreObject({
@@ -621,6 +642,8 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         numberOfClears: this.gameCurrentNumberOfClears,
       });
       this.appVisualStateShowPageGameOver = true;
+
+      this.AwardCurrency();
 
       if (this.getNormalModeComputed.isSelected) {
         _score.totalPossibleClears = this.getCurrentPlayerRank.levels;
@@ -870,6 +893,15 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       }
       this.ResetModalContentScrollPositions();
       this.appVisualStateShowPageChallenge = _value;
+    },
+
+    ToggleShowStoreOn(event) {
+      note('ToggleShowHomeOn(event) called');
+      if (this.appSettingsEnableEconomy) {
+        event.stopPropagation();
+        event.preventDefault();
+        this.appVisualStateShowPageManageCurrency = !this.appVisualStateShowPageManageCurrency;
+      }
     },
 
     ToggleShowHomeOn(event) {
@@ -1466,6 +1498,37 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         _storedVersion = null;
       }
 
+      let _userCurrency = localStorage.getItem('userCurrency');
+      try {
+        if (_userCurrency !== undefined && _userCurrency !== null) {
+          let currencies = JSON.parse(_userCurrency);
+          for (const key in this.userCurrency) {
+            const currency = this.userCurrency[key];
+            for (const jkey in currencies) {
+              const item = currencies[jkey];
+              if (item.id === currency.id) {
+                currency.count = item.count;
+              }
+            }
+          }
+        }
+      } catch (_error) {
+        error('_userCurrency error: ' + _error);
+      }
+
+      let _userSettingsActionItems = localStorage.getItem('userSettingsActionItems');
+      try {
+        if (_userSettingsActionItems !== undefined && _userSettingsActionItems !== null) {
+          let items = JSON.parse(_userSettingsActionItems);
+          this.userSettingsActionItems.forEach((actionitem) => {
+            let match = items.find((item) => item.id === actionitem.id);
+            actionitem.count = match.count;
+          });
+        }
+      } catch (_error) {
+        error('_userSettingsActionItems error: ' + _error);
+      }
+
       let _gameCurrentIsGameOver = localStorage.getItem('gameCurrentIsGameOver');
       try {
         if (_gameCurrentIsGameOver !== undefined && _gameCurrentIsGameOver !== null) {
@@ -1534,12 +1597,108 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         localStorage.setItem('appTutorialUserHasSeen', JSON.stringify(this.appTutorialUserHasSeen));
         localStorage.setItem('userRank', this.userRank);
         localStorage.setItem('userNumberOfPerfectBasicGames', this.userNumberOfPerfectBasicGames);
+        if (this.appSettingsEnableEconomy) {
+          localStorage.setItem('userCurrency', JSON.stringify(this.getCurrencies));
+          localStorage.setItem('userSettingsActionItems', JSON.stringify(this.userSettingsActionItems));
+        }
       }
     },
 
     ChangeTutorialPiecesToCats(_text) {
       let _outgoing = _text.replace('pieces', 'cats');
       return this.userSettingsUseCats ? _outgoing : _text;
+    },
+
+    HandleActionItemClick(_item) {
+      note('HandleActionItemClick() called');
+
+      if (this.appSettingsEnableEconomy) {
+        if (_item.count > 0) {
+          _item.count--;
+          switch (_item.id) {
+            case 1:
+              this.IdentifyMismatches();
+              break;
+
+            case 2:
+              this.ResetLevel();
+              break;
+
+            case 3:
+              this.AddTimeBonus(10000);
+              break;
+
+            case 4:
+              this.ClearLevel();
+              break;
+
+            case 5:
+              this.AddTimeBonus(30000);
+              break;
+
+            default:
+              break;
+          }
+          localStorage.setItem('userSettingsActionItems', JSON.stringify(this.userSettingsActionItems));
+        }
+      }
+    },
+
+    IdentifyMismatches() {
+      note('IdentifyMismatches() called');
+      let _mismatchFound = false;
+      this.gameCurrentBoardPieces.forEach((piece) => {
+        piece.nudge = false;
+        if (!_mismatchFound && ((piece.isMatch && !piece.isSelected) || (!piece.isMatch && piece.isSelected))) {
+          piece.nudge = true;
+          _mismatchFound = true;
+        }
+      });
+    },
+
+    ResetLevel() {
+      note('ResetLevel() called');
+      this.gameCurrentBoardPieces.forEach((piece) => {
+        piece.isSelected = false;
+        piece.nudge = false;
+      });
+      this.gameCurrentNumberOfMisses = 0;
+    },
+
+    AddTimeBonus(_amount = 3000) {
+      note('AddTimeBonus() called');
+      this.appSettingsCurrentGameMode.bonustime = _amount;
+      this.gameCurrentTimer = this.gameCurrentTimer + this.appSettingsCurrentGameMode.bonustime;
+      if (this.appSettingsCurrentGameMode.bonustime > 0) {
+        this.appVisualStateShowElementFlyaway = true;
+        window.setTimeout(function () {
+          app.appVisualStateShowElementFlyaway = false;
+        }, 100);
+      }
+    },
+
+    ClearLevel() {
+      note('ClearLevel() called');
+      this.ResetLevel();
+      this.gameCurrentBoardPieces.forEach((piece) => {
+        piece.isSelected = piece.isMatch;
+      });
+      this.CheckBoard();
+    },
+
+    AdjustItemCount(event, _currency, _item, _amount) {
+      note('AdjustItemCount() called');
+      event.stopPropagation();
+      event.preventDefault();
+      let count = _item.count + _amount;
+      let adjustAmount = _currency.count + _item.cost * -1 * _amount;
+      if (adjustAmount >= 0 && count >= 0 && count <= _item.maxCount) {
+        _currency.count = adjustAmount;
+        _item.count = count;
+      }
+
+      localStorage.setItem('userCurrency', JSON.stringify(this.getCurrencies));
+      localStorage.setItem('userSettingsActionItems', JSON.stringify(this.userSettingsActionItems));
     },
 
     HandleSkipTutorial() {
@@ -1847,6 +2006,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       this.gameConfettiCount = 0;
       this.appVisualStateShowNotification = false;
       this.appVisualStateShowElementHint = false;
+      this.appVisualStateShowPageManageCurrency = false;
       this.tempPerfectBasicGames = this.userNumberOfPerfectBasicGames;
       if (this.gameCurrentIsGameOver) {
         this.appVisualStateShowPageHome = true;
@@ -2089,6 +2249,41 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         text = 'Just ' + (3 - this.userNumberOfPerfectBasicGames) + ' more perfect ' + (this.userNumberOfPerfectBasicGames === 2 ? 'game' : 'games');
       }
       return text;
+    },
+
+    getCurrencies: function () {
+      note('getCurrencies() called');
+      let cs = [];
+
+      for (const c in this.userCurrency) {
+        if (this.userCurrency.hasOwnProperty(c)) {
+          let currency = new CurrencyObject(this.userCurrency[c]);
+          if (currency.isEnabled) {
+            cs.push(currency);
+          }
+        }
+      }
+      return cs;
+    },
+
+    getFirstTwoItemsSortedByOrder: function () {
+      note('getFirstTwoItemsSortedByOrder() called');
+      return [this.userSettingsActionItems[0], this.userSettingsActionItems[1]];
+    },
+
+    getSecondTwoItemsSortedByOrder: function () {
+      note('getSecondTwoItemsSortedByOrder() called');
+      return [this.userSettingsActionItems[2], this.userSettingsActionItems[3]];
+    },
+
+    getItemsSortedByCost: function () {
+      note('getItemsSortedByCost() called');
+      function compare(a, b) {
+        if (a.cost > b.cost) return 1;
+        if (a.cost < b.cost) return -1;
+        return 0;
+      }
+      return this.userSettingsActionItems.sort(compare);
     },
   },
 });

@@ -1056,12 +1056,171 @@ leftright.current {
   color: var(--color2);
 }
 
+actionbar {
+  display: flex;
+  width: calc(100% - 2 * var(--defaultGap));
+  padding: 0px var(--defaultGap);
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+actionitems {
+  display: flex;
+  gap: 10px;
+}
+
+actionitem {
+  display: block;
+  /* background-color: hsl(var(--appBackgroundStrongest)); */
+  width: 50px;
+  text-wrap: wrap;
+  text-align: center;
+  line-height: 120%;
+  font-size: .75em;
+  text-transform: uppercase;
+  padding: 8px 2px 6px;
+  /* letter-spacing: 1px; */
+  border-radius: var(--borderRadius);
+  color: var(--color2);
+  /* box-shadow: inset 0px 1px 2px hsla(var(--appForegroundStrongest), 0.5); */
+}
+
+actionitem.disabled {
+  color: rgba(0, 0, 0, .5);
+}
+
+actionitem count {
+  display: block;
+  font-size: 1.4em;
+  font-weight: bold;
+  /* line-height: 1.5em; */
+  padding-bottom: 2px;
+}
+
+rewards {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 350px;
+  margin: var(--defaultGap) 0 0;
+}
+
+rewards:first-of-type {
+  margin: 0;
+}
+
+rewards h2, rewards h2+credit {
+  margin: 0 0 var(--defaultUnit) 0;
+  padding: 0 var(--defaultUnit);
+}
+
+reward {
+  display: flex;
+  width: calc(100% - 2 * var(--defaultUnit));
+  max-width: 400px;
+  min-height: 60px;
+  margin: calc(2 * var(--defaultUnit)) 0 0;
+  gap: var(--defaultUnit);
+  padding-right: calc(1 * var(--defaultUnit));
+  justify-content: start;
+  align-items: center;
+  background: hsl(var(--appBackgroundStrongest));
+  border-radius: var(--borderRadius);
+  /* box-shadow: inset 0px 1px 2px hsla(var(--appForegroundStrongest), 0.5); */
+  /* font-family: 'Bangers'; */
+  overflow: hidden;
+}
+
+reward cost {
+  display: flex;
+  flex-direction: column;
+  background: hsl(var(--appForeground));
+  color: hsl(var(--appBackground));
+  height: 60px;
+  width: 87px;
+  padding: 0 var(--defaultUnit);
+  line-height: 100%;
+  font-size: .7em;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  font-family: -apple-system, Arial, sans-serif;
+}
+
+reward cost span {
+  display: block;
+  font-size: 1.5em;
+  margin-top: calc(.5 * var(--defaultUnit));
+  width: 100%;
+}
+
+.show reward button.quaternary, reward button.quaternary,
+.show reward button.quaternary:active, reward button.quaternary:active,
+.show reward button.quaternary:focus, reward button.quaternary:focus {
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  margin: var(--defaultUnit) 0;
+  padding: 0;
+  line-height: 100%;
+  /* font-family: -apple-system, Arial, sans-serif; */
+  /* text-align: center; */
+  /* border: 0; */
+}
+
+reward info {
+  width: calc(100% - 1 * var(--defaultUnit));
+  padding: 0 calc(.75 * var(--defaultUnit));
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  line-height: 1.1em;
+  margin: var(--defaultUnit) 0;
+  height: auto;
+}
+
+reward name {
+  font-size: 1em;
+  font-weight: bold;
+  justify-content: start;
+}
+
+reward name span {
+  font-weight: normal;
+  font-size: .7em;
+}
+
+reward info description {
+  margin: 0;
+  text-wrap: wrap;
+  font-size: .7em;
+  justify-content: start;
+  padding: 0;
+  text-align: left;
+  line-height: 1.2em;
+  height: auto;
+  color: hsla(var(--appForeground), .5);
+}
+
+reward amount {
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  font-size: 1.15em;
+  letter-spacing: 0px;
+  font-weight: bold;
+  width: 55px;
+  justify-content: center;
+  color: var(--color1);
+}
+
 scorearea {
-  margin: 0 0 16px 0;
+  margin: 0 0 0 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 120px;
+  width: 100%;
   cursor: pointer;
   flex-direction: column;
   pointer-events: none;
@@ -1108,6 +1267,15 @@ labelsmall span {
 
 credit {
   font-size: 0.8em;
+  line-height: 1.5em;
+}
+
+credit span:after {
+  content: ', ';
+}
+
+credit span:last-of-type:after {
+  content: '';
 }
 
 header credit, ranks>credit {
@@ -2060,6 +2228,17 @@ confetti.drop {
 
   currentscore {
     margin: 0px;
+  }
+
+  actionbar {
+    width: calc(100% - 1 * var(--defaultGap));
+    max-width: 360px;
+    padding: 0px calc(.5 * var(--defaultGap));
+  }
+
+  actionitem {
+    font-size: 0.6em;
+    width: 34px;
   }
 
   board {

@@ -69,11 +69,17 @@
             </ranks>
             <credit v-html="getHomePageRankSubcredit"></credit>
           </section>
+          <section v-if="appSettingsEnableEconomy" @click="ToggleShowStoreOn(event)">
+            <credit>
+              <button class="quaternary inline" style="gap: 4px" v-for="currency in getCurrencies">{{currency.icon}} <b>{{NumberWithCommas(currency.count)}}</b> Unused {{(currency.count === 1 ? currency.name: currency.pluralName)}}</button></credit
+            >
+          </section>
           <section>
             <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="secondary" @click="StartDailyChallenge()">✨ New Daily Challenge</button>
             <button v-if="gameDailyChallengeAlreadyScored || gameDailyChallenge.allLevels.length === 0" title="The next Daily Challenge will be available at midnight tonight." class="tertiary small inline"><icon v-if="isGettingDailyChallenge" class="spinner spin"></icon><span v-if="!isGettingDailyChallenge">Next challenge: {{timeToMidnight}}</span></button>
             <button class="primary" title="Click to start a new game." @click="RestartGame()">{{getCurrentGameModeComputed.id === 'infinite'? 'Play Zen' : 'Play!'}}</button>
             <button title="Click to toggle Zen Mode on." :class="{on: getCurrentGameModeComputed.id === 'infinite'}" @click="ToggleZenMode()">Zen Mode: {{getCurrentGameModeComputed.id === 'infinite' ? 'On' : 'Off'}}</button>
+            <!-- <button class="inline" v-if="appSettingsEnableEconomy" title="Click to manage your rewards currency." @click="ToggleShowStoreOn(event)">Manage Rewards</button> -->
             <smallbuttons>
               <button class="inline" title="Click to adjust the game settings." @click="ToggleSettings(event, true)">Options</button>
               <button title="Click to learn how to play Like Me?" class="inline" @click="ToggleHowToPlay(event, true)">Tutorial</button>
@@ -87,6 +93,36 @@
           </section>
         </content>
       </page>
+      <modal :class="{show: appVisualStateShowPageManageCurrency}">
+        <chrome>
+          <button @click="ClearEphemeralVisualStates()">done</button>
+        </chrome>
+        <content>
+          <header>
+            <h1>Manage Rewards</h1>
+            <credit>Gems can be reallocated at any time. Once a reward is used, those gems are spent. </credit>
+          </header>
+          <section @click="ToggleShowStoreOn(event)">
+            <rewards v-for="currency in getCurrencies" v-if="currency.isEnabled">
+              <h2>{{currency.icon}} <b>{{NumberWithCommas(currency.count)}}</b> Unused {{(currency.count === 1 ? currency.name: currency.pluralName)}}</h2>
+              <credit v-if="currency.labor !== ''">{{currency.labor}}</credit>
+              <reward v-for="reward in getItemsSortedByCost" v-if="reward.currency.name === currency.name">
+                <cost><span>{{currency.icon}}</span>{{NumberWithCommas(reward.cost)}}</cost>
+                <info>
+                  <name><namelet v-html="reward.name"></namelet> <span>&nbsp;(max {{reward.maxCount}})</span></name>
+                  <description v-html="reward.description"></description>
+                </info>
+                <button class="quaternary" @click="AdjustItemCount(event, currency, reward, -1)" :disabled="reward.count === 0">-</button>
+                <amount>{{reward.count}}</amount>
+                <button class="quaternary" @click="AdjustItemCount(event, currency, reward, 1)" :disabled="reward.cost > currency.count || currency.count === 0 || reward.count === reward.maxCount">+</button>
+              </reward>
+            </rewards>
+          </section>
+          <section>
+            <credit></credit>
+          </section>
+        </content>
+      </modal>
       <modal :class="{show: appVisualStateShowPageCredits}">
         <chrome>
           <button @click="ClearEphemeralVisualStates()">done</button>
@@ -249,8 +285,8 @@
           </section>
         </content>
       </modal>
-      <modal class="pause" @click="if (!app.appVisualStateShowElementHint) ToggleGamePause(event, false)" :class="{show: gameCurrentIsPaused && !gameCurrentIsGameOver}">
-        <button title="Click the button to resume playing the game." class="quaternary">
+      <modal class="pause" @click="ToggleGamePause(event, false)" :class="{show: gameCurrentIsPaused && !gameCurrentIsGameOver}">
+        <button title="Click the button to resume playing the game." style="background: transparent" class="quaternary">
           <icon class="play"></icon>
         </button>
       </modal>
@@ -326,6 +362,10 @@
               <left>Game rank</left>
               <right>{{getLastHighScoreRank.name}}</right>
             </leftright>
+            <leftright v-for="boon in gameCurrentUpdatedCurrencyDeltas">
+              <left>{{boon.currency.pluralName}} earned</left>
+              <right>{{boon.currency.icon}} {{NumberWithCommas(boon.delta)}}</right>
+            </leftright>
             <leftright>
               <left>Time {{getInfiniteModeComputed.isSelected ? 'played' : 'remaining'}}</left>
               <right>{{GetMsToTime(gameCurrentTimer)}}</right>
@@ -366,7 +406,7 @@
         <chrome :class="{hide: !appVisualStateShowGameOverContent, alert: gameCurrentTimer < 6000 && !getInfiniteModeComputed.isSelected}">
           <button @click="appVisualStateShowPageSettings = true">Options</button>
           <gameinfo>
-            <labelsmall v-if="getCurrentGameModeComputed.id==='normal'"> level {{parseInt(gameCurrentNumberOfClears + 1)}} <span>of</span> {{getCurrentPlayerRank.levels}} </labelsmall>
+            <labelsmall v-if="getCurrentGameModeComputed.id==='normal'"> level {{parseInt(gameCurrentNumberOfClears) + 1}} <span>of</span> {{getCurrentPlayerRank.levels}} </labelsmall>
             <time @click="ToggleGamePause(event, false)" v-if="!getInfiniteModeComputed.isSelected">{{gameCurrentIsPaused ? 'Paused' : NumberWithCommas(gameCurrentTotalScore) + ' pts'}}</time>
             <time v-if="getInfiniteModeComputed.isSelected">Zen Mode</time>
           </gameinfo>
@@ -375,11 +415,25 @@
         <hint @pointerdown="appVisualStateShowElementHint = false" :class="{show: appVisualStateShowElementHint && !gameCurrentIsGameOver && userSettingsUseHints}">
           <message v-html="gameCurrentHintText"></message>
         </hint>
-        <playarea @click="if(gameCurrentIsPaused) ToggleGamePause(event, false)">
-          <scorearea :class="{clickable: !getInfiniteModeComputed.isSelected}" @click="ToggleGamePause(event, !gameCurrentIsPaused)">
-            <labelsmall>{{getInfiniteModeComputed.isSelected ? '' : 'II'}} {{getInfiniteModeComputed.isSelected ? 'clears' : 'pause'}} </labelsmall>
-            <currentscore :class="{bigpulse: !getInfiniteModeComputed.isSelected && !gameCurrentIsGameOver && gameCurrentTimer < 6000 }"> {{getInfiniteModeComputed.isSelected ? NumberWithCommas(gameCurrentNumberOfClears) : GetMsToTime(gameCurrentTimer)}} </currentscore>
-          </scorearea>
+        <playarea>
+          <actionbar>
+            <actionitems v-if="appSettingsEnableEconomy && !getInfiniteModeComputed.isSelected">
+              <actionitem @click="HandleActionItemClick(item)" :class="{disabled: item.count === 0}" v-for="item in getFirstTwoItemsSortedByOrder">
+                <count>{{item.count}}</count>
+                <namelet v-html="item.name"></namelet>
+              </actionitem>
+            </actionitems>
+            <scorearea :class="{clickable: !getInfiniteModeComputed.isSelected}" @click="ToggleGamePause(event, !gameCurrentIsPaused)">
+              <labelsmall>{{getInfiniteModeComputed.isSelected ? '' : 'II'}} {{getInfiniteModeComputed.isSelected ? 'clears' : 'pause'}} </labelsmall>
+              <currentscore :class="{bigpulse: !getInfiniteModeComputed.isSelected && !gameCurrentIsGameOver && gameCurrentTimer < 6000 }"> {{getInfiniteModeComputed.isSelected ? NumberWithCommas(gameCurrentNumberOfClears) : GetMsToTime(gameCurrentTimer)}} </currentscore>
+            </scorearea>
+            <actionitems v-if="appSettingsEnableEconomy && !getInfiniteModeComputed.isSelected">
+              <actionitem @click="HandleActionItemClick(item)" :class="{disabled: item.count === 0}" v-for="item in getSecondTwoItemsSortedByOrder">
+                <count>{{item.count}}</count>
+                <namelet v-html="item.name"></namelet>
+              </actionitem>
+            </actionitems>
+          </actionbar>
           <board>
             <container @click="TogglePieceSelection(piece)" v-for="piece in gameCurrentBoardPieces" :class="{include:  piece.nudge && userSettingsUseHints && piece.isMatch, exclude: piece.nudge && userSettingsUseHints && !piece.isMatch, selected: piece.isSelected, dropped: piece.hasDropped}">
               <piece :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color}">
@@ -387,7 +441,7 @@
               </piece>
             </container>
           </board>
-          <addtime :class="{flyaway: appVisualStateShowElementFlyaway}">+3 seconds!</addtime>
+          <addtime :class="{flyaway: appVisualStateShowElementFlyaway}">+{{appSettingsCurrentGameMode.bonustime/1000}} seconds!</addtime>
           <me :class="{nope: gameCurrentIsUserGuessWrong}">
             <container @click="CheckBoard()">
               <piece :style="{maskImage: gameCurrentMePiece.shape, webkitMaskImage: gameCurrentMePiece.shape, backgroundColor: gameCurrentMePiece.color}">
@@ -456,6 +510,8 @@
     <script src="models/RankObject.js" type="text/javascript"></script>
     <script src="models/TutorialStepObject.js" type="text/javascript"></script>
     <script src="models/ScoreObject.js" type="text/javascript"></script>
+    <script src="models/CurrencyObject.js" type="text/javascript"></script>
+    <script src="models/ActionItemObject.js" type="text/javascript"></script>
     <script src="models/ThemeObject.js" type="text/javascript"></script>
     <script src="models/PieceObject.js" type="text/javascript"></script>
     <script src="models/ModeObject.js" type="text/javascript"></script>
