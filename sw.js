@@ -1,4 +1,4 @@
-const CACHE_VERSION = '4.2.272';
+const CACHE_VERSION = '4.2.273';
 const CURRENT_CACHE = `main-${CACHE_VERSION}`;
 
 // prettier-ignore
@@ -10,6 +10,8 @@ const cacheFiles = [
   'audio/themesong.m4a',
   'models/RankObject.js',
   'models/TutorialStepObject.js',
+  'models/ActionItemObject.js',
+  'models/CurrencyObject.js',
   'models/ModeObject.js',
   'models/PieceObject.js',
   'models/ScoreObject.js',
