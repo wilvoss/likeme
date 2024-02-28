@@ -90,6 +90,7 @@
             </smallbuttons>
             <button class="inline" v-if="isInNativeAppWebView" title="Click to share this game with your friends." @click="ShareApp()">Share</button>
             <a v-if="!isInNativeAppWebView" title="Click to buy me a cup of coffee." class="button inline" href="https://www.buymeacoffee.com/wilvoss" target="_blank">Donate! </a>
+            <button class="inline" v-if="UseDebug" title="Click to reset the entire app." @click="ResetApp()">RESET APP</button>
           </section>
         </content>
       </page>

@@ -22,7 +22,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.273',
+    currentVersion: '4.2.274',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     currency: new Currency(),
@@ -46,6 +46,7 @@ var app = new Vue({
     appSettingsEnableEconomy: UseDebug,
     appSettingsCurrentGameMode: null,
     appSettingsInfiniteMode: null,
+    appIsBeingReset: false,
     appSettingsSoundFX: new Howl({
       src: './audio/phft4.mp3',
       volume: 0.5,
@@ -154,6 +155,16 @@ var app = new Vue({
       this.tempPerfectBasicGames = this.userNumberOfPerfectBasicGames;
       this.gameCurrentTotalScore = 0;
       this.gameCurrentIsGameOver = false;
+    },
+
+    ResetApp() {
+      note('NewGame() called');
+      let confirm = window.confirm('Are you sure you want to reset the entire app? Everything will be lost!');
+      if (confirm) {
+        this.appIsBeingReset = true;
+        localStorage.clear();
+        window.location.reload();
+      }
     },
 
     CheckBoard() {
@@ -627,6 +638,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
           if (this.userCurrency.gem.count > this.userCurrency.gem.maxCount) {
             this.userCurrency.gem.count > this.userCurrency.gem.maxCount;
           }
+          this.getCurrencies[0].count = this.userCurrency.gem.count;
         }
       }
     },
@@ -1550,56 +1562,58 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     },
 
     HandleOnPageHideEvent(_clearInterval = true) {
-      if (_clearInterval) {
-        window.clearInterval(this.updateInterval);
-      }
+      if (!this.appIsBeingReset) {
+        if (_clearInterval) {
+          window.clearInterval(this.updateInterval);
+        }
 
-      this.appSettingsSoundFX.unload();
-      if (this.appSettingsSaveSettings) {
-        localStorage.setItem('storedVersion', this.currentVersion);
-        localStorage.setItem('appSettingsModes', JSON.stringify(this.appSettingsModes));
-        localStorage.setItem('appSettingsModeIntervalIncrement', this.appSettingsModeIntervalIncrement);
-        localStorage.setItem('appSettingsPieceSize', this.appSettingsPieceSize);
-        localStorage.setItem('appSettingsTotalNumberOfBoardPieces', this.appSettingsTotalNumberOfBoardPieces);
-        localStorage.setItem('appSettingsBoardGridSize', this.appSettingsBoardGridSize);
-        localStorage.setItem('appVisualStateShowPageHome', JSON.stringify(this.appVisualStateShowPageHome));
-        localStorage.setItem('appVisualStateShowPageHowToPlay', JSON.stringify(this.appVisualStateShowPageHowToPlay));
-        localStorage.setItem('appVisualStateShowPageSettings', JSON.stringify(this.appVisualStateShowPageSettings));
-        localStorage.setItem('appVisualStateShowElementHint', JSON.stringify(this.appVisualStateShowElementHint));
-        localStorage.setItem('appVisualStateShowElementFlyaway', JSON.stringify(this.appVisualStateShowElementFlyaway));
-        localStorage.setItem('gameDailyChallenge', JSON.stringify(this.gameDailyChallenge));
-        localStorage.setItem('gameCurrentIsGameDailyChallenge', JSON.stringify(this.gameCurrentIsGameDailyChallenge));
-        localStorage.setItem('gameDailyChallengeHasBeenStarted', JSON.stringify(this.gameDailyChallengeHasBeenStarted));
-        localStorage.setItem('gameCurrentAllLevels', JSON.stringify(this.gameCurrentAllLevels));
-        localStorage.setItem('gameCurrentLevel', JSON.stringify(this.gameCurrentLevel));
-        localStorage.setItem('gameCurrentIsGameOver', JSON.stringify(this.gameCurrentIsGameOver));
-        localStorage.setItem('gameCurrentMePiece', JSON.stringify(this.gameCurrentMePiece));
-        localStorage.setItem('gameCurrentBoardPieces', JSON.stringify(this.gameCurrentBoardPieces));
-        localStorage.setItem('gameCurrentStartingTime', this.gameCurrentStartingTime);
-        localStorage.setItem('gameCurrentTimer', this.gameCurrentTimer);
-        localStorage.setItem('gameCurrentNumberOfClears', this.gameCurrentNumberOfClears);
-        localStorage.setItem('gameCurrentNumberOfPerfectMatches', this.gameCurrentNumberOfPerfectMatches);
-        localStorage.setItem('gameCurrentIsUserGuessWrong', JSON.stringify(this.gameCurrentIsUserGuessWrong));
-        localStorage.setItem('gameCurrentNumberOfFails', this.gameCurrentNumberOfFails);
-        localStorage.setItem('gameCurrentNumberOfMisses', this.gameCurrentNumberOfMisses);
-        localStorage.setItem('gameCurrentHintText', this.gameCurrentHintText);
-        localStorage.setItem('gameCurrentTotalScore', this.gameCurrentTotalScore);
-        localStorage.setItem('gameCurrentHasAnyPieceEverBeenSelected', JSON.stringify(this.gameCurrentHasAnyPieceEverBeenSelected));
-        localStorage.setItem('gameLikenessNudgeHasBeenShown', JSON.stringify(this.gameLikenessNudgeHasBeenShown));
-        localStorage.setItem('gameClickMeNudgeHasBeenShown', JSON.stringify(this.gameClickMeNudgeHasBeenShown));
-        localStorage.setItem('userHighScoresEasy', JSON.stringify(this.userHighScoresEasy));
-        localStorage.setItem('userSettingsUseCats', this.userSettingsUseCats);
-        localStorage.setItem('userSettingsUseAltPatterns', this.userSettingsUseAltPatterns);
-        localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
-        localStorage.setItem('userSettingsUseSoundFX', this.userSettingsUseSoundFX);
-        localStorage.setItem('userSettingsPlayMusic', this.userSettingsPlayMusic);
-        localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
-        localStorage.setItem('appTutorialUserHasSeen', JSON.stringify(this.appTutorialUserHasSeen));
-        localStorage.setItem('userRank', this.userRank);
-        localStorage.setItem('userNumberOfPerfectBasicGames', this.userNumberOfPerfectBasicGames);
-        if (this.appSettingsEnableEconomy) {
-          localStorage.setItem('userCurrency', JSON.stringify(this.getCurrencies));
-          localStorage.setItem('userSettingsActionItems', JSON.stringify(this.userSettingsActionItems));
+        this.appSettingsSoundFX.unload();
+        if (this.appSettingsSaveSettings) {
+          localStorage.setItem('storedVersion', this.currentVersion);
+          localStorage.setItem('appSettingsModes', JSON.stringify(this.appSettingsModes));
+          localStorage.setItem('appSettingsModeIntervalIncrement', this.appSettingsModeIntervalIncrement);
+          localStorage.setItem('appSettingsPieceSize', this.appSettingsPieceSize);
+          localStorage.setItem('appSettingsTotalNumberOfBoardPieces', this.appSettingsTotalNumberOfBoardPieces);
+          localStorage.setItem('appSettingsBoardGridSize', this.appSettingsBoardGridSize);
+          localStorage.setItem('appVisualStateShowPageHome', JSON.stringify(this.appVisualStateShowPageHome));
+          localStorage.setItem('appVisualStateShowPageHowToPlay', JSON.stringify(this.appVisualStateShowPageHowToPlay));
+          localStorage.setItem('appVisualStateShowPageSettings', JSON.stringify(this.appVisualStateShowPageSettings));
+          localStorage.setItem('appVisualStateShowElementHint', JSON.stringify(this.appVisualStateShowElementHint));
+          localStorage.setItem('appVisualStateShowElementFlyaway', JSON.stringify(this.appVisualStateShowElementFlyaway));
+          localStorage.setItem('gameDailyChallenge', JSON.stringify(this.gameDailyChallenge));
+          localStorage.setItem('gameCurrentIsGameDailyChallenge', JSON.stringify(this.gameCurrentIsGameDailyChallenge));
+          localStorage.setItem('gameDailyChallengeHasBeenStarted', JSON.stringify(this.gameDailyChallengeHasBeenStarted));
+          localStorage.setItem('gameCurrentAllLevels', JSON.stringify(this.gameCurrentAllLevels));
+          localStorage.setItem('gameCurrentLevel', JSON.stringify(this.gameCurrentLevel));
+          localStorage.setItem('gameCurrentIsGameOver', JSON.stringify(this.gameCurrentIsGameOver));
+          localStorage.setItem('gameCurrentMePiece', JSON.stringify(this.gameCurrentMePiece));
+          localStorage.setItem('gameCurrentBoardPieces', JSON.stringify(this.gameCurrentBoardPieces));
+          localStorage.setItem('gameCurrentStartingTime', this.gameCurrentStartingTime);
+          localStorage.setItem('gameCurrentTimer', this.gameCurrentTimer);
+          localStorage.setItem('gameCurrentNumberOfClears', this.gameCurrentNumberOfClears);
+          localStorage.setItem('gameCurrentNumberOfPerfectMatches', this.gameCurrentNumberOfPerfectMatches);
+          localStorage.setItem('gameCurrentIsUserGuessWrong', JSON.stringify(this.gameCurrentIsUserGuessWrong));
+          localStorage.setItem('gameCurrentNumberOfFails', this.gameCurrentNumberOfFails);
+          localStorage.setItem('gameCurrentNumberOfMisses', this.gameCurrentNumberOfMisses);
+          localStorage.setItem('gameCurrentHintText', this.gameCurrentHintText);
+          localStorage.setItem('gameCurrentTotalScore', this.gameCurrentTotalScore);
+          localStorage.setItem('gameCurrentHasAnyPieceEverBeenSelected', JSON.stringify(this.gameCurrentHasAnyPieceEverBeenSelected));
+          localStorage.setItem('gameLikenessNudgeHasBeenShown', JSON.stringify(this.gameLikenessNudgeHasBeenShown));
+          localStorage.setItem('gameClickMeNudgeHasBeenShown', JSON.stringify(this.gameClickMeNudgeHasBeenShown));
+          localStorage.setItem('userHighScoresEasy', JSON.stringify(this.userHighScoresEasy));
+          localStorage.setItem('userSettingsUseCats', this.userSettingsUseCats);
+          localStorage.setItem('userSettingsUseAltPatterns', this.userSettingsUseAltPatterns);
+          localStorage.setItem('userSettingsUseHints', this.userSettingsUseHints);
+          localStorage.setItem('userSettingsUseSoundFX', this.userSettingsUseSoundFX);
+          localStorage.setItem('userSettingsPlayMusic', this.userSettingsPlayMusic);
+          localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
+          localStorage.setItem('appTutorialUserHasSeen', JSON.stringify(this.appTutorialUserHasSeen));
+          localStorage.setItem('userRank', this.userRank);
+          localStorage.setItem('userNumberOfPerfectBasicGames', this.userNumberOfPerfectBasicGames);
+          if (this.appSettingsEnableEconomy) {
+            localStorage.setItem('userCurrency', JSON.stringify(this.getCurrencies));
+            localStorage.setItem('userSettingsActionItems', JSON.stringify(this.userSettingsActionItems));
+          }
         }
       }
     },
