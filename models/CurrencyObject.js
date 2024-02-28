@@ -12,8 +12,8 @@ class CurrencyObject {
     this.isEnabled = spec.isEnabled === undefined ? false : spec.isEnabled;
   }
 }
-let Currencies = {
-  gem: new CurrencyObject({
+let Currencies = [
+  new CurrencyObject({
     id: 1,
     name: 'Gem',
     pluralName: 'Gems',
@@ -22,7 +22,7 @@ let Currencies = {
     count: UseDebug ? 1000 : 0,
     isEnabled: true,
   }),
-  key: new CurrencyObject({
+  new CurrencyObject({
     id: 2,
     name: 'Key',
     pluralName: 'Keys',
@@ -30,14 +30,14 @@ let Currencies = {
     icon: '🔑',
     count: 0,
   }),
-  coin: new CurrencyObject({
+  new CurrencyObject({
     id: 3,
     name: 'Coin',
     pluralName: 'Coins',
     icon: '🪙',
     count: 0,
   }),
-};
+];
 
 class Currency {
   Update(_currency, _amount) {

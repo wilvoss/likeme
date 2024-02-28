@@ -8,7 +8,7 @@ class ActionItemObject {
     this.name = spec.name === undefined ? 'Reward' : spec.name;
     this.description = spec.description === undefined ? '' : spec.description;
     this.count = spec.count === undefined ? 0 : spec.count;
-    this.currency = spec.currency === undefined ? Currencies.gem : spec.currency;
+    this.currency = spec.currency === undefined ? Currencies[0] : spec.currency;
     this.maxCount = spec.maxCount === undefined ? 10 : spec.maxCount;
     this.cost = spec.cost === undefined ? 250 : spec.cost;
   }

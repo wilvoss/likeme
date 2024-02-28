@@ -22,7 +22,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.274',
+    currentVersion: '4.2.275',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     currency: new Currency(),
@@ -633,12 +633,12 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
           for (let index = 0; index < this.gameCurrentNumberOfClears; index++) {
             gemsToAdd = gemsToAdd + 10;
           }
-          this.gameCurrentUpdatedCurrencyDeltas.push({ currency: this.userCurrency.gem, delta: gemsToAdd });
-          this.userCurrency.gem.count = this.userCurrency.gem.count + gemsToAdd;
-          if (this.userCurrency.gem.count > this.userCurrency.gem.maxCount) {
-            this.userCurrency.gem.count > this.userCurrency.gem.maxCount;
+          this.gameCurrentUpdatedCurrencyDeltas.push({ currency: this.userCurrency[0], delta: gemsToAdd });
+          this.userCurrency[0].count = this.userCurrency[0].count + gemsToAdd;
+          if (this.userCurrency[0].count > this.userCurrency[0].maxCount) {
+            this.userCurrency[0].count > this.userCurrency[0].maxCount;
           }
-          this.getCurrencies[0].count = this.userCurrency.gem.count;
+          // this.getCurrencies[0].count = this.userCurrency[0].count;
         }
       }
     },
@@ -992,7 +992,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     GetUserSettings() {
       note('GetUserSettings() called');
 
-      if (localStorage.length === 0) {
+      if (localStorage.length < 1) {
         this.appTutorialUserHasSeen = false;
         this.appTutorialIsInPlay = true;
       } else {
@@ -1514,15 +1514,11 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       try {
         if (_userCurrency !== undefined && _userCurrency !== null) {
           let currencies = JSON.parse(_userCurrency);
-          for (const key in this.userCurrency) {
-            const currency = this.userCurrency[key];
-            for (const jkey in currencies) {
-              const item = currencies[jkey];
-              if (item.id === currency.id) {
-                currency.count = item.count;
-              }
-            }
-          }
+
+          this.userCurrency.forEach((currency) => {
+            let match = currencies.find((jcurr) => jcurr.id === currency.id);
+            currency.count = match.count;
+          });
         }
       } catch (_error) {
         error('_userCurrency error: ' + _error);
@@ -1611,7 +1607,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
           localStorage.setItem('userRank', this.userRank);
           localStorage.setItem('userNumberOfPerfectBasicGames', this.userNumberOfPerfectBasicGames);
           if (this.appSettingsEnableEconomy) {
-            localStorage.setItem('userCurrency', JSON.stringify(this.getCurrencies));
+            localStorage.setItem('userCurrency', JSON.stringify(this.userCurrency));
             localStorage.setItem('userSettingsActionItems', JSON.stringify(this.userSettingsActionItems));
           }
         }
@@ -1711,7 +1707,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
         _item.count = count;
       }
 
-      localStorage.setItem('userCurrency', JSON.stringify(this.getCurrencies));
+      localStorage.setItem('userCurrency', JSON.stringify(this.userCurrency));
       localStorage.setItem('userSettingsActionItems', JSON.stringify(this.userSettingsActionItems));
     },
 
@@ -2267,17 +2263,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
 
     getCurrencies: function () {
       note('getCurrencies() called');
-      let cs = [];
-
-      for (const c in this.userCurrency) {
-        if (this.userCurrency.hasOwnProperty(c)) {
-          let currency = new CurrencyObject(this.userCurrency[c]);
-          if (currency.isEnabled) {
-            cs.push(currency);
-          }
-        }
-      }
-      return cs;
+      return this.userCurrency.filter((currency) => currency.isEnabled);
     },
 
     getFirstTwoItemsSortedByOrder: function () {
