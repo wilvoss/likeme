@@ -71,8 +71,8 @@
           </section>
           <section v-if="appSettingsEnableEconomy" @click="ToggleShowStoreOn(event)">
             <credit>
-              <button class="quaternary inline" style="gap: 4px" v-for="currency in getCurrencies">{{currency.icon}} <b>{{NumberWithCommas(currency.count)}}</b> Unused {{(currency.count === 1 ? currency.name: currency.pluralName)}}</button></credit
-            >
+              <button class="quaternary inline" style="gap: 4px" v-for="currency in getCurrencies">{{currency.icon}} <b>{{NumberWithCommas(currency.count)}}</b> Unused {{(currency.count === 1 ? currency.name: currency.pluralName)}}</button>
+            </credit>
           </section>
           <section>
             <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="secondary" @click="StartDailyChallenge()">✨ New Daily Challenge</button>
@@ -263,14 +263,14 @@
             <h1>High Scores</h1>
           </header>
           <section v-if="gameLastHighScore.isCurrent">
-            <h2>Last Game</h2>
+            <h2 style="margin-bottom: var(--defaultGap)">Last Game</h2>
             <leftright @click="SetScoreForSharingAndShare(gameLastHighScore)" :title="gameLastHighScore.isDaily ? 'Recorded for the ' + FormatDate(gameLastHighScore.dailyDate) + ' daily challange.' : ''" class="lastscore">
               <left>{{gameLastHighScore.isDaily ? 'Daily Challenge' : gameLastHighScore.modeName}}</left>
               <right>{{NumberWithCommas(gameLastHighScore.value)}}</right>
             </leftright>
           </section>
           <section>
-            <h2>Daily Challenge</h2>
+            <h2 style="margin-bottom: var(--defaultGap)">Daily Challenge</h2>
             <leftright @click="SetScoreForSharingAndShare(score, getNormalModeComputed)" v-for="score in userScoresHighDailyByDate">
               <left>{{FormatDate(score.date)}}</left>
               <right>{{NumberWithCommas(score.value)}}</right>
@@ -278,7 +278,7 @@
             <leftright v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighDailyByDate.length"> <left></left>&nbsp;<right></right> </leftright>
           </section>
           <section>
-            <h2>Ranked Games</h2>
+            <h2 style="margin-bottom: var(--defaultGap)">Ranked Games</h2>
             <leftright @click="SetScoreForSharingAndShare(score, getNormalModeComputed)" v-for="score in userScoresHighEasyByValue" :class="{current: score.isCurrent}">
               <left>{{FormatDate(score.date)}}</left>
               <right>{{NumberWithCommas(score.value)}}</right>
@@ -355,21 +355,21 @@
           <h1 v-html="getGameOverTitle"></h1>
           <p v-html="getGameOverSubtitle"></p>
           <section>
-            <leftright class="impress">
+            <leftright v-for="boon in gameCurrentUpdatedCurrencyDeltas">
+              <left>{{boon.currency.pluralName}} earned</left>
+              <right>{{boon.currency.icon}} {{NumberWithCommas(boon.delta)}}</right>
+            </leftright>
+            <!-- <leftright v-if="getNormalModeComputed.isSelected">
+              <left>Game rank</left>
+              <right>{{getLastHighScoreRank.name}}</right>
+            </leftright> -->
+            <leftright>
               <left> {{getNormalModeComputed.isSelected ? 'Final score ' : 'Total levels cleared '}} </left>
               <right> {{getNormalModeComputed.isSelected? NumberWithCommas(gameLastHighScore.value) + ' pts' : gameLastHighScore.numberOfClears}} </right>
             </leftright>
             <leftright v-if="getNormalModeComputed.isSelected">
               <left>Perfect games</left>
               <right>{{tempPerfectBasicGames}}{{gameLastHighScore.rankId === getLastRank.rank ? '' : '/3'}}</right>
-            </leftright>
-            <leftright v-if="getNormalModeComputed.isSelected">
-              <left>Game rank</left>
-              <right>{{getLastHighScoreRank.name}}</right>
-            </leftright>
-            <leftright v-for="boon in gameCurrentUpdatedCurrencyDeltas">
-              <left>{{boon.currency.pluralName}} earned</left>
-              <right>{{boon.currency.icon}} {{NumberWithCommas(boon.delta)}}</right>
             </leftright>
             <leftright>
               <left>Time {{getInfiniteModeComputed.isSelected ? 'played' : 'remaining'}}</left>
