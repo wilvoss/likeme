@@ -440,7 +440,7 @@
             </actionitems>
           </actionbar>
           <board>
-            <container @click="TogglePieceSelection(piece)" v-for="piece in gameCurrentBoardPieces" :class="{include:  piece.nudge && userSettingsUseHints && piece.isMatch, exclude: piece.nudge && userSettingsUseHints && !piece.isMatch, selected: piece.isSelected, dropped: piece.hasDropped}">
+            <container @click="TogglePieceSelection(piece)" v-for="piece in gameCurrentBoardPieces" :class="{include:  piece.nudge && (userSettingsUseHints || appSettingsEnableEconomy) && piece.isMatch, exclude: piece.nudge && (userSettingsUseHints || appSettingsEnableEconomy) && !piece.isMatch, selected: piece.isSelected, dropped: piece.hasDropped}">
               <piece :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color}">
                 <gild :style="{backgroundImage: piece.backgroundImage }"> </gild>
               </piece>

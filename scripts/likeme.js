@@ -22,7 +22,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.280',
+    currentVersion: '4.2.281',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     currency: new Currency(),
@@ -215,8 +215,9 @@ var app = new Vue({
             } else {
               this.gameCurrentHintText = _totalPossibleLikePieces === 1 ? 'There is only <b>' + _totalPossibleLikePieces + '</b> piece like me.' : 'There are a total of <b>' + _totalPossibleLikePieces + '</b> pieces like me.';
             }
-
-            this.IdentifyMismatches();
+            if (this.userSettingsUseHints) {
+              this.IdentifyMismatches();
+            }
           }
           this.gameCurrentNumberOfMisses++;
           this.gameCurrentNumberOfFails++;
