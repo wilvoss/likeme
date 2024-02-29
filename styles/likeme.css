@@ -1086,6 +1086,10 @@ actionitem {
   /* box-shadow: inset 0px 1px 2px hsla(var(--appForegroundStrongest), 0.5); */
 }
 
+actionitem icon {
+  display: none;
+}
+
 actionitem.disabled {
   color: rgba(0, 0, 0, .5);
 }
@@ -1106,6 +1110,25 @@ rewards {
   margin: var(--defaultGap) 0 0;
 }
 
+rewardcontainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  border: 1px solid hsla(var(--appForeground), .2);
+  margin: calc(2 * var(--defaultUnit)) 0 0;
+  border-radius: var(--borderRadius);
+  overflow: hidden;
+  width: calc(100% - var(--defaultUnit));
+  max-width: 400px;
+  max-height: 60px;
+  transition: 100ms ease-in-out all;
+}
+
+rewardcontainer.expanded {
+  max-height: 400px;
+}
+
 rewards:first-of-type {
   margin: 0;
 }
@@ -1117,19 +1140,39 @@ rewards h2, rewards h2+credit {
 
 reward {
   display: flex;
-  width: calc(100% - 2 * var(--defaultUnit));
-  max-width: 400px;
+  width: 100%;
   min-height: 60px;
-  margin: calc(2 * var(--defaultUnit)) 0 0;
   gap: var(--defaultUnit);
-  padding-right: calc(1 * var(--defaultUnit));
+  /* padding-right: calc(1 * var(--defaultUnit)); */
   justify-content: start;
   align-items: center;
   background: hsl(var(--appBackgroundStrongest));
-  border-radius: var(--borderRadius);
   /* box-shadow: inset 0px 1px 2px hsla(var(--appForegroundStrongest), 0.5); */
   /* font-family: 'Bangers'; */
   overflow: hidden;
+}
+
+explanation {
+  max-width: 100%;
+  display: block;
+  background-color: hsl(var(--appBackgroundStrong));
+  margin: 0;
+  text-wrap: wrap;
+  font-size: .7em;
+  justify-content: start;
+  padding: calc(1 * var(--defaultUnit)) calc(1.5 * var(--defaultUnit)) calc(1.5 * var(--defaultUnit));
+  text-align: left;
+  line-height: 1.4em;
+  color: hsl(var(--appForeground));
+  border-top: 1px solid hsla(var(--appForeground), .2);
+}
+
+.expanded explanation {
+  display: block;
+}
+
+.expanded reward {
+  /* border-radius: var(--borderRadius) var(--borderRadius) 0 0; */
 }
 
 reward cost {
@@ -1169,6 +1212,12 @@ reward cost span {
   /* border: 0; */
 }
 
+.show reward button.quaternary:last-of-type, reward button.quaternary:last-of-type,
+.show reward button.quaternary:active:last-of-type, reward button.quaternary:active:last-of-type,
+.show reward button.quaternary:focus:last-of-type, reward button.quaternary:focus:last-of-type {
+  margin-right: var(--defaultUnit);
+}
+
 reward info {
   width: calc(100% - 1 * var(--defaultUnit));
   padding: 0 calc(.75 * var(--defaultUnit));
@@ -1200,7 +1249,18 @@ reward info description {
   text-align: left;
   line-height: 1.2em;
   height: auto;
-  color: hsla(var(--appForeground), .5);
+  color: hsla(var(--appForeground), .6);
+}
+
+reward info name icon {
+  display: inline-block;
+  transform: translateY(-2px);
+  height: 10px;
+  width: 10px;
+  mask-size: 10px 10px;
+  -webkit-mask-size: 10px 10px;
+  background-color: var(--color2);
+  margin-left: 5px;
 }
 
 reward amount {
@@ -1214,6 +1274,7 @@ reward amount {
   justify-content: center;
   color: var(--color1);
 }
+
 
 scorearea {
   margin: 0 0 0 0;

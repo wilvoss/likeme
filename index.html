@@ -100,23 +100,27 @@
         </chrome>
         <content>
           <header>
-            <h1>Manage Rewards</h1>
-            <credit>Gems can be reallocated at any time. Once a reward is used, those gems are spent. </credit>
+            <h1>Powerups</h1>
+            <credit>Powerups are accessed while playing a game. Gems can be reallocated at any time. Once a powerup is used, those gems are spent. </credit>
           </header>
-          <section @click="ToggleShowStoreOn(event)">
+          <section>
             <rewards v-for="currency in getCurrencies" v-if="currency.isEnabled">
-              <h2>{{currency.icon}} <b>{{NumberWithCommas(currency.count)}}</b> Unused {{(currency.count === 1 ? currency.name: currency.pluralName)}}</h2>
+              <h2>{{currency.icon}} <b>{{NumberWithCommas(currency.count)}}</b> Available</h2>
               <credit v-if="currency.labor !== ''">{{currency.labor}}</credit>
-              <reward v-for="reward in getItemsSortedByCost" v-if="reward.currency.name === currency.name">
-                <cost><span>{{currency.icon}}</span>{{NumberWithCommas(reward.cost)}}</cost>
-                <info>
-                  <name><namelet v-html="reward.name"></namelet> <span>&nbsp;(max {{reward.maxCount}})</span></name>
-                  <description v-html="reward.description"></description>
-                </info>
-                <button class="quaternary" @click="AdjustItemCount(event, currency, reward, -1)" :disabled="reward.count === 0">-</button>
-                <amount>{{reward.count}}</amount>
-                <button class="quaternary" @click="AdjustItemCount(event, currency, reward, 1)" :disabled="reward.cost > currency.count || currency.count === 0 || reward.count === reward.maxCount">+</button>
-              </reward>
+              <!-- <h3  >Available in-game</h3> -->
+              <rewardcontainer v-for="reward in getItemsSortedByCost" v-if="reward.currency.name === currency.name" :class="{expanded: reward.isExpanded}" @click="reward.isExpanded = !reward.isExpanded">
+                <reward>
+                  <cost><span>{{currency.icon}}</span>{{NumberWithCommas(reward.cost)}}</cost>
+                  <info>
+                    <name v-html="reward.name"></name>
+                    <description>Maximum of {{reward.maxCount}}</description>
+                  </info>
+                  <button class="quaternary" @click="AdjustItemCount(event, currency, reward, -1)" :disabled="reward.count === 0">-</button>
+                  <amount>{{reward.count}}</amount>
+                  <button class="quaternary" @click="AdjustItemCount(event, currency, reward, 1)" :disabled="reward.cost > currency.count || currency.count === 0 || reward.count === reward.maxCount">+</button>
+                </reward>
+                <explanation> {{reward.explanation}} </explanation>
+              </rewardcontainer>
             </rewards>
           </section>
           <section>
