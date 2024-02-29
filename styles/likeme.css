@@ -1108,6 +1108,8 @@ rewards {
   gap: 0;
   width: 350px;
   margin: var(--defaultGap) 0 0;
+  justify-content: center;
+  align-items: center;
 }
 
 rewardcontainer {
@@ -1160,7 +1162,7 @@ explanation {
   text-align: left;
   line-height: 1.4em;
   color: hsl(var(--appForeground));
-  border-top: 1px solid hsla(var(--appForeground), 0);
+  border-top: 1px solid hsla(var(--appForeground), .2);
   max-height: 0px;
   transition: 500ms ease-out all;
   transition-delay: 0ms;
@@ -1174,7 +1176,7 @@ explanation span {
 
 .expanded explanation {
   transition-delay: 0ms;
-  border-color: hsla(var(--appForeground), .2);
+  /* border-color: hsla(var(--appForeground), .2); */
   max-height: 70px;
 }
 
