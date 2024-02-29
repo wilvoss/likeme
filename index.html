@@ -119,7 +119,7 @@
                   <amount>{{reward.count}}</amount>
                   <button class="quaternary" @click="AdjustItemCount(event, currency, reward, 1)" :disabled="reward.cost > currency.count || currency.count === 0 || reward.count === reward.maxCount">+</button>
                 </reward>
-                <explanation> {{reward.explanation}} </explanation>
+                <explanation><span>{{reward.explanation}}</span></explanation>
               </rewardcontainer>
             </rewards>
           </section>
