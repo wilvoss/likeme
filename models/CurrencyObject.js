@@ -19,7 +19,7 @@ let Currencies = [
     pluralName: 'Gems',
     labor: 'One level is worth 10 gems. Clearing all levels in one game is worth an additional 1,000 gems. ',
     icon: '💎',
-    count: UseDebug ? 1000 : 0,
+    count: UseDebug ? 1000 : 1000,
     isEnabled: true,
   }),
   new CurrencyObject({
