@@ -22,7 +22,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.281',
+    currentVersion: '4.2.282',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     currency: new Currency(),
@@ -43,7 +43,7 @@ var app = new Vue({
     appNotificationMessage: '',
     appSettingsAddBonusToScoreInterval: null,
     appSettingsModes: Modes,
-    appSettingsEnableEconomy: UseDebug,
+    appSettingsEnableEconomy: true,
     appSettingsCurrentGameMode: null,
     appSettingsInfiniteMode: null,
     appIsBeingReset: false,
