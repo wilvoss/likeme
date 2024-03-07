@@ -1042,10 +1042,6 @@ leftright.impress right {
   font-weight: 800;
 }
 
-leftright:first-of-type {
-  /* margin-top: 10px; */
-}
-
 leftright.daily left:after {
   content: '*';
 }
@@ -1122,7 +1118,7 @@ rewardcontainer {
   border-radius: var(--borderRadius);
   overflow: hidden;
   width: calc(100% - var(--defaultUnit));
-  transition: 300ms ease-out all;
+  transition: 250ms ease-out all;
   max-height: 60px;
 }
 
@@ -1164,7 +1160,7 @@ explanation {
   color: hsl(var(--appForeground));
   border-top: 1px solid hsla(var(--appForeground), .2);
   max-height: 0px;
-  transition: 500ms ease-out all;
+  transition: 250ms ease-out all;
   transition-delay: 0ms;
   overflow: hidden;
 }
