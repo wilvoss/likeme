@@ -400,7 +400,8 @@
       </modal>
       <challenge class="semitransparent" :class="{show: appVisualStateShowPageChallenge}">
         <section>
-          <h1>Quit for real?</h1>
+          <h1>{{getNormalModeComputed.isSelected ? 'Quit?' : 'Quit for real?'}}</h1>
+          <credit style="margin: 20px" v-if="getNormalModeComputed.isSelected && gameCurrentIsGameDailyChallenge">You won't be able to restart the {{FormatDate(gameDailyChallenge.date)}} Daily Challenge.</credit>
         </section>
         <smallbuttons>
           <button @click="ToggleChallenge(event, false)">No</button>
@@ -411,7 +412,7 @@
         <chrome :class="{hide: !appVisualStateShowGameOverContent, alert: gameCurrentTimer < 6000 && !getInfiniteModeComputed.isSelected}">
           <button @click="appVisualStateShowPageSettings = true">Options</button>
           <gameinfo>
-            <labelsmall v-if="getCurrentGameModeComputed.id==='normal'"> level {{parseInt(gameCurrentNumberOfClears) + 1}} <span>of</span> {{getCurrentPlayerRank.levels}} </labelsmall>
+            <labelsmall v-if="getNormalModeComputed.isSelected"> level {{parseInt(gameCurrentNumberOfClears) + 1}} <span>of</span> {{getCurrentPlayerRank.levels}} </labelsmall>
             <time @click="ToggleGamePause(event, false)" v-if="!getInfiniteModeComputed.isSelected">{{gameCurrentIsPaused ? 'Paused' : NumberWithCommas(gameCurrentTotalScore) + ' pts'}}</time>
             <time v-if="getInfiniteModeComputed.isSelected">Zen Mode</time>
           </gameinfo>
