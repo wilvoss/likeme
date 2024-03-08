@@ -304,6 +304,7 @@
             <h1>Options</h1>
           </header>
           <section>
+            <h2>General</h2>
             <controlgroup>
               <leftright>
                 <checkbox :class="{on: userSettingsPlayMusic}" @click="TogglePlayingMusic(event)">
@@ -319,22 +320,43 @@
                 Tips and Hints
                 <toggle></toggle>
               </checkbox>
-              <checkbox :class="{on: userSettingsUseAltPatterns}" @click="ToggleUsingAltPattern(event)">
-                Alt Patterns
-                <toggle></toggle>
-              </checkbox>
-              <checkbox :class="{on: userSettingsUseCats}" @click="ToggleUsingCats(event)">
-                Cat Mode
-                <toggle></toggle>
-              </checkbox>
+            </controlgroup>
+            <h2 style="margin-top: calc(2 * var(--defaultGap))">Appearance</h2>
+            <board>
+              <container class="dropped">
+                <piece style="mask-image: var(--shape4); background-color: var(--color1)">
+                  <gild style="background-image: var(--bgImage1)"></gild>
+                </piece>
+              </container>
+              <container class="dropped">
+                <piece style="mask-image: var(--shape3); background-color: var(--color2)">
+                  <gild style="background-image: var(--bgImage3)"></gild>
+                </piece>
+              </container>
+              <container class="dropped">
+                <piece style="mask-image: var(--shape2); background-color: var(--color3)">
+                  <gild style="background-image: var(--bgImage2)"></gild>
+                </piece>
+              </container>
+            </board>
+            <controlgroup>
+              <leftright>
+                <checkbox :class="{on: userSettingsUseAltPatterns}" @click="ToggleUsingAltPattern(event)">
+                  Alt Patterns
+                  <toggle></toggle>
+                </checkbox>
+                <checkbox :class="{on: userSettingsUseCats}" @click="ToggleUsingCats(event)">
+                  Cat Mode
+                  <toggle></toggle>
+                </checkbox>
+              </leftright>
+
               <checkbox :class="{on: userSettingsUseDarkMode}" @click="ToggleUsingDarkMode(event)">
                 Dark Mode
                 <toggle></toggle>
               </checkbox>
             </controlgroup>
-          </section>
-          <section>
-            <h2>Theme</h2>
+
             <themes>
               <theme v-for="theme in appSettingsThemes" :class="{selected: theme.isSelected}" @click="SelectTheme(theme)">
                 <colors>
@@ -410,7 +432,7 @@
       </challenge>
       <stage v-if="!appVisualStateShowPageHome && !appTutorialIsInPlay" :class="{paused: gameCurrentIsPaused}">
         <chrome :class="{hide: !appVisualStateShowGameOverContent, alert: gameCurrentTimer < 6000 && !getInfiniteModeComputed.isSelected}">
-          <button @click="appVisualStateShowPageSettings = true">Options</button>
+          <button @click="ToggleSettings(event, true)">Options</button>
           <gameinfo>
             <labelsmall v-if="getNormalModeComputed.isSelected"> level {{parseInt(gameCurrentNumberOfClears) + 1}} <span>of</span> {{getCurrentPlayerRank.levels}} </labelsmall>
             <time @click="ToggleGamePause(event, false)" v-if="!getInfiniteModeComputed.isSelected">{{gameCurrentIsPaused ? 'Paused' : NumberWithCommas(gameCurrentTotalScore) + ' pts'}}</time>

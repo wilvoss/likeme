@@ -22,7 +22,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.285',
+    currentVersion: '4.2.286',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     currency: new Currency(),
@@ -869,7 +869,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     },
 
     ToggleGamePause(event, _value) {
-      note('ToggleGamePause(event) called');
+      note('ToggleGamePause(event, ' + _value + ') called');
       if (event != undefined) {
         event.stopPropagation();
         event.preventDefault();
@@ -975,11 +975,12 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     },
 
     ToggleSettings(event, _value) {
-      note('ToggleSettings(event, value) called');
+      note('ToggleSettings(event, ' + _value + ') called');
       event.stopPropagation();
       event.preventDefault();
       this.ResetModalContentScrollPositions();
       this.appVisualStateShowPageSettings = _value;
+      this.ToggleGamePause(event, _value);
     },
 
     ToggleCredits(event, _value) {

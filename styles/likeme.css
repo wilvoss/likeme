@@ -604,6 +604,8 @@ controlgroup {
 controlgroup {
   flex-wrap: wrap;
   gap: 6px;
+  margin: var(--defaultGap) 0;
+
   column-gap: 6px;
   row-gap: 6px;
   width: 100%;
@@ -1497,6 +1499,10 @@ board {
   justify-content: center;
   align-items: center;
   margin: var(--defaultGap) 10px;
+}
+
+modal board {
+  margin: var(--defaultGap) 0 0;
 }
 
 tutorial playarea {
