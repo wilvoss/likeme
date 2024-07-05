@@ -22,7 +22,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.286',
+    currentVersion: '4.2.287',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     currency: new Currency(),
@@ -936,8 +936,10 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
 
     ToggleHowToPlay(event, _value) {
       note('ToggleHowToPlay(event, value) called');
-      event.stopPropagation();
-      event.preventDefault();
+      if (event !== undefined) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
       this.ResetModalContentScrollPositions();
       this.appTutorialIsInPlay = true;
     },
@@ -994,13 +996,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     GetUserSettings() {
       note('GetUserSettings() called');
 
-      if (localStorage.length < 1) {
-        this.appTutorialUserHasSeen = false;
-        this.appTutorialIsInPlay = true;
-      } else {
-        this.appTutorialUserHasSeen = true;
-      }
-
       let _modes = localStorage.getItem('appSettingsModes');
       if (_modes !== undefined && _modes !== null) {
         _modes = JSON.parse(_modes);
@@ -1017,6 +1012,22 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
             });
           });
         }
+      }
+
+      let _appTutorialUserHasSeen = localStorage.getItem('appTutorialUserHasSeen');
+      highlight('setting OOBE tutorial based on local storage');
+      if (_appTutorialUserHasSeen) {
+        warn(_appTutorialUserHasSeen);
+      }
+      if (_appTutorialUserHasSeen !== undefined && _appTutorialUserHasSeen !== null) {
+        _appTutorialUserHasSeen = JSON.parse(_appTutorialUserHasSeen);
+        if (!_appTutorialUserHasSeen) {
+          this.ToggleHowToPlay();
+        } else {
+          this.appTutorialUserHasSeen = true;
+        }
+      } else {
+        this.ToggleHowToPlay();
       }
 
       let _userRank = localStorage.getItem('userRank');
@@ -1605,7 +1616,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
           localStorage.setItem('userSettingsUseSoundFX', this.userSettingsUseSoundFX);
           localStorage.setItem('userSettingsPlayMusic', this.userSettingsPlayMusic);
           localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
-          localStorage.setItem('appTutorialUserHasSeen', JSON.stringify(this.appTutorialUserHasSeen));
+          // localStorage.setItem('appTutorialUserHasSeen', JSON.stringify(this.appTutorialUserHasSeen));
           localStorage.setItem('userRank', this.userRank);
           localStorage.setItem('userNumberOfPerfectBasicGames', this.userNumberOfPerfectBasicGames);
           if (this.appSettingsEnableEconomy) {
@@ -1717,8 +1728,8 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       note('HandleSkipTutorial() called');
       this.userTutorialCheckCount = 0;
       this.appTutorialIsInPlay = false;
-      this.appTutorialUserHasSeen = true;
       this.appTutorialCurrentStepIndex = 0;
+      this.appTutorialUserHasSeen = true;
       localStorage.setItem('appTutorialUserHasSeen', true);
     },
 
