@@ -22,7 +22,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.287',
+    currentVersion: '4.2.288',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     currency: new Currency(),
@@ -48,11 +48,8 @@ var app = new Vue({
     appSettingsInfiniteMode: null,
     appIsBeingReset: false,
     appSettingsSoundFX: new Howl({
-      src: './audio/phft4.mp3',
-      volume: 0.5,
-      onload: function () {
-        if (this.userSettingsPlayMusic) this.volume(0.5);
-      },
+      src: './audio/phts.mp3',
+      volume: 0.15,
     }),
     userSettingsMusicVolume: 0.15,
     appSettingsThemeSong: new Howl({
@@ -350,14 +347,17 @@ var app = new Vue({
       this.gameCurrentLevel = _board;
       this.gameCurrentAllLevels.push(this.gameCurrentLevel);
 
+      if (this.userSettingsUseSoundFX) {
+        window.setTimeout(function () {
+          app.appSettingsSoundFX.play();
+        }, 236);
+      }
+
       _board.board.forEach((_piece, x) => {
         _piece.delay = (_board.board.length - x) * 40;
         this.gameCurrentBoardPieces.push(_piece);
         window.setTimeout(function () {
           _piece.hasDropped = true;
-          if (app.userSettingsUseSoundFX) {
-            app.appSettingsSoundFX.play();
-          }
         }, _piece.delay);
       });
     },
@@ -639,7 +639,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
           if (this.userCurrency[0].count > this.userCurrency[0].maxCount) {
             this.userCurrency[0].count > this.userCurrency[0].maxCount;
           }
-          // this.getCurrencies[0].count = this.userCurrency[0].count;
         }
       }
     },
@@ -843,11 +842,11 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       event.stopPropagation();
       event.preventDefault();
       this.userSettingsPlayMusic = !this.userSettingsPlayMusic;
+      if (!this.appSettingsThemeSong.playing() && this.appSettingsThemeSong.state() === 'loaded') {
+        this.appSettingsThemeSong.play();
+      }
 
       if (this.userSettingsPlayMusic) {
-        this.appSettingsThemeSong.stop();
-        this.appSettingsThemeSong.volume(0);
-        this.appSettingsThemeSong.play();
         this.appSettingsThemeSong.fade(0, this.userSettingsMusicVolume, 1000);
       } else {
         this.appSettingsThemeSong.fade(this.userSettingsMusicVolume, 0, 1000);
@@ -876,16 +875,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       }
 
       this.gameCurrentIsPaused = _value;
-
-      if (!this.gameCurrentIsPaused && this.userSettingsPlayMusic) {
-        this.appSettingsThemeSong.stop();
-        this.appSettingsThemeSong.volume(0);
-        this.appSettingsThemeSong.play();
-        this.appSettingsThemeSong.fade(0, this.userSettingsMusicVolume, 1000);
-      } else if (this.gameCurrentIsPaused && this.userSettingsPlayMusic) {
-        this.appSettingsThemeSong.fade(this.userSettingsMusicVolume, 0, 1000);
-      }
-
       localStorage.setItem('gameCurrentIsPaused', this.gameCurrentIsPaused);
     },
 
@@ -1507,7 +1496,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
           _onemoretime = JSON.parse(_onemoretime);
           if (_onemoretime) {
             localStorage.setItem('onemoretime', false);
-            // window.location.reload(true);
           }
         }
       } catch (_error) {
@@ -1576,7 +1564,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
           window.clearInterval(this.updateInterval);
         }
 
-        this.appSettingsSoundFX.unload();
         if (this.appSettingsSaveSettings) {
           localStorage.setItem('storedVersion', this.currentVersion);
           localStorage.setItem('appSettingsModes', JSON.stringify(this.appSettingsModes));
@@ -1616,7 +1603,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
           localStorage.setItem('userSettingsUseSoundFX', this.userSettingsUseSoundFX);
           localStorage.setItem('userSettingsPlayMusic', this.userSettingsPlayMusic);
           localStorage.setItem('userSettingsUseDarkMode', this.userSettingsUseDarkMode);
-          // localStorage.setItem('appTutorialUserHasSeen', JSON.stringify(this.appTutorialUserHasSeen));
           localStorage.setItem('userRank', this.userRank);
           localStorage.setItem('userNumberOfPerfectBasicGames', this.userNumberOfPerfectBasicGames);
           if (this.appSettingsEnableEconomy) {
@@ -1795,7 +1781,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     HandleTouchApp() {
       note('HandleTouchApp() called');
       if (!this.appSettingsThemeSong.playing() && this.appSettingsThemeSong.state() === 'loaded' && !this.appTutorialIsInPlay && this.userSettingsPlayMusic) {
-        this.appSettingsThemeSong.stop();
         this.appSettingsThemeSong.volume(0);
         this.appSettingsThemeSong.play();
         this.appSettingsThemeSong.fade(0, this.userSettingsMusicVolume, 1000);
@@ -1840,26 +1825,27 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       note('HandleOnVisibilityChange() called');
       this.appVisualStateShowGameOverContent = true;
       this.HandleOnPageHideEvent();
-      this.appSettingsThemeSong.stop();
 
       if (!document.hidden) {
         log('document visible');
+        const { ctx } = Howler;
+        if (ctx && !document.hidden) {
+          setTimeout(() => {
+            ctx.resume();
+          }, 100);
+        }
         if (this.userSettingsPlayMusic) {
-          this.appSettingsThemeSong.volume(0);
-          this.appSettingsThemeSong.play();
           this.appSettingsThemeSong.fade(0, this.userSettingsMusicVolume, 1000);
         }
-        this.appSettingsSoundFX = new Howl({
-          src: './audio/phft4.mp3',
-          volume: 0.5,
-        });
       } else {
+        if (this.userSettingsPlayMusic) {
+          this.appSettingsThemeSong.fade(this.userSettingsMusicVolume, 0, 1000);
+        }
         if (this.splashBoard) {
           this.splashBoard = false;
           this.EndGame();
           this.HandleOnResizeEvent();
         }
-        this.appSettingsSoundFX.unload();
       }
 
       this.CheckIfGameIsInNativeAppWebView();
