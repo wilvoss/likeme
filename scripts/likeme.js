@@ -22,7 +22,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.289',
+    currentVersion: '4.2.290',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     currency: new Currency(),
@@ -50,6 +50,18 @@ var app = new Vue({
     appSettingsSoundFX: new Howl({
       src: './audio/phts.mp3',
       volume: 0.05,
+    }),
+    appSettingsWinFX: new Howl({
+      src: './audio/triumph.mp3',
+      volume: 0.05,
+    }),
+    appSettingsLevelUpFX: new Howl({
+      src: './audio/levelup.mp3',
+      volume: 0.07,
+    }),
+    appSettingsSadFX: new Howl({
+      src: './audio/sadsound.mp3',
+      volume: 0.1,
     }),
     userSettingsMusicVolume: 0.15,
     appSettingsThemeSong: new Howl({
@@ -666,12 +678,21 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
           this.tempPerfectBasicGames = this.userNumberOfPerfectBasicGames;
           let targetCount = 3;
           this.CreateConfetti();
+          if (this.userSettingsUseSoundFX) {
+            this.appSettingsWinFX.volume(0.05);
+            this.appSettingsWinFX.play();
+          }
           if (this.userNumberOfPerfectBasicGames === targetCount) {
             if (this.getCurrentPlayerRank !== this.getLastRank) {
               this.userRank = this.userRank + 1;
               this.SetUserBasedOnRank(this.userRank, true);
               this.userNumberOfPerfectBasicGames = 0;
             }
+            if (this.userSettingsUseSoundFX) {
+              this.appSettingsLevelUpFX.volume(0.075);
+              this.appSettingsLevelUpFX.play();
+            }
+
             this.gameCurrentJustRankedUp = true;
           }
         } else if (this.userSettingsUseHardCoreMode && this.userNumberOfPerfectBasicGames < 3) {
@@ -679,6 +700,11 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
           _score.numberOfPerfectClears = 0;
           this.tempPerfectBasicGames = 0;
         }
+        if (_score.numberOfPerfectClears !== _score.totalPossibleClears && this.userSettingsUseSoundFX) {
+          this.appSettingsSadFX.volume(0.1);
+          this.appSettingsSadFX.play();
+        }
+
         localStorage.setItem('userRank', this.userRank);
         localStorage.setItem('userNumberOfPerfectBasicGames', this.userNumberOfPerfectBasicGames);
       }
