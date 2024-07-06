@@ -22,7 +22,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.288',
+    currentVersion: '4.2.289',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     currency: new Currency(),
@@ -49,7 +49,7 @@ var app = new Vue({
     appIsBeingReset: false,
     appSettingsSoundFX: new Howl({
       src: './audio/phts.mp3',
-      volume: 0.15,
+      volume: 0.05,
     }),
     userSettingsMusicVolume: 0.15,
     appSettingsThemeSong: new Howl({
@@ -348,6 +348,7 @@ var app = new Vue({
       this.gameCurrentAllLevels.push(this.gameCurrentLevel);
 
       if (this.userSettingsUseSoundFX) {
+        this.appSettingsSoundFX.volume(0.05);
         window.setTimeout(function () {
           app.appSettingsSoundFX.play();
         }, 236);
@@ -1721,8 +1722,10 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
 
     HandleDoneTutorial() {
       note('HandleDoneTutorial() called');
+      if (!this.appTutorialUserHasSeen) {
+        this.RestartGame();
+      }
       this.HandleSkipTutorial();
-      this.RestartGame();
     },
 
     HandleTutorialNext() {
