@@ -35,7 +35,7 @@ var TutorialSteps = [
   }),
   new TutorialStepObject({
     title: 'So now what?',
-    description: 'Select all of the pieces like Me and then click Me to clear the level. Hit <b>BACK</b> if you get stuck.',
+    description: 'Select all of the pieces like Me (hint, the top 4) and then click Me to clear the level. Hit <b>BACK</b> if you get stuck.',
     checkBoard: true,
   }),
   new TutorialStepObject({

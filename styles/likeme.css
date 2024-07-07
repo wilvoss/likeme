@@ -3,7 +3,15 @@
   src: url('../fonts/Bangers-Regular.ttf');
 }
 
+@font-face {
+  font-family: 'Abel';
+  src: url('../fonts/Abel-Regular.ttf');
+}
+
 :root {
+  /* app settings */
+  --appFont: 'Abel', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+
   /* hsl colors */
   --appBackground: 0, 0%, 94%;
   --appBackgroundStrong: 0, 0%, 96%;
@@ -64,7 +72,7 @@ body {
   height: 100%;
   overflow: hidden;
   color: hsl(var(--appForeground));
-  font-family: -apple-system, Arial, sans-serif;
+  font-family: var(--appFont);
   user-select: none;
   -webkit-user-select: none;
   background: var(--color2);
@@ -81,6 +89,7 @@ body {
   -webkit-user-select: none;
   cursor: default;
   display: flex;
+  font-size: 1.1em;
   justify-content: center;
   align-items: center;
 }
@@ -122,7 +131,7 @@ wallpaper.hexagon {
 :disabled,
 .challenge chromebutton {
   pointer-events: none;
-  opacity: 0.4;
+  opacity: 0.2;
 }
 
 h1,
@@ -133,20 +142,19 @@ h5 {
   margin: 0px 0px 0px 0px;
   line-height: 100%;
   letter-spacing: 2px;
+  font-weight: normal;
   color: hsl(var(--appForegroundStrong));
 }
 
 h1 {
   font-family: 'Bangers';
   flex-basis: auto;
-  font-weight: normal;
   font-size: 2.5em;
   margin: 0px 0px 0px 0px;
 }
 
 h2,
 h3 {
-  font-weight: normal;
   font-size: 1.25em;
   margin: 0px 0px 6px 0px;
   letter-spacing: 0px;
@@ -170,6 +178,12 @@ tutorial h1 {
 
 modal h1 {
   width: 320px;
+}
+
+modal h2 {
+  width: 100%;
+  padding-top: var(--defaultGap);
+  border-top: 1px solid hsla(var(--appForeground), .075);
 }
 
 p,
@@ -357,7 +371,9 @@ tutorial playarea {
 modal.pause {
   height: calc(100% - var(--chromeHeight));
   margin-top: var(--chromeHeight);
-  background: hsl(var(--appBackgroundStronger));
+  background: hsla(var(--appBackground), .97);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   cursor: pointer;
   align-items: center;
   justify-content: center;
@@ -425,7 +441,7 @@ page button.primary, button, a.button {
   border: 0px solid var(--color1);
   border-radius: var(--borderRadius);
   font-family: 'Bangers';
-  font-size: 1.5em;
+  font-size: 1.4em;
   letter-spacing: 2px;
   background-color: var(--color1);
   -webkit-tap-highlight-color: transparent;
@@ -433,7 +449,7 @@ page button.primary, button, a.button {
 
 page button.primary {
   padding: 24px 0;
-  font-size: 1.6em;
+  font-size: 1.4em;
 }
 
 button.hide, a.hide {
@@ -465,7 +481,7 @@ button.tertiary, a.button.tertiary {
 
 page button, page a.button {
   background-color: hsla(var(--appForeground), .64);
-  font-family: -apple-system, Arial, sans-serif;
+  font-family: var(--appFont);
   letter-spacing: 0px;
   text-transform: unset;
   font-size: 1em;
@@ -480,7 +496,7 @@ page button.inline icon, page a.inline.button icon {
   display: none;
 }
 
-.show button.quaternary.pulse {
+button.quaternary.pulse {
   animation: pulse 1s var(--transitionEase) 0s infinite;
   -webkit-animation: pulse 1s var(--transitionEase) 0s infinite;
 }
@@ -525,9 +541,8 @@ button.quaternary:active {
 
 .show button.inline.small, .show a.button.inline.small {
   font-size: 12px;
-  font-family: -apple-system, Arial, sans-serif;
+  font-family: var(--appFont);
   text-transform: uppercase;
-  font-weight: bold;
   letter-spacing: 0px;
 }
 
@@ -572,7 +587,7 @@ button.simple, a.simple {
   border: none;
   background: none;
   box-shadow: none;
-  font-family: -apple-system, Arial, sans-serif;
+  font-family: var(--appFont);
   font-size: 1em;
   letter-spacing: 0px;
   padding: 0;
@@ -898,7 +913,7 @@ chrome.hide {
 .show chrome button,
 chrome button {
   font-size: 1.1em;
-  font-family: -apple-system, Arial, sans-serif;
+  font-family: var(--appFont);
   background: none;
   background-color: hsla(var(--appBackground), 1);
   color: var(--color2);
@@ -985,6 +1000,7 @@ tutorial container description b {
   margin: 0 0;
   text-align: center;
   display: block;
+  font-weight: normal;
   background: hsl(var(--appBackground));
   border-radius: 2px 2px 0px 0px;
 }
@@ -1013,7 +1029,6 @@ leftright {
   flex-direction: row;
   justify-content: space-between;
   margin: 0px;
-  font-size: 0.9em;
   padding: 1px 9px;
   background: hsl(var(--appBackgroundStronger));
   border-radius: var(--borderRadius);
@@ -1030,18 +1045,9 @@ controlgroup leftright, controlgroup leftright:first-of-type {
 }
 
 leftright.impress {
-  font-weight: 800;
   border: 1px solid hsl(var(--appBackgroundStrongest));
   background: hsl(var(--appBackgroundStrongest));
   color: var(--color2);
-}
-
-leftright right {
-  font-weight: 600;
-}
-
-leftright.impress right {
-  font-weight: 800;
 }
 
 leftright.daily left:after {
@@ -1070,18 +1076,16 @@ actionitems {
 
 actionitem {
   display: block;
-  /* background-color: hsl(var(--appBackgroundStrongest)); */
   width: 50px;
   text-wrap: wrap;
   text-align: center;
   line-height: 120%;
-  font-size: .75em;
+  font-size: 1em;
   text-transform: uppercase;
   padding: 8px 2px 6px;
-  /* letter-spacing: 1px; */
+  font-family: 'Abel';
   border-radius: var(--borderRadius);
   color: var(--color2);
-  /* box-shadow: inset 0px 1px 2px hsla(var(--appForegroundStrongest), 0.5); */
 }
 
 actionitem icon {
@@ -1094,10 +1098,15 @@ actionitem.disabled {
 
 actionitem count {
   display: block;
-  font-size: 1.4em;
-  font-weight: bold;
-  /* line-height: 1.5em; */
-  padding-bottom: 2px;
+  font-size: 1.8em;
+  padding-bottom: 8px;
+}
+
+actionitem namelet {
+  display: block;
+  font-size: .8em;
+  line-height: 1.1em;
+  letter-spacing: .5px;
 }
 
 rewards {
@@ -1134,7 +1143,7 @@ rewards:first-of-type {
 
 rewards h2, rewards h2+credit {
   margin: 0 0 var(--defaultUnit) 0;
-  padding: 0 var(--defaultUnit);
+  /* padding: 0 var(--defaultUnit); */
 }
 
 reward {
@@ -1191,7 +1200,7 @@ reward cost {
   gap: 8px;
   justify-content: center;
   align-items: center;
-  font-family: -apple-system, Arial, sans-serif;
+  font-family: var(--appFont);
 }
 
 reward cost span {
@@ -1210,6 +1219,7 @@ reward cost span {
   margin: var(--defaultUnit) 0;
   padding: 0;
   line-height: 100%;
+  font-family: 'Abel';
   /* font-family: -apple-system, Arial, sans-serif; */
   /* text-align: center; */
   /* border: 0; */
@@ -1234,12 +1244,10 @@ reward info {
 
 reward name {
   font-size: 1em;
-  font-weight: bold;
   justify-content: start;
 }
 
 reward name span {
-  font-weight: normal;
   font-size: .7em;
 }
 
@@ -1272,7 +1280,6 @@ reward amount {
   align-items: center;
   font-size: 1.15em;
   letter-spacing: 0px;
-  font-weight: bold;
   width: 55px;
   justify-content: center;
   color: var(--color1);
@@ -1307,10 +1314,9 @@ currentscore {
 }
 
 labelsmall {
-  font-size: 0.5em;
+  font-size: 0.7em;
   width: 100%;
   padding: 1px 0px;
-  font-weight: bold;
   text-transform: uppercase;
   line-height: 100%;
   color: var(--color1);
@@ -1325,8 +1331,7 @@ modal labelsmall {
 }
 
 labelsmall span {
-  font-family: 'Arial';
-  font-weight: bold;
+  font-family: var(--appFont);
 }
 
 credit {
@@ -1368,10 +1373,6 @@ mode {
   min-width: 76px;
 }
 
-mode.selected {
-  font-weight: bold;
-}
-
 mode value {
   margin-top: 6px;
   display: block;
@@ -1411,7 +1412,6 @@ logo {
 }
 
 time {
-  font-weight: bold;
   word-wrap: nowrap;
   display: block;
   text-align: center;
@@ -1420,7 +1420,7 @@ time {
   -webkit-tap-highlight-color: transparent;
 }
 
-stage.paused time {
+stage.paused time, button.blink.quaternary {
   animation: blink 1s var(--transitionEase) 0s infinite;
   -webkit-animation: blink 1s var(--transitionEase) 0s infinite;
 }
@@ -1550,10 +1550,6 @@ tutorial board.unreveal {
   transition: var(--transitionTime) ease-out all;
 }
 
-tutorial board.partial {
-  height: calc(1.5 * var(--pieceSize) + 4px);
-}
-
 container {
   transform: translateY(-640px);
   transition: 0ms ease-out transform;
@@ -1645,7 +1641,7 @@ tutorial board container {
 }
 
 board.partial container.describe {
-  opacity: 0;
+  opacity: 0.02;
 }
 
 tutorial container.describe:nth-child(1),
@@ -1836,7 +1832,6 @@ theme {
 theme.selected {
   background: hsl(var(--appBackgroundStrongest));
   box-shadow: inset 0px 1px 4px hsla(var(--appForegroundStrongest), 0.5);
-  font-weight: bold;
 }
 
 colors {
@@ -2030,7 +2025,6 @@ newhigh {
   display: block;
   padding: 0;
   color: var(--color2);
-  font-weight: bold;
 }
 
 gameover h2 {
@@ -2098,7 +2092,7 @@ page ranks {
 }
 
 page ranks+credit {
-  margin-top: 4px;
+  margin-top: 8px;
   margin-bottom: var(--defaultGap);
 }
 
@@ -2136,13 +2130,29 @@ page ranks rank {
   padding-left: 0px;
   padding-right: 0px;
   flex-direction: column;
+  /* box-shadow: 0px 0px 10px hsla(var(--rankHue), 100%, 80%, .5); */
+  /* animation: pulseglow 2s var(--transitionEase) 0s infinite; */
+  /* -webkit-animation: pulseglow 2s var(--transitionEase) 0s infinite; */
+}
+
+
+@keyframes pulseglow {
+  50% {
+    box-shadow: 0px 0px 30px hsla(var(--rankHue), 100%, 80%, 1);
+  }
+}
+
+@-webkit-keyframes pulseglow {
+  50% {
+    box-shadow: 0px 0px 30px hsla(var(--rankHue), 100%, 80%, 1);
+  }
 }
 
 emoji {
   position: relative;
   display: block;
-  font-size: 4em;
-  line-height: 1.4em;
+  font-size: 3.6em;
+  line-height: 1.2em;
 }
 
 ranks rank.last {
@@ -2216,7 +2226,7 @@ ranks rank credit {
 ranks rank name detail {
   font-family: 'Bangers';
   letter-spacing: 1px;
-  font-size: 1.3em;
+  font-size: 1.2em;
 }
 
 confetti.drop {

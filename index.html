@@ -71,11 +71,11 @@
           </section>
           <section v-if="appSettingsEnableEconomy" @click="ToggleShowStoreOn(event)">
             <credit>
-              <button class="quaternary inline" style="gap: 4px" v-for="currency in getCurrencies">{{currency.icon}} <b>{{NumberWithCommas(currency.count)}}</b> Unused {{(currency.count === 1 ? currency.name: currency.pluralName)}}</button>
+              <button class="quaternary inline" style="gap: 4px" v-for="currency in getCurrencies">{{currency.icon}} {{NumberWithCommas(currency.count)}} Unused {{(currency.count === 1 ? currency.name: currency.pluralName)}}</button>
             </credit>
           </section>
           <section>
-            <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="secondary" @click="StartDailyChallenge()">✨ New Daily Challenge</button>
+            <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="secondary" @click="StartDailyChallenge()">✨ New Daily Challenge ✨</button>
             <button v-if="gameDailyChallengeAlreadyScored || gameDailyChallenge.allLevels.length === 0" title="The next Daily Challenge will be available at midnight tonight." class="tertiary small inline"><icon v-if="isGettingDailyChallenge" class="spinner spin"></icon><span v-if="!isGettingDailyChallenge">Next challenge: {{timeToMidnight}}</span></button>
             <button class="primary" title="Click to start a new game." @click="RestartGame()">{{getCurrentGameModeComputed.id === 'infinite'? 'Play Zen' : 'Play!'}}</button>
             <button title="Click to toggle Zen Mode on." :class="{on: getCurrentGameModeComputed.id === 'infinite'}" @click="ToggleZenMode()">Zen Mode: {{getCurrentGameModeComputed.id === 'infinite' ? 'On' : 'Off'}}</button>
@@ -105,7 +105,7 @@
           </header>
           <section>
             <rewards v-for="currency in getCurrencies" v-if="currency.isEnabled">
-              <h2>{{currency.icon}} <b>{{NumberWithCommas(currency.count)}}</b> Available</h2>
+              <h2>{{currency.icon}} {{NumberWithCommas(currency.count)}} Gems Available</h2>
               <credit v-if="currency.labor !== ''">{{currency.labor}}</credit>
               <!-- <h3  >Available in-game</h3> -->
               <rewardcontainer v-for="reward in getItemsSortedByCost" v-if="reward.currency.name === currency.name" :class="{expanded: reward.isExpanded}" @click="reward.isExpanded = !reward.isExpanded">
@@ -115,7 +115,7 @@
                     <name v-html="reward.name"></name>
                     <description>Maximum of {{reward.maxCount}}</description>
                   </info>
-                  <button class="quaternary" @click="AdjustItemCount(event, currency, reward, -1)" :disabled="reward.count === 0">-</button>
+                  <button class="quaternary" @click="AdjustItemCount(event, currency, reward, -1)" :disabled="reward.count === 0">–</button>
                   <amount>{{reward.count}}</amount>
                   <button class="quaternary" @click="AdjustItemCount(event, currency, reward, 1)" :disabled="reward.cost > currency.count || currency.count === 0 || reward.count === reward.maxCount">+</button>
                 </reward>
@@ -139,9 +139,7 @@
           <section>
             <h2>Created by</h2>
             <credit>Wil Voss</credit>
-          </section>
-          <section>
-            <h2>Feedback and ideas</h2>
+            <h2 style="margin-top: var(--defaultGap)">Feedback and ideas</h2>
             <credit>Alex Barbieri</credit>
             <credit>Cole Benson</credit>
             <credit>Melinda Cocolas</credit>
@@ -160,9 +158,7 @@
             <credit>&nbsp;</credit>
             <credit>Thank you for making this game better!</credit>
             <a class="button secondary isolate" :href="'mailto:bigtentgames@icloud.com?subject=Feedback - Like Me v' + currentVersion">Give feedback</a>
-          </section>
-          <section>
-            <h2>How can you help?</h2>
+            <h2 style="margin-top: var(--defaultGap)">How can you help?</h2>
             <credit> You can share this game with your friends!</credit>
             <button title="Click to share this game with your friends." class="quaternary isolate inline simple" @click="ShareApp()"><icon class="share"></icon>Share this game!</button>
           </section>
@@ -291,7 +287,7 @@
         </content>
       </modal>
       <modal class="pause" @click="ToggleGamePause(event, false)" :class="{show: gameCurrentIsPaused && !gameCurrentIsGameOver}">
-        <button title="Click the button to resume playing the game." style="background: transparent" class="quaternary">
+        <button title="Click the button to resume playing the game." class="quaternary blink">
           <icon class="play"></icon>
         </button>
       </modal>
@@ -321,7 +317,7 @@
                 <toggle></toggle>
               </checkbox>
             </controlgroup>
-            <h2 style="margin-top: calc(2 * var(--defaultGap))">Appearance</h2>
+            <h2 style="margin-top: var(--defaultGap)">Appearance</h2>
             <board>
               <container class="dropped">
                 <piece style="mask-image: var(--shape4); background-color: var(--color1)">
@@ -433,9 +429,9 @@
       <stage v-if="!appVisualStateShowPageHome && !appTutorialIsInPlay" :class="{paused: gameCurrentIsPaused}">
         <chrome :class="{hide: !appVisualStateShowGameOverContent, alert: gameCurrentTimer < 6000 && !getInfiniteModeComputed.isSelected}">
           <button @click="ToggleSettings(event, true)">Options</button>
-          <gameinfo>
+          <gameinfo @click="ToggleGamePause(event, !gameCurrentIsPaused)">
             <labelsmall v-if="getNormalModeComputed.isSelected"> level {{parseInt(gameCurrentNumberOfClears) + 1}} <span>of</span> {{getCurrentPlayerRank.levels}} </labelsmall>
-            <time @click="ToggleGamePause(event, false)" v-if="!getInfiniteModeComputed.isSelected">{{gameCurrentIsPaused ? 'Paused' : NumberWithCommas(gameCurrentTotalScore) + ' pts'}}</time>
+            <time v-if="!getInfiniteModeComputed.isSelected">{{gameCurrentIsPaused ? 'Paused' : NumberWithCommas(gameCurrentTotalScore) + ' pts'}}</time>
             <time v-if="getInfiniteModeComputed.isSelected">Zen Mode</time>
           </gameinfo>
           <button @click="ToggleChallenge(event, true)">Quit</button>
@@ -489,7 +485,7 @@
           <description v-html="ChangeTutorialPiecesToCats(appTutorialSteps[appTutorialCurrentStepIndex].description)"> </description>
           <board :class="{unreveal: appTutorialSteps[appTutorialCurrentStepIndex].unreveal, partial: appTutorialSteps[appTutorialCurrentStepIndex].partial  }">
             <container class="dropped" :class="{selected: piece.isSelected, describe: appTutorialSteps[appTutorialCurrentStepIndex].describe}" v-for="(piece, index) in appTutorialBoardPieces.board" @click="piece.isSelected = appTutorialCurrentStepIndex > 3 ? !piece.isSelected : piece.isSelected">
-              <description :class="{show: appTutorialCurrentStepIndex === 3}" v-html="piece.description"></description>
+              <description v-if="index < 4" :class="{show: appTutorialCurrentStepIndex === 3}" v-html="piece.description"></description>
               <piece :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color}">
                 <gild :style="{backgroundImage: piece.backgroundImage }"> </gild>
               </piece>
