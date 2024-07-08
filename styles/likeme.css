@@ -383,6 +383,7 @@ modal.pause {
   height: 54px;
   width: 100%;
   border: none;
+  background: transparent;
 }
 
 modal.pause icon.play {
@@ -513,7 +514,7 @@ button.quaternary,
 button:active.quaternary,
 .show button:focus.quaternary,
 button:focus.quaternary {
-  background: hsl(var(--appBackground));
+  background: hsl(var(--appBackgroundStrongest));
   border-color: var(--color2);
   color: var(--color2);
   box-shadow: none;
@@ -522,6 +523,7 @@ button:focus.quaternary {
   height: 30px;
   min-height: 0px;
   border-width: 1px;
+  margin-bottom: 0px;
 }
 
 .quaternary icon {
@@ -1033,7 +1035,7 @@ leftright {
   background: hsl(var(--appBackgroundStronger));
   border-radius: var(--borderRadius);
   margin-bottom: 4px;
-  transition: var(--transitionTime) var(--transitionEase) all;
+  /* transition: var(--transitionTime) var(--transitionEase) all; */
 }
 
 controlgroup leftright, controlgroup leftright:first-of-type {
@@ -1081,7 +1083,7 @@ actionitem {
   text-align: center;
   line-height: 120%;
   font-size: 1em;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   padding: 8px 2px 6px;
   font-family: 'Abel';
   border-radius: var(--borderRadius);
@@ -1420,20 +1422,25 @@ time {
   -webkit-tap-highlight-color: transparent;
 }
 
-stage.paused time, button.blink.quaternary {
-  animation: blink 1s var(--transitionEase) 0s infinite;
-  -webkit-animation: blink 1s var(--transitionEase) 0s infinite;
+button.blink.quaternary {
+  animation: blink 1.5s linear 0s infinite;
+  -webkit-animation: blink 1.5s linear 0s infinite;
+}
+
+stage.paused time {
+  animation: blink 1.5s linear 0s infinite;
+  -webkit-animation: blink 1.5s linear 0s infinite;
 }
 
 @keyframes blink {
   50% {
-    opacity: 0;
+    opacity: 0.2;
   }
 }
 
 @-webkit-keyframes blink {
   50% {
-    opacity: 0;
+    opacity: 0.2;
   }
 }
 
@@ -2315,6 +2322,7 @@ confetti.drop {
   }
 
   actionitem {
+    font-size: .8em;
     width: 34px;
   }
 
