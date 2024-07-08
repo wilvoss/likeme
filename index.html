@@ -75,7 +75,7 @@
             </credit>
           </section>
           <section>
-            <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="secondary" @click="StartDailyChallenge()">✨ New Daily Challenge ✨</button>
+            <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="secondary small" @click="StartDailyChallenge()">✨ New Daily Challenge ✨</button>
             <button v-if="gameDailyChallengeAlreadyScored || gameDailyChallenge.allLevels.length === 0" title="The next Daily Challenge will be available at midnight tonight." class="tertiary small inline"><icon v-if="isGettingDailyChallenge" class="spinner spin"></icon><span v-if="!isGettingDailyChallenge">Next challenge: {{timeToMidnight}}</span></button>
             <button class="primary" title="Click to start a new game." @click="RestartGame()">{{getCurrentGameModeComputed.id === 'infinite'? 'Play Zen' : 'Play!'}}</button>
             <button title="Click to toggle Zen Mode on." :class="{on: getCurrentGameModeComputed.id === 'infinite'}" @click="ToggleZenMode()">Zen Mode: {{getCurrentGameModeComputed.id === 'infinite' ? 'On' : 'Off'}}</button>
@@ -160,7 +160,7 @@
             <a class="button secondary isolate" :href="'mailto:bigtentgames@icloud.com?subject=Feedback - Like Me v' + currentVersion">Give feedback</a>
             <h2 style="margin-top: var(--defaultGap)">How can you help?</h2>
             <credit> You can share this game with your friends!</credit>
-            <button title="Click to share this game with your friends." class="quaternary isolate inline simple" @click="ShareApp()"><icon class="share"></icon>Share this game!</button>
+            <button title="Click to share this game with your friends." class="quaternary isolate inline small" @click="ShareApp()"><icon class="share"></icon>Share this game!</button>
           </section>
           <section v-if="!deviceHasTouch" style="display: none">
             <h2>Keyboard shortcuts</h2>
@@ -336,17 +336,14 @@
               </container>
             </board>
             <controlgroup>
-              <leftright>
-                <checkbox :class="{on: userSettingsUseAltPatterns}" @click="ToggleUsingAltPattern(event)">
-                  Alt Patterns
-                  <toggle></toggle>
-                </checkbox>
-                <checkbox :class="{on: userSettingsUseCats}" @click="ToggleUsingCats(event)">
-                  Cat Mode
-                  <toggle></toggle>
-                </checkbox>
-              </leftright>
-
+              <checkbox :class="{on: userSettingsUseAltPatterns}" @click="ToggleUsingAltPattern(event)">
+                Alt Patterns
+                <toggle></toggle>
+              </checkbox>
+              <checkbox :class="{on: userSettingsUseCats}" @click="ToggleUsingCats(event)">
+                Cat Mode
+                <toggle></toggle>
+              </checkbox>
               <checkbox :class="{on: userSettingsUseDarkMode}" @click="ToggleUsingDarkMode(event)">
                 Dark Mode
                 <toggle></toggle>
@@ -422,7 +419,7 @@
           <credit style="margin: 20px" v-if="getNormalModeComputed.isSelected && gameCurrentIsGameDailyChallenge">You won't be able to restart the {{FormatDate(gameDailyChallenge.date)}} Daily Challenge.</credit>
         </section>
         <smallbuttons>
-          <button @click="ToggleChallenge(event, false)">No</button>
+          <button class="primary" @click="ToggleChallenge(event, false)">No</button>
           <button class="secondary" @click="EndGame()">Yes</button>
         </smallbuttons>
       </challenge>

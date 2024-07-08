@@ -435,8 +435,8 @@ page button.primary, button, a.button {
   align-items: center;
   cursor: pointer;
   width: 250px;
-  height: 44px;
-  min-height: 44px;
+  line-height: 100%;
+  padding: 13px 0;
   margin-bottom: 8px;
   color: white;
   border: 0px solid var(--color1);
@@ -449,7 +449,6 @@ page button.primary, button, a.button {
 }
 
 page button.primary {
-  padding: 24px 0;
   font-size: 1.4em;
 }
 
@@ -542,7 +541,7 @@ button.quaternary:active {
 }
 
 .show button.inline.small, .show a.button.inline.small {
-  font-size: 12px;
+  font-size: .8em;
   font-family: var(--appFont);
   text-transform: uppercase;
   letter-spacing: 0px;
@@ -585,7 +584,7 @@ page.show button.tertiary.inline.small {
   }
 }
 
-button.simple, a.simple {
+button.simple, a.simple, .show button.quaternary.simple, a.quaternary.simple {
   border: none;
   background: none;
   box-shadow: none;
@@ -631,7 +630,6 @@ controlgroup {
 smallbuttons button, a.button {
   overflow: hidden;
   background: (--color1);
-  padding: 0;
 }
 
 icon {
@@ -2266,6 +2264,10 @@ confetti.drop {
     background: hsl(var(--appBackground));
   }
 
+  body {
+    font-size: 1.15em;
+  }
+
   page content {
     margin-top: 0;
     height: calc(100% - var(--defaultGap));
@@ -2336,23 +2338,14 @@ confetti.drop {
     padding: 0;
   }
 
-  mode value {
-    font-size: 0.9em;
-  }
-
   h3,
   p {
-    font-size: 0.9em;
     padding: 0;
   }
 
-  subheader {
-    font-size: 0.9em;
-  }
 
   hint,
   notification {
-    font-size: 0.9em;
     height: 36px;
     width: calc(100% - (var(--defaultGap) * 4));
     padding: 16px var(--defaultGap) 16px;
