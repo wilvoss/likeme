@@ -6,6 +6,7 @@ class CurrencyObject {
     this.labor = spec.labor === undefined ? '' : spec.labor;
     this.pluralName = spec.pluralName === undefined ? '' : spec.pluralName;
     this.icon = spec.icon === undefined ? '' : spec.icon;
+    this.className = spec.className === undefined ? '' : spec.className;
     this.increment = spec.increment === undefined ? 1000 : spec.increment;
     this.count = spec.count === undefined ? 0 : spec.count;
     this.maxCount = spec.maxCount === undefined ? 500000 : spec.maxCount;
@@ -19,6 +20,7 @@ let Currencies = [
     pluralName: 'Gems',
     labor: 'One level is worth 10 gems. Clearing all levels in one game is worth an additional 1,000 gems. ',
     icon: '💎',
+    className: 'gem',
     count: UseDebug ? 1000 : 1000,
     isEnabled: true,
   }),

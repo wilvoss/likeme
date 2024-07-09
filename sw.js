@@ -1,4 +1,4 @@
-const CACHE_VERSION = '4.2.294';
+const CACHE_VERSION = '4.2.295';
 const CURRENT_CACHE = `main-${CACHE_VERSION}`;
 
 // prettier-ignore
@@ -26,6 +26,7 @@ const cacheFiles = [
   'images/icon_share.svg',
   'images/icon_bullhorn.svg',
   'images/icon_eye.svg',
+  'images/icon_gem.svg',
   'images/icon_inner_spinner.svg',
   'images/icon_zen.svg',
   'images/icon_download.svg',

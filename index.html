@@ -27,9 +27,7 @@
     <meta name="description" content="A game of matching likenesses." />
 
     <link id="appleicon" rel="apple-touch-icon" sizes="180x180" href="images/icon180.png" />
-    <!-- iPhone X (1125px x 2436px) -->
     <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="images/apple-launch-1125x2436.png" />
-    <!-- iPhone 8, 7, 6s, 6 (750px x 1334px) -->
     <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="images//apple-launch-750x1334.png" />
     <link rel="icon" type="image/png" sizes="180x180" href="images/icon180.png" />
     <link rel="icon" type="image/png" sizes="48x48" href="favicon.png" />
@@ -52,6 +50,9 @@
       <page :class="{show: appVisualStateShowPageHome}" @pointerdown="appVisualStateShowNotification = false;">
         <button v-if="newVersionAvailable" title="There is an update available. Click to apply the update." class="quaternary pulse update inline small" @click="HandleUpdateAppButtonClick()">In-App Update<icon class="download"></icon></button>
         <content>
+          <section class="store" v-if="appSettingsEnableEconomy">
+            <h2 @click="ToggleShowStoreOn(event)" class="inline" v-for="currency in getCurrencies"><icon :class="currency.className"></icon> {{NumberWithCommas(currency.count)}}</h2>
+          </section>
           <section>
             <h1>Like Me?</h1>
             <p>{{ userSettingsUseCats ? 'A game of matching cat likenesses.' : 'A game of matching likenesses.'}}</p>
@@ -69,17 +70,11 @@
             </ranks>
             <credit v-html="getHomePageRankSubcredit"></credit>
           </section>
-          <section v-if="appSettingsEnableEconomy" @click="ToggleShowStoreOn(event)">
-            <credit>
-              <button class="quaternary inline" style="gap: 4px" v-for="currency in getCurrencies">{{currency.icon}} {{NumberWithCommas(currency.count)}} Unused {{(currency.count === 1 ? currency.name: currency.pluralName)}}</button>
-            </credit>
-          </section>
           <section>
             <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="secondary small" @click="StartDailyChallenge()">✨ New Daily Challenge ✨</button>
             <button v-if="gameDailyChallengeAlreadyScored || gameDailyChallenge.allLevels.length === 0" title="The next Daily Challenge will be available at midnight tonight." class="tertiary small inline"><icon v-if="isGettingDailyChallenge" class="spinner spin"></icon><span v-if="!isGettingDailyChallenge">Next challenge: {{timeToMidnight}}</span></button>
             <button class="primary" title="Click to start a new game." @click="RestartGame()">{{getCurrentGameModeComputed.id === 'infinite'? 'Play Zen' : 'Play!'}}</button>
             <button title="Click to toggle Zen Mode on." :class="{on: getCurrentGameModeComputed.id === 'infinite'}" @click="ToggleZenMode()">Zen Mode: {{getCurrentGameModeComputed.id === 'infinite' ? 'On' : 'Off'}}</button>
-            <!-- <button class="inline" v-if="appSettingsEnableEconomy" title="Click to manage your rewards currency." @click="ToggleShowStoreOn(event)">Manage Rewards</button> -->
             <smallbuttons>
               <button class="inline" title="Click to adjust the game settings." @click="ToggleSettings(event, true)">Options</button>
               <button title="Click to learn how to play Like Me?" class="inline" @click="ToggleHowToPlay(event, true)">Tutorial</button>
@@ -100,17 +95,16 @@
         </chrome>
         <content>
           <header>
+            <icon class="gem"></icon>
             <h1>Powerups</h1>
-            <credit>Powerups are accessed while playing a game. Gems can be reallocated at any time. Once a powerup is used, those gems are spent. </credit>
+            <credit> Gems can be reallocated at any time. Once a Powerup is used, those gems are spent. Clearing one level is worth 10 gems. Clearing all levels in one game is worth an additional 1,000 gems. </credit>
           </header>
           <section>
             <rewards v-for="currency in getCurrencies" v-if="currency.isEnabled">
-              <h2>{{currency.icon}} {{NumberWithCommas(currency.count)}} Gems Available</h2>
-              <credit v-if="currency.labor !== ''">{{currency.labor}}</credit>
-              <!-- <h3  >Available in-game</h3> -->
+              <h2 class="inline">{{NumberWithCommas(currency.count)}} Gems Left</h2>
               <rewardcontainer v-for="reward in getItemsSortedByCost" v-if="reward.currency.name === currency.name" :class="{expanded: reward.isExpanded}" @click="reward.isExpanded = !reward.isExpanded">
                 <reward>
-                  <cost><span>{{currency.icon}}</span>{{NumberWithCommas(reward.cost)}}</cost>
+                  <cost><icon :class="currency.className"></icon>{{NumberWithCommas(reward.cost)}}</cost>
                   <info>
                     <name v-html="reward.name"></name>
                     <description>Maximum of {{reward.maxCount}}</description>

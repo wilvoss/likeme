@@ -91,3 +91,8 @@ page ranklabel {
 page ranklabel icon {
   background: hsla(var(--appForegroundStrongest), .8);
 }
+
+reward cost {
+  background: hsl(var(--appBackground));
+  color: hsl(var(--appFont));
+}

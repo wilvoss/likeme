@@ -183,7 +183,7 @@ modal h1 {
 modal h2 {
   width: 100%;
   padding-top: var(--defaultGap);
-  border-top: 1px solid hsla(var(--appForeground), .075);
+  /* border-top: 1px solid hsla(var(--appForeground), .075); */
 }
 
 p,
@@ -313,7 +313,7 @@ modal header,
 modal section,
 challenge section {
   max-width: 400px;
-  padding: 1.5em var(--defaultGap);
+  padding: 1.5em var(--defaultGap) 0px;
   width: calc(100% - (var(--defaultGap) * 2));
 }
 
@@ -584,6 +584,58 @@ page.show button.tertiary.inline.small {
   }
 }
 
+section.store {
+  text-align: left;
+  align-items: start;
+  padding-bottom: 0px;
+  width: 100%;
+  overflow: visible;
+  height: 0px;
+}
+
+header icon {
+  margin-bottom: var(--defaultUnit);
+  height: 80px;
+  mask-size: 80px 80px;
+  -webkit-mask-size: 80px 80px;
+}
+
+h2.inline {
+  display: flex;
+  justify-content: center;
+  gap: var(--defaultUnit);
+}
+
+h2.inline icon {
+  display: inline-block;
+  width: 24px;
+  font-size: 1.2em;
+}
+
+section.store h2, section.store h2:hover {
+  /* display: none; */
+  width: 100%;
+  /* align-items: start; */
+  justify-content: start;
+  gap: 4px;
+  border: none;
+  background: none;
+  padding-top: calc(.5 * var(--defaultGap));
+  padding-left: calc(.5 * var(--defaultGap));
+  line-height: 100%;
+  font-family: 'Bangers';
+  letter-spacing: 1px;
+  font-size: 1.2em;
+  color: var(--appForegroundWeak);
+}
+
+/* section.store h2 icon {
+  display: inline-block;
+  width: 24px;
+  font-size: 1.2em;
+  background-color: var(--color1);
+} */
+
 button.simple, a.simple, .show button.quaternary.simple, a.quaternary.simple {
   border: none;
   background: none;
@@ -680,6 +732,12 @@ button.quaternary.inline icon, button.tertiary.inline icon, a.quaternary.inline 
 icon.help {
   mask-image: url(../images/icon_question.svg);
   -webkit-mask-image: url(../images/icon_question.svg);
+}
+
+icon.gem {
+  mask-image: url(../images/icon_gem.svg);
+  -webkit-mask-image: url(../images/icon_gem.svg);
+  background-color: hsl(180, 100%, 40%);
 }
 
 icon.spinner, .show button.inline.small icon.spinner {
@@ -1197,17 +1255,16 @@ reward cost {
   padding: 0 var(--defaultUnit);
   line-height: 100%;
   font-size: .7em;
-  gap: 8px;
+  gap: 4px;
   justify-content: center;
   align-items: center;
   font-family: var(--appFont);
 }
 
-reward cost span {
+reward cost icon {
   display: block;
-  font-size: 1.5em;
-  margin-top: calc(.5 * var(--defaultUnit));
   width: 100%;
+  height: var(--defaultGap);
 }
 
 .show reward button.quaternary, reward button.quaternary,
@@ -1217,9 +1274,10 @@ reward cost span {
   min-width: 40px;
   height: 40px;
   margin: var(--defaultUnit) 0;
-  padding: 0;
+  padding: 0 0 0 2px;
   line-height: 100%;
   font-family: 'Abel';
+  border-radius: 50%;
   /* font-family: -apple-system, Arial, sans-serif; */
   /* text-align: center; */
   /* border: 0; */
@@ -2083,12 +2141,12 @@ span.locked rank {
 ranks rank {
   color: hsl(var(--appBackgroundStrong));
   background-image: linear-gradient(-45deg, rgba(0, 0, 0, .2), rgba(0, 0, 0, 0), rgba(0, 0, 0, .2), rgba(0, 0, 0, 0));
-  width: calc(86%);
-  max-width: 300px;
+  width: 100%;
+  max-width: 310px;
   text-shadow: none;
   margin-bottom: 0px;
-  padding: 17px 20px 10px;
-  gap: var(--defaultGap);
+  padding: 17px 16px 10px;
+  gap: calc(.5 * var(--defaultGap));
   box-shadow: inset 0px 1px 4px hsla(0, 0%, 0%, 0.4);
 }
 
@@ -2231,7 +2289,7 @@ ranks rank credit {
 ranks rank name detail {
   font-family: 'Bangers';
   letter-spacing: 1px;
-  font-size: 1.2em;
+  font-size: 1.4em;
 }
 
 confetti.drop {
