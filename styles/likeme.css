@@ -145,6 +145,7 @@ h5 {
   letter-spacing: 2px;
   font-weight: normal;
   color: hsl(var(--appForegroundStrong));
+  -webkit-tap-highlight-color: transparent;
 }
 
 h1 {
