@@ -287,6 +287,17 @@ modal.semitransparent.preview content {
   opacity: 0;
 }
 
+.stats right {
+  display: flex;
+  gap: var(--defaultUnit)
+}
+
+.stats right icon {
+  width: 18px;
+  mask-size: 18px 18px;
+  -webkit-mask-size: 18px 18px;
+}
+
 modal.notransition, .notransition {
   transition: 0ms none none;
 }

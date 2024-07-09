@@ -363,10 +363,10 @@
           <emoji>{{getNormalModeComputed.isSelected ? getCurrentPlayerRank.emoji : '☯'}}</emoji>
           <h1 v-html="getGameOverTitle"></h1>
           <p v-html="getGameOverSubtitle"></p>
-          <section>
+          <section class="stats">
             <leftright v-for="boon in gameCurrentUpdatedCurrencyDeltas">
               <left>{{boon.currency.pluralName}} earned</left>
-              <right>{{boon.currency.icon}} {{NumberWithCommas(boon.delta)}}</right>
+              <right><icon :class="boon.currency.className"></icon> {{NumberWithCommas(boon.delta)}}</right>
             </leftright>
             <!-- <leftright v-if="getNormalModeComputed.isSelected">
               <left>Game rank</left>
