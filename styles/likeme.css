@@ -614,7 +614,6 @@ h2.inline icon {
 }
 
 section.store h2, section.store h2:hover {
-  width: 100%;
   justify-content: start;
   gap: 4px;
   border: none;
@@ -2250,7 +2249,6 @@ rank.locked {
 
 ranks rank.unlocked {
   background-color: hsla(0, 0%, var(--rankLum), 1);
-  gap: var(--defaultGap);
   margin-bottom: var(--defaultGap);
 }
 
