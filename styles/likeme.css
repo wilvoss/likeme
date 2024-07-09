@@ -49,6 +49,7 @@
 
   /* game set values */
   --colorDanger: rgb(224, 0, 0);
+  --colorRewards: hsl(180, 100%, 38%);
   --patternOpacity: 0.5;
   --patternHSL: 0, 0%, 100%;
 
@@ -171,7 +172,7 @@ h3 {
 
 page h1,
 tutorial h1 {
-  margin: calc(2 * var(--defaultGap)) 0px 0px 0px;
+  margin: var(--defaultUnit) 0 0 0;
   font-size: 4.2em;
   text-shadow: 0px -1px 0px hsl(var(--appBackground)), 0px 0px 20px hsl(var(--appBackground));
 }
@@ -590,7 +591,7 @@ section.store {
   padding-bottom: 0px;
   width: 100%;
   overflow: visible;
-  height: 0px;
+  /* height: 0px; */
 }
 
 header icon {
@@ -613,28 +614,21 @@ h2.inline icon {
 }
 
 section.store h2, section.store h2:hover {
-  /* display: none; */
   width: 100%;
-  /* align-items: start; */
   justify-content: start;
   gap: 4px;
   border: none;
   background: none;
-  padding-top: calc(.5 * var(--defaultGap));
-  padding-left: calc(.5 * var(--defaultGap));
+  padding-top: calc(.75 * var(--defaultGap));
+  padding-left: calc(.75 * var(--defaultGap));
   line-height: 100%;
   font-family: 'Bangers';
   letter-spacing: 1px;
   font-size: 1.2em;
+  margin-bottom: 0px;
+  padding-bottom: 8px;
   color: var(--appForegroundWeak);
 }
-
-/* section.store h2 icon {
-  display: inline-block;
-  width: 24px;
-  font-size: 1.2em;
-  background-color: var(--color1);
-} */
 
 button.simple, a.simple, .show button.quaternary.simple, a.quaternary.simple {
   border: none;
@@ -737,7 +731,7 @@ icon.help {
 icon.gem {
   mask-image: url(../images/icon_gem.svg);
   -webkit-mask-image: url(../images/icon_gem.svg);
-  background-color: hsl(180, 100%, 40%);
+  background-color: var(--colorRewards);
 }
 
 icon.spinner, .show button.inline.small icon.spinner {

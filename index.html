@@ -51,7 +51,7 @@
         <button v-if="newVersionAvailable" title="There is an update available. Click to apply the update." class="quaternary pulse update inline small" @click="HandleUpdateAppButtonClick()">In-App Update<icon class="download"></icon></button>
         <content>
           <section class="store" v-if="appSettingsEnableEconomy">
-            <h2 @click="ToggleShowStoreOn(event)" class="inline" v-for="currency in getCurrencies"><icon :class="currency.className"></icon> {{NumberWithCommas(currency.count)}}</h2>
+            <h2 @click="ToggleShowStoreOn(event)" class="inline" v-for="currency in getCurrencies"><icon :class="currency.className"></icon> Rewards</h2>
           </section>
           <section>
             <h1>Like Me?</h1>
@@ -96,8 +96,8 @@
         <content>
           <header>
             <icon class="gem"></icon>
-            <h1>Powerups</h1>
-            <credit> Gems can be reallocated at any time. Once a Powerup is used, those gems are spent. Clearing one level is worth 10 gems. Clearing all levels in one game is worth an additional 1,000 gems. </credit>
+            <h1>Rewards</h1>
+            <credit>Gems can be reallocated at any time. Once a Powerup is used, those gems are spent. Clearing one level is worth 10 gems. Clearing all levels in one game is worth an additional 1,000 gems. </credit>
           </header>
           <section>
             <rewards v-for="currency in getCurrencies" v-if="currency.isEnabled">
