@@ -326,7 +326,7 @@ modal header,
 modal section,
 challenge section {
   max-width: 400px;
-  padding: 1.5em var(--defaultGap) 0px;
+  padding: 1.5em var(--defaultGap);
   width: calc(100% - (var(--defaultGap) * 2));
 }
 

@@ -355,7 +355,9 @@
               </theme>
             </themes>
           </section>
-          <version :style="{fontStyle: window.location.host !== 'likeme.games' ? 'italic' : ''}"><a href="https://github.com/wilvoss/likeme/commits/main/" target="_blank">{{currentVersion}}</a></version>
+          <section>
+            <version :style="{fontStyle: window.location.host !== 'likeme.games' ? 'italic' : ''}"><a href="https://github.com/wilvoss/likeme/commits/main/" target="_blank">{{currentVersion}}</a></version>
+          </section>
         </content>
       </modal>
       <modal class="notransition semitransparent" :class="{show: appVisualStateShowPageGameOver, preview: !appVisualStateShowGameOverContent}" @pointerdown="appVisualStateShowNotification = false;">
