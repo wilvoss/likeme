@@ -412,10 +412,12 @@
           <h1>{{getNormalModeComputed.isSelected ? 'Quit?' : 'Quit for real?'}}</h1>
           <credit style="margin: 20px" v-if="getNormalModeComputed.isSelected && gameCurrentIsGameDailyChallenge">You won't be able to restart the {{FormatDate(gameDailyChallenge.date)}} Daily Challenge.</credit>
         </section>
-        <smallbuttons>
-          <button class="primary" @click="ToggleChallenge(event, false)">No</button>
-          <button class="secondary" @click="EndGame()">Yes</button>
-        </smallbuttons>
+        <section>
+          <smallbuttons>
+            <button class="primary" @click="ToggleChallenge(event, false)">No</button>
+            <button class="secondary" @click="EndGame()">Yes</button>
+          </smallbuttons>
+        </section>
       </challenge>
       <stage v-if="!appVisualStateShowPageHome && !appTutorialIsInPlay" :class="{paused: gameCurrentIsPaused}">
         <chrome :class="{hide: !appVisualStateShowGameOverContent, alert: gameCurrentTimer < 6000 && !getInfiniteModeComputed.isSelected}">
