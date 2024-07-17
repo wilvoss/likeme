@@ -2113,6 +2113,215 @@ confetti {
   transition-timing-function: ease-in;
 }
 
+herald {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  border-radius: 50%;
+  width: 180px;
+  height: 180px;
+  box-shadow: inset 0px 0px 6px hsla(0, 0%, 0%, 0.2);
+}
+
+@property --glow {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 20%;
+}
+
+.hardcore page {
+  background-image: radial-gradient(circle at center 325px, hsla(var(--rankHue), 100%, 60%, .3), hsla(var(--rankHue), 100%, 60%, 0) var(--glow));
+  animation: aura 3s var(--transitionEase) 0s infinite;
+  -webkit-animation: aura 3s var(--transitionEase) 0s infinite;
+}
+
+@keyframes aura {
+  50% {
+    --glow: 35%;
+  }
+}
+
+@-webkit-keyframes aura {
+  50% {
+    --glow: 35%;
+  }
+}
+
+page herald {
+  /* background-image: repeating-radial-gradient(circle, hsla(0, 0%, 0%, 0) 0px, hsla(0, 0%, 0%, 0) 18%, hsla(0, 0%, 0%, .3) 18%, hsla(0, 0%, 0%, .3) 36%); */
+  background-image: url(../images/burst.svg), radial-gradient(circle, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, .3));
+  background-repeat: no-repeat;
+  background-size: cover;
+  cursor: pointer;
+}
+
+herald icon {
+  width: 95%;
+  height: 99%;
+  background: transparent;
+  background-size: 100% 100%;
+  background-position: top center;
+  background-repeat: none;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backdrop-filter: blur(0);
+  -webkit-filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, .5));
+  filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, .5));
+}
+
+rank herald {
+  box-shadow: none;
+  background-image: none;
+  border-radius: 0px;
+  width: 90px;
+  height: 50px;
+}
+
+rank herald:last-of-type {
+  opacity: 0;
+}
+
+.hardcore rank herald:last-of-type {
+  opacity: 1;
+}
+
+rank herald icon {
+  height: 100%;
+  background-position: center center;
+  background-size: 106% 106%;
+}
+
+herald.rank0 icon {
+  background-image: url(../images/icon_rank0.svg);
+}
+
+herald.rank1 icon {
+  background-image: url(../images/icon_rank1.svg);
+}
+
+herald.rank2 icon {
+  background-image: url(../images/icon_rank2.svg);
+}
+
+herald.rank3 icon {
+  background-image: url(../images/icon_rank3.svg);
+}
+
+herald.rank4 icon {
+  background-image: url(../images/icon_rank4.svg);
+}
+
+herald.rank5 icon {
+  background-image: url(../images/icon_rank5.svg);
+}
+
+rank herald.rank0 icon {
+  background-image: url(../images/icon_rank0_sm.svg);
+}
+
+rank herald.rank1 icon {
+  background-image: url(../images/icon_rank1_sm.svg);
+}
+
+rank herald.rank2 icon {
+  background-image: url(../images/icon_rank2_sm.svg);
+}
+
+rank herald.rank3 icon {
+  background-image: url(../images/icon_rank3_sm.svg);
+}
+
+rank herald.rank4 icon {
+  background-image: url(../images/icon_rank4_sm.svg);
+}
+
+rank herald.rank5 icon {
+  background-image: url(../images/icon_rank5_sm.svg);
+}
+
+herald.rank6 {
+  background-image: linear-gradient(-45deg, hsl(39, 50%, 50%) 20%, hsl(60, 50%, 50%), hsl(120, 70%, 25%), hsl(240, 50%, 50%), hsl(300, 50%, 25%), hsl(0, 50%, 50%) 80%);
+}
+
+
+herald.rank6 {
+  background-image: url(../images/burst.svg), radial-gradient(circle, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, .3)), linear-gradient(-45deg, hsl(39, 50%, 50%) 20%, hsl(60, 50%, 50%), hsl(120, 70%, 25%), hsl(240, 50%, 50%), hsl(300, 50%, 25%), hsl(0, 50%, 50%) 80%);
+}
+
+.hardcore rank herald.rank6, rank herald.rank6 {
+  background-image: none;
+}
+
+herald.rank6 icon {
+  background-image: url(../images/icon_rank6.svg);
+}
+
+
+rank herald.rank6 icon {
+  background-image: url(../images/icon_rank6_sm.svg);
+}
+
+
+.hardcore herald.rank0 icon {
+  background-image: url(../images/icon_rank0_hc.svg);
+}
+
+.hardcore herald.rank1 icon {
+  background-image: url(../images/icon_rank1_hc.svg);
+}
+
+.hardcore herald.rank2 icon {
+  background-image: url(../images/icon_rank2_hc.svg);
+}
+
+.hardcore herald.rank3 icon {
+  background-image: url(../images/icon_rank3_hc.svg);
+}
+
+.hardcore herald.rank4 icon {
+  background-image: url(../images/icon_rank4_hc.svg);
+}
+
+.hardcore herald.rank5 icon {
+  background-image: url(../images/icon_rank5_hc.svg);
+}
+
+.hardcore herald.rank6 icon {
+  background-image: url(../images/icon_rank6_hc.svg);
+}
+
+
+.hardcore rank herald.rank0 icon {
+  background-image: url(../images/icon_rank0_hc_sm.svg);
+}
+
+.hardcore rank herald.rank1 icon {
+  background-image: url(../images/icon_rank1_hc_sm.svg);
+}
+
+.hardcore rank herald.rank2 icon {
+  background-image: url(../images/icon_rank2_hc_sm.svg);
+}
+
+.hardcore rank herald.rank3 icon {
+  background-image: url(../images/icon_rank3_hc_sm.svg);
+}
+
+.hardcore rank herald.rank4 icon {
+  background-image: url(../images/icon_rank4_hc_sm.svg);
+}
+
+.hardcore rank herald.rank5 icon {
+  background-image: url(../images/icon_rank5_hc_sm.svg);
+}
+
+.hardcore rank herald.rank6 icon {
+  background-image: url(../images/icon_rank6_hc_sm.svg);
+}
+
+
+
+
 ranks {
   /* margin-top: var(--defaultGap); */
   display: flex;
@@ -2147,16 +2356,26 @@ ranks rank {
   color: hsl(var(--appBackgroundStrong));
   background-image: linear-gradient(-45deg, rgba(0, 0, 0, .2), rgba(0, 0, 0, 0), rgba(0, 0, 0, .2), rgba(0, 0, 0, 0));
   width: 100%;
-  max-width: 310px;
+  max-width: 330px;
   text-shadow: none;
   margin-bottom: 0px;
-  padding: 17px 16px 10px;
-  gap: calc(.5 * var(--defaultGap));
+  padding: 0px 6px;
+  gap: 0px;
   box-shadow: inset 0px 1px 4px hsla(0, 0%, 0%, 0.4);
 }
 
+page ranks rank {
+  box-shadow: inset 0px 1px 4px hsla(0, 0%, 0%, .4);
+
+}
+
+
+ranks rank name {
+  padding: 17px 0px 10px;
+}
+
 page ranks {
-  margin: 0px;
+  margin-top: -92px;
 }
 
 page ranks+credit {
@@ -2168,13 +2387,13 @@ page ranklabel {
   background: hsla(var(--appForeground), .6);
   color: hsla(var(--appBackground), 1);
   padding: 2px var(--defaultGap) 1px;
-  border-radius: calc(.5 * var(--borderRadius));
+  border-radius: calc(.5 * var(--borderRadius)) calc(.5 * var(--borderRadius)) 0 0;
   height: var(--defaultGap);
   display: flex;
   width: calc(100% - 2 * var(--defaultGap));
   justify-content: center;
   align-items: center;
-  margin-bottom: 14px;
+  margin-bottom: 0px;
   font-size: .8em;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -2193,14 +2412,12 @@ page ranklabel icon {
 page ranks rank {
   overflow: hidden;
   width: 280px;
-  gap: 2px;
+  gap: 0px;
   padding-top: 0px;
   padding-left: 0px;
   padding-right: 0px;
   flex-direction: column;
-  /* box-shadow: 0px 0px 10px hsla(var(--rankHue), 100%, 80%, .5); */
-  /* animation: pulseglow 2s var(--transitionEase) 0s infinite; */
-  /* -webkit-animation: pulseglow 2s var(--transitionEase) 0s infinite; */
+  /* box-shadow: 0px -2px 4px hsla(0, 0%, 0%, .25); */
 }
 
 
@@ -2225,7 +2442,6 @@ emoji {
 
 ranks rank.last {
   background-image: linear-gradient(-45deg, hsl(39, 50%, 50%), hsl(60, 50%, 50%), hsl(120, 70%, 25%), hsl(240, 50%, 50%), hsl(300, 50%, 25%), hsl(0, 50%, 50%)), linear-gradient(-45deg, rgba(0, 0, 0, .2), rgba(0, 0, 0, 0), rgba(0, 0, 0, .2), rgba(0, 0, 0, 0));
-
 }
 
 ranks rank span {
@@ -2294,6 +2510,12 @@ ranks rank name detail {
   font-family: 'Bangers';
   letter-spacing: 1px;
   font-size: 1.4em;
+}
+
+page ranks rank name detail {
+  font-family: 'Bangers';
+  letter-spacing: 1px;
+  font-size: 1.7em;
 }
 
 confetti.drop {

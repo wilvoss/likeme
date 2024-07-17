@@ -51,16 +51,16 @@
         <button v-if="newVersionAvailable" title="There is an update available. Click to apply the update." class="quaternary pulse update inline small" @click="HandleUpdateAppButtonClick()">In-App Update<icon class="download"></icon></button>
         <content>
           <section class="store" v-if="appSettingsEnableEconomy">
-            <h2 @click="ToggleShowStoreOn(event)" class="inline" v-for="currency in getCurrencies"><icon :class="currency.className"></icon> Rewards</h2>
+            <h2 @click="ToggleShowStoreOn(event)" class="inline"><icon class="gem"></icon> Rewards</h2>
           </section>
           <section>
             <h1>Like Me?</h1>
             <p>{{ userSettingsUseCats ? 'A game of matching cat likenesses.' : 'A game of matching likenesses.'}}</p>
           </section>
           <section>
-            <emoji>{{getCurrentPlayerRank.emoji}}</emoji>
+            <herald @click="ToggleAchievements(event, true)" :class="['rank' + getCurrentPlayerRank.rank]" :style="{backgroundColor: 'hsl(' + getCurrentPlayerRank.hue + ', 50%, 50%)'}"><icon></icon></herald>
             <ranks style="cursor: pointer" @click="ToggleAchievements(event, true)">
-              <rank :class="[getLastRank.rank === getCurrentPlayerRank.rank ? 'last' : '']" :style="{backgroundColor: 'hsl(' + getCurrentPlayerRank.hue + ', 50%, 50%)'}">
+              <rank :class="['rank' + getCurrentPlayerRank.rank, getLastRank.rank === getCurrentPlayerRank.rank ? 'last' : '']" :style="{backgroundColor: 'hsl(' + getCurrentPlayerRank.hue + ', 50%, 50%)'}">
                 <ranklabel>{{userSettingsUseHardCoreMode ? 'Hardcore Rank' : 'Rank'}}<icon class="info"></icon></ranklabel>
                 <name :style="{color: 'hsl(' + getCurrentPlayerRank.hue + ', 100%, 92%)'}">
                   <detail>{{getCurrentPlayerRank.name}}</detail>
@@ -208,37 +208,38 @@
           <section :class="{simpleranks: appSettingsShowSimpleRankPlaques}">
             <ranks>
               <rank @click="SetUseHardCoreModeToTrue(event)" v-if="userSettingsUseHardCoreMode || (getCurrentPlayerRank === getLastRank && userNumberOfPerfectBasicGames >= 3)" class="unlocked" :class="{enabled: userSettingsUseHardCoreMode}">
-                <span>{{appSettingsHardcoreEmoji}}</span>
+                <!-- <herald>{{appSettingsHardcoreEmoji}}</herald> -->
                 <name>
                   <detail>{{userSettingsUseHardCoreMode ? 'Hardcore enabled!' : 'Enable hardcore'}}</detail>
                   <credit>Ranks only unlock after 3 perfect games in a row.</credit>
                 </name>
-                <span :class="{cleared: userSettingsUseHardCoreMode}">{{userSettingsUseHardCoreMode ? appSettingsHardcoreEmoji : '🔒'}}</span>
+                <!-- <span :class="{cleared: userSettingsUseHardCoreMode}">{{userSettingsUseHardCoreMode ? appSettingsHardcoreEmoji : '🔒'}}</span> -->
               </rank>
-              <rank @click="CreateConfetti(r.hue, r.rank)" v-for="r in allPlayerRanks" :class="[getLastRank.rank === r.rank ? 'last' : '']" v-if="r.rank <= userRank" :style="{backgroundColor: 'hsl(' + r.hue + ', 50%, 50%)'}">
-                <span>{{r.emoji}}</span>
+              <rank @click="CreateConfetti(r.hue, r.rank)" v-for="r in allPlayerRanks" class="small" :class="['rank' + r.rank, getLastRank.rank === r.rank ? 'last' : '']" v-if="r.rank <= userRank" :style="{backgroundColor: 'hsl(' + r.hue + ', 50%, 50%)', boxShadow: 'inset 0px 1px 4px hsla(0, 0%, 0%, 0.4), ' + (userSettingsUseHardCoreMode ? '0px 0px 20px hsla(' + r.hue + ', 100%, 60%, .5)' : '')}">
+                <herald :class="['rank' + r.rank]"><icon></icon></herald>
                 <name :style="{color: 'hsl(' + r.hue + ', 100%, 92%)'}">
                   <detail>{{r.name}}</detail>
                   <credit :style="{textDecoration: r.rank !== userRank ? 'line-through': 'none'}">{{r.levels}} levels {{r.rank === userRank ? 'per game' : ''}}</credit>
                 </name>
-                <span :class="{cleared: r.rank < userRank || userNumberOfPerfectBasicGames >= 3}">{{appSettingsHardcoreEmoji}}</span>
+                <herald :class="['rank' + r.rank, {cleared: r.rank < userRank || userNumberOfPerfectBasicGames >= 3}]"><icon></icon></herald>
+                <!-- <span v-if="userSettingsUseHardCoreMode" :class="{cleared: r.rank < userRank || userNumberOfPerfectBasicGames >= 3}">{{appSettingsHardcoreEmoji}}</span> -->
               </rank>
               <credit v-if="getNextRankRequirementsText !== ''" v-html="getNextRankRequirementsText"></credit>
               <rank class="locked" v-for="r in allPlayerRanks" v-if="r.rank > userRank">
-                <span>🔒</span>
+                <herald></herald>
                 <name>
                   <detail>{{r.name}}</detail>
                   <credit>{{r.levels}} levels</credit>
                 </name>
-                <span>🔒</span>
+                <herald></herald>
               </rank>
               <rank v-if="!userSettingsUseHardCoreMode && getCurrentPlayerRank === getLastRank && userNumberOfPerfectBasicGames < 3" class="locked">
-                <span>🔒</span>
+                <herald></herald>
                 <name>
                   <detail>????????</detail>
                   <credit>Only the best players can unlock this mystery!</credit>
                 </name>
-                <span>🔒</span>
+                <herald></herald>
               </rank>
             </ranks>
           </section>

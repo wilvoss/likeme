@@ -14,7 +14,7 @@ let AllPlayerRanks = [
     levels: 5,
     emoji: '🧺',
     name: 'Casual Classifier',
-    hue: 50,
+    hue: 48,
   }),
   new RankObject({
     rank: 1,
