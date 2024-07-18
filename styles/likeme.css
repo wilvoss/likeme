@@ -278,7 +278,7 @@ challenge.semitransparent {
 }
 
 modal.semitransparent.preview {
-  background: hsla(var(--appBackground), 0.3);
+  background: hsla(var(--appBackground), 0.1);
   backdrop-filter: blur(0px);
   -webkit-backdrop-filter: blur(0px);
 }
@@ -351,6 +351,7 @@ page content {
 
 modal content {
   margin-top: var(--defaultGap);
+  transition: 300ms ease-in-out all;
 }
 
 modal chrome+content {
@@ -440,6 +441,10 @@ challenge.show {
 page.show,
 modal.show.notransition {
   transition: none;
+}
+
+modal.show.preview.notransition {
+  transition: 600ms ease-in-out all;
 }
 
 page button.primary, button, a.button {
@@ -1187,7 +1192,7 @@ rewardcontainer {
   flex-direction: column;
   justify-content: start;
   align-items: center;
-  border: 1px solid hsla(var(--appForeground), .2);
+  /* border: 1px solid hsla(var(--appForeground), .2); */
   margin: calc(2 * var(--defaultUnit)) 0 0;
   border-radius: var(--borderRadius);
   overflow: hidden;
@@ -1223,7 +1228,7 @@ reward {
 explanation {
   max-width: 100%;
   display: block;
-  background-color: hsl(var(--appBackgroundStrong));
+  background-color: hsl(var(--appBackgroundStronger));
   margin: 0;
   text-wrap: wrap;
   font-size: .7em;
@@ -1232,7 +1237,7 @@ explanation {
   text-align: left;
   line-height: 1.4em;
   color: hsl(var(--appForeground));
-  border-top: 1px solid hsla(var(--appForeground), .2);
+  border-top: 1px solid hsla(var(--appForeground), .1);
   max-height: 0px;
   transition: 250ms ease-out all;
   transition-delay: 0ms;
