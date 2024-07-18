@@ -498,7 +498,7 @@ button.tertiary, a.button.tertiary {
 }
 
 page button, page a.button {
-  background-color: hsla(var(--appForeground), .64);
+  background-color: hsla(var(--appForeground), .75);
   font-family: var(--appFont);
   letter-spacing: 0px;
   text-transform: unset;
@@ -506,7 +506,7 @@ page button, page a.button {
 }
 
 page button.on {
-  background-color: hsla(var(--appForeground), .9);
+  background-color: hsla(var(--appForeground), 1);
 }
 
 page button.inline icon, page a.inline.button icon {
