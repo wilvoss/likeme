@@ -486,7 +486,6 @@ button.primary, a.button.primary {
 
 button.secondary, a.button.secondary {
   background-color: var(--color2);
-  background-image: linear-gradient(rgba(0, 0, 0, .2), rgba(0, 0, 0, .2));
   border-color: var(--color2);
   color: white;
 }
@@ -909,7 +908,7 @@ icon.reel {
 
 button.update {
   position: absolute;
-  margin-top: 6px;
+  margin-top: 14px;
 }
 
 @keyframes interactable {
