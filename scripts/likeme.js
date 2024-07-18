@@ -21,7 +21,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.308',
+    currentVersion: '4.2.309',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     currency: new Currency(),
@@ -2106,16 +2106,6 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     window.addEventListener('visibilitychange', this.HandleOnVisibilityChange);
     window.addEventListener('pagehide', this.HandleOnPageHideEvent);
     window.addEventListener('resize', this.HandleOnResizeEvent);
-    if (navigator.serviceWorker != undefined) {
-      navigator.serviceWorker.addEventListener('message', this.HandleServiceWorkerWaiting);
-      let refreshing;
-      navigator.serviceWorker.addEventListener('controllerchange', function () {
-        if (refreshing) return;
-        localStorage.setItem('onemoretime', true);
-        window.location.reload();
-        refreshing = true;
-      });
-    }
   },
 
   computed: {
