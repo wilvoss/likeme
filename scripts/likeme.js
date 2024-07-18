@@ -7,7 +7,6 @@
 /// <reference path="../models/PieceObject.js" />
 /// <reference path="../models/ModeObject.js" />
 /// <reference path="../models/LevelsObject.js" />
-/// <reference path="../helpers/getDailyChallenge.js" />
 /// <reference path="../helpers/howler.js" />
 
 Vue.config.devtools = UseDebug;
@@ -22,7 +21,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.304',
+    currentVersion: '4.2.305',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     currency: new Currency(),
