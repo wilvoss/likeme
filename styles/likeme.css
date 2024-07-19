@@ -48,7 +48,7 @@
   --rankLum: 40%;
 
   /* game set values */
-  --colorDanger: rgb(224, 0, 0);
+  --colorDanger: rgb(184, 20, 20);
   --colorRewards: hsl(180, 100%, 38%);
   --patternOpacity: 0.5;
   --patternHSL: 0, 0%, 100%;
@@ -505,6 +505,10 @@ page button, page a.button {
   font-size: 1em;
 }
 
+page button.secondary, page a.button.secondary {
+  background-image: linear-gradient(rgba(0, 0, 0, .1), rgba(0, 0, 0, .1))
+}
+
 page button.on {
   background-color: hsla(var(--appForeground), 1);
 }
@@ -643,7 +647,7 @@ section.store h2, section.store h2:hover {
   font-size: 1.2em;
   margin-bottom: 0px;
   padding-bottom: 8px;
-  color: var(--appForegroundWeak);
+  color: hsl(var(--appForeground));
 }
 
 button.simple, a.simple, .show button.quaternary.simple, a.quaternary.simple {
@@ -1328,7 +1332,7 @@ reward info description {
   text-align: left;
   line-height: 1.2em;
   height: auto;
-  color: hsla(var(--appForeground), .6);
+  color: hsla(var(--appForeground), 1);
 }
 
 reward info name icon {
@@ -1561,6 +1565,10 @@ me {
   justify-content: center;
 }
 
+me:focus-visible {
+  outline: -webkit-focus-ring-color auto 1px;
+}
+
 board {
   display: flex;
   width: calc(100% - 20px);
@@ -1727,11 +1735,11 @@ tutorial container.describe:nth-child(4) {
 stage me,
 tutorial me {
   padding: 0px 0px 0px;
+  margin: 20px 0px 0px;
 }
 
 stage me container,
 tutorial me container {
-  margin: 20px 0px 0px;
   transform: translateY(0) scale(1.1);
 }
 
@@ -2471,12 +2479,12 @@ ranks rank name {
   line-height: 100%;
   gap: 6px;
   justify-content: space-between;
-  color: hsl(var(--appBackgroundStrong));
+  color: hsl(var(--appBackgroundStrongest));
   text-shadow: 0px -1px 0px rgba(0, 0, 0, .3);
 }
 
 rank.locked {
-  background-color: hsla(0, 80%, var(--rankLum), .4);
+  background-color: hsla(0, 0%, 50%, 1);
   filter: grayscale(1);
 }
 
@@ -2490,7 +2498,7 @@ ranks rank.unlocked credit {
 }
 
 ranks rank.locked name {
-  opacity: .7;
+  opacity: 1;
 }
 
 ranks rank credit {
