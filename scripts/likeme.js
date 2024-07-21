@@ -21,7 +21,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.315',
+    currentVersion: '4.2.316',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     currency: new Currency(),
@@ -2073,24 +2073,14 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     HandleServiceWorkerRegistration() {
       note('HandleServiceWorkerRegistration() called');
       if ('serviceWorker' in navigator) {
-        // Register the service worker
-        navigator.serviceWorker.register('./sw.js').then((reg) => {
-          reg.addEventListener('updatefound', () => {
-            // An updated service worker has appeared in reg.installing!
-            this.serviceWorker = reg.installing;
-            this.serviceWorker.addEventListener('statechange', () => {
-              // Has service worker state changed?
-              switch (this.serviceWorker.state) {
-                case 'installed':
-                  // There is a new service worker available, show the notification
-                  if (navigator.serviceWorker.controller) {
-                    this.newVersionAvailable = true;
-                  }
-                  break;
-              }
-            });
+        navigator.serviceWorker
+          .register('./sw.js')
+          .then((reg) => {
+            log('Service worker registered with scope:', reg.scope);
+          })
+          .catch((error) => {
+            error('Service worker registration failed:', error);
           });
-        });
       }
     },
   },
@@ -2116,7 +2106,7 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
     }
 
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      this.updateAvailable = true;
+      this.newVersionAvailable = true;
     });
   },
 
