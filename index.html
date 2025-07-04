@@ -28,7 +28,7 @@
     <meta name="keywords" content="Like Me?, Big Tent Games, Games, Causual game, Puzzle game, Puzzle logi, Wil Voss" />
     <meta name="description" content="A game of matching likenesses." />
 
-    <link id="appleicon" rel="apple-touch-icon" sizes="180x180" href="/images/icon512-apple-touch.png">
+    <link id="appleicon" rel="apple-touch-icon" sizes="1024x1024" href="/images/icon1024-apple-touch.png">
 
     <link rel="apple-touch-startup-image"
       media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
@@ -88,7 +88,8 @@
                 </ranklabel>
                 <name>
                   <detail :style="{color: 'hsl(' + getCurrentPlayerRank.hue + ', 100%, 92%)'}">
-                    {{getCurrentPlayerRank.name}}</detail>
+                    {{getCurrentPlayerRank.name}}
+                  </detail>
                   <credit>{{getCurrentPlayerRank.levels}} levels per game</credit>
                 </name>
               </rank>
@@ -280,7 +281,8 @@
                 <name>
                   <detail :style="{color: 'hsl(' + r.hue + ', 100%, 92%)'}">{{r.name}}</detail>
                   <credit :style="{textDecoration: r.rank !== userRank ? 'line-through': 'none'}">{{r.levels}} levels
-                    {{r.rank === userRank ? 'per game' : ''}}</credit>
+                    {{r.rank === userRank ? 'per game' : ''}}
+                  </credit>
                 </name>
                 <herald :class="['rank' + r.rank, {cleared: r.rank < userRank || userNumberOfPerfectBasicGames >= 3}]">
                   <icon></icon>
@@ -524,7 +526,8 @@
           <button @click="ToggleSettings(event, true)">Options</button>
           <gameinfo @click="ToggleGamePause(event, !gameCurrentIsPaused)">
             <labelsmall v-if="getNormalModeComputed.isSelected"> level {{parseInt(gameCurrentNumberOfClears) + 1}}
-              <span>of</span> {{getCurrentPlayerRank.levels}} </labelsmall>
+              <span>of</span> {{getCurrentPlayerRank.levels}}
+            </labelsmall>
             <time
               v-if="!getInfiniteModeComputed.isSelected">{{gameCurrentIsPaused ? 'Paused' : NumberWithCommas(gameCurrentTotalScore) + ' pts'}}</time>
             <time v-if="getInfiniteModeComputed.isSelected">Zen Mode</time>
@@ -548,7 +551,8 @@
             <scorearea :class="{clickable: !getInfiniteModeComputed.isSelected}"
               @click="ToggleGamePause(event, !gameCurrentIsPaused)">
               <labelsmall>{{getInfiniteModeComputed.isSelected ? '' : 'II'}}
-                {{getInfiniteModeComputed.isSelected ? 'clears' : 'pause'}} </labelsmall>
+                {{getInfiniteModeComputed.isSelected ? 'clears' : 'pause'}}
+              </labelsmall>
               <currentscore
                 :class="{bigpulse: !getInfiniteModeComputed.isSelected && !gameCurrentIsGameOver && gameCurrentTimer < 6000 }">
                 {{getInfiniteModeComputed.isSelected ? NumberWithCommas(gameCurrentNumberOfClears) : GetMsToTime(gameCurrentTimer)}}
