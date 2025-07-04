@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html itemtype="https://schema.org/VideoGame" lang="en">
+
   <head>
     <meta charset="utf-8" />
     <meta content="x-content-type-options=nosniff" />
@@ -9,7 +10,8 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-touch-fullscreen" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, minimum-scale=1, maximum-scale=1, user-scalable=no" />
     <meta name="theme-color" id="themeColor" content="#f0f0f0" />
 
     <meta name="twitter:card" content="summary_large_image" />
@@ -26,10 +28,15 @@
     <meta name="keywords" content="Like Me?, Big Tent Games, Games, Causual game, Puzzle game, Puzzle logi, Wil Voss" />
     <meta name="description" content="A game of matching likenesses." />
 
-    <link id="appleicon" rel="apple-touch-icon" sizes="180x180" href="images/icon180.png" />
-    <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="images/apple-launch-1125x2436.png" />
-    <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="images//apple-launch-750x1334.png" />
-    
+    <link id="appleicon" rel="apple-touch-icon" sizes="180x180" href="/images/icon512-apple-touch.png">
+
+    <link rel="apple-touch-startup-image"
+      media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
+      href="images/apple-launch-1125x2436.png" />
+    <link rel="apple-touch-startup-image"
+      media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"
+      href="images//apple-launch-750x1334.png" />
+
     <link rel="icon alternate" type="image/png" href="favicon.png">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
@@ -40,30 +47,48 @@
 
   <body>
     <wallpaper onclick="app.ClearEphemeralVisualStates()"></wallpaper>
-    <app id="app" v-cloak :class="[{hardcore: userSettingsUseHardCoreMode},('rank' + getCurrentPlayerRank.rank), {challenge: appVisualStateShowPageChallenge, tutorial: appTutorialIsInPlay, splashboard: splashBoard}]" @click="HandleTouchApp()">
+    <app id="app" v-cloak
+      :class="[{hardcore: userSettingsUseHardCoreMode},('rank' + getCurrentPlayerRank.rank), {challenge: appVisualStateShowPageChallenge, tutorial: appTutorialIsInPlay, splashboard: splashBoard}]"
+      @click="HandleTouchApp()">
       <link v-if="userSettingsUseDarkMode" rel="stylesheet" href="styles/likeme-darkmode.css" media="screen" />
       <link v-if="userSettingsUseCats" rel="stylesheet" href="styles/cats-likeme.css" media="screen" />
       <link v-if="userSettingsUseAltPatterns" rel="stylesheet" href="styles/altpattern1.css" media="screen" />
-      <notification :tab-index="appVisualStateShowNotification ? 0 : -1" :aria-hidden="!appVisualStateShowNotification" @pointerdown="appVisualStateShowNotification = false" :class="{show: appVisualStateShowNotification}">
+      <notification :tab-index="appVisualStateShowNotification ? 0 : -1" :aria-hidden="!appVisualStateShowNotification"
+        @pointerdown="appVisualStateShowNotification = false" :class="{show: appVisualStateShowNotification}">
         <message v-html="appNotificationMessage"></message>
       </notification>
-      <page :tab-index="appVisualStateShowPageHome && !appTutorialIsInPlay && !gameCurrentIsPaused && !appVisualStateShowGameOverContent ? 0 : -1" :aria-hidden="!appVisualStateShowPageHome" :class="{show: appVisualStateShowPageHome}" @pointerdown="appVisualStateShowNotification = false;">
-        <button v-if="newVersionAvailable" title="There is an update available. Click to apply the update." class="quaternary pulse update inline small" @click="HandleUpdateAppButtonClick()">In-App Update<icon class="download"></icon></button>
+      <page
+        :tab-index="appVisualStateShowPageHome && !appTutorialIsInPlay && !gameCurrentIsPaused && !appVisualStateShowGameOverContent ? 0 : -1"
+        :aria-hidden="!appVisualStateShowPageHome" :class="{show: appVisualStateShowPageHome}"
+        @pointerdown="appVisualStateShowNotification = false;">
+        <button v-if="newVersionAvailable" title="There is an update available. Click to apply the update."
+          class="quaternary pulse update inline small" @click="HandleUpdateAppButtonClick()">In-App Update<icon
+            class="download"></icon></button>
         <content>
           <section class="store" v-if="appSettingsEnableEconomy">
-            <h2 @click="ToggleShowStoreOn(event)" class="inline"><icon class="gem"></icon> Rewards</h2>
+            <h2 @click="ToggleShowStoreOn(event)" class="inline">
+              <icon class="gem"></icon> Rewards
+            </h2>
           </section>
           <section>
             <h1>Like Me?</h1>
             <p>{{ userSettingsUseCats ? 'A game of matching cat likenesses.' : 'A game of matching likenesses.'}}</p>
           </section>
           <section>
-            <herald @click="ToggleAchievements(event, true)" :class="['rank' + getCurrentPlayerRank.rank]" :style="{backgroundColor: 'hsl(' + getCurrentPlayerRank.hue + ', 50%, 50%)'}"><icon></icon></herald>
+            <herald @click="ToggleAchievements(event, true)" :class="['rank' + getCurrentPlayerRank.rank]"
+              :style="{backgroundColor: 'hsl(' + getCurrentPlayerRank.hue + ', 50%, 50%)'}">
+              <icon></icon>
+            </herald>
             <ranks style="cursor: pointer" @click="ToggleAchievements(event, true)">
-              <rank :class="['rank' + getCurrentPlayerRank.rank, getLastRank.rank === getCurrentPlayerRank.rank ? 'last' : '']" :style="{backgroundColor: 'hsl(' + getCurrentPlayerRank.hue + ', 50%, 50%)'}">
-                <ranklabel>{{userSettingsUseHardCoreMode ? 'Hardcore Rank' : 'Rank'}}<icon class="info"></icon></ranklabel>
+              <rank
+                :class="['rank' + getCurrentPlayerRank.rank, getLastRank.rank === getCurrentPlayerRank.rank ? 'last' : '']"
+                :style="{backgroundColor: 'hsl(' + getCurrentPlayerRank.hue + ', 50%, 50%)'}">
+                <ranklabel>{{userSettingsUseHardCoreMode ? 'Hardcore Rank' : 'Rank'}}
+                  <icon class="info"></icon>
+                </ranklabel>
                 <name>
-                  <detail :style="{color: 'hsl(' + getCurrentPlayerRank.hue + ', 100%, 92%)'}">{{getCurrentPlayerRank.name}}</detail>
+                  <detail :style="{color: 'hsl(' + getCurrentPlayerRank.hue + ', 100%, 92%)'}">
+                    {{getCurrentPlayerRank.name}}</detail>
                   <credit>{{getCurrentPlayerRank.levels}} levels per game</credit>
                 </name>
               </rank>
@@ -71,25 +96,43 @@
             <credit v-html="getHomePageRankSubcredit"></credit>
           </section>
           <section>
-            <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0" :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)" class="secondary small" @click="StartDailyChallenge()">✨ New Daily Challenge ✨</button>
-            <button v-if="gameDailyChallengeAlreadyScored || gameDailyChallenge.allLevels.length === 0" title="The next Daily Challenge will be available at midnight tonight." class="tertiary small inline"><icon v-if="isGettingDailyChallenge" class="spinner spin"></icon><span v-if="!isGettingDailyChallenge">Next challenge: {{timeToMidnight}}</span></button>
-            <button class="primary" title="Click to start a new game." @click="RestartGame()">{{getCurrentGameModeComputed.id === 'infinite'? 'Play Zen' : 'Play!'}}</button>
-            <button title="Click to toggle Zen Mode on." :class="{on: getCurrentGameModeComputed.id === 'infinite'}" @click="ToggleZenMode()">Zen Mode: {{getCurrentGameModeComputed.id === 'infinite' ? 'On' : 'Off'}}</button>
+            <button v-if="!gameDailyChallengeAlreadyScored && gameDailyChallenge.allLevels.length > 0"
+              :title="'Click to start try the daily challenge for ' + FormatDate(gameDailyChallenge.date)"
+              class="secondary small" @click="StartDailyChallenge()">✨ New Daily Challenge ✨</button>
+            <button v-if="gameDailyChallengeAlreadyScored || gameDailyChallenge.allLevels.length === 0"
+              title="The next Daily Challenge will be available at midnight tonight." class="tertiary small inline">
+              <icon v-if="isGettingDailyChallenge" class="spinner spin"></icon><span
+                v-if="!isGettingDailyChallenge">Next challenge: {{timeToMidnight}}</span>
+            </button>
+            <button class="primary" title="Click to start a new game."
+              @click="RestartGame()">{{getCurrentGameModeComputed.id === 'infinite'? 'Play Zen' : 'Play!'}}</button>
+            <button title="Click to toggle Zen Mode on." :class="{on: getCurrentGameModeComputed.id === 'infinite'}"
+              @click="ToggleZenMode()">Zen Mode:
+              {{getCurrentGameModeComputed.id === 'infinite' ? 'On' : 'Off'}}</button>
             <smallbuttons>
-              <button class="inline" title="Click to adjust the game settings." @click="ToggleSettings(event, true)">Options</button>
-              <button title="Click to learn how to play Like Me?" class="inline" @click="ToggleHowToPlay(event, true)">Tutorial</button>
+              <button class="inline" title="Click to adjust the game settings."
+                @click="ToggleSettings(event, true)">Options</button>
+              <button title="Click to learn how to play Like Me?" class="inline"
+                @click="ToggleHowToPlay(event, true)">Tutorial</button>
             </smallbuttons>
             <smallbuttons>
-              <button class="inline" title="Click to see your high scores." @click="ToggleHighScores(event, true)"><icon class="medal"></icon>Scores</button>
-              <button class="inline" title="Click to see a list of credits." @click="ToggleCredits(event, true)">Credits</button>
+              <button class="inline" title="Click to see your high scores." @click="ToggleHighScores(event, true)">
+                <icon class="medal"></icon>Scores
+              </button>
+              <button class="inline" title="Click to see a list of credits."
+                @click="ToggleCredits(event, true)">Credits</button>
             </smallbuttons>
-            <button class="inline" v-if="isInNativeAppWebView" title="Click to share this game with your friends." @click="ShareApp()">Share</button>
-            <a v-if="!isInNativeAppWebView" title="Click to buy me a cup of coffee." class="button inline" href="https://www.buymeacoffee.com/wilvoss" target="_blank">Donate! </a>
-            <button class="inline" v-if="UseDebug" title="Click to reset the entire app." @click="ResetApp()">RESET APP</button>
+            <button class="inline" v-if="isInNativeAppWebView" title="Click to share this game with your friends."
+              @click="ShareApp()">Share</button>
+            <a v-if="!isInNativeAppWebView" title="Click to buy me a cup of coffee." class="button inline"
+              href="https://www.buymeacoffee.com/wilvoss" target="_blank">Donate! </a>
+            <button class="inline" v-if="UseDebug" title="Click to reset the entire app." @click="ResetApp()">RESET
+              APP</button>
           </section>
         </content>
       </page>
-      <modal :tab-index="appVisualStateShowPageManageCurrency ? 0 : -1" :aria-hidden="!appVisualStateShowPageManageCurrency" :class="{show: appVisualStateShowPageManageCurrency}">
+      <modal :tab-index="appVisualStateShowPageManageCurrency ? 0 : -1"
+        :aria-hidden="!appVisualStateShowPageManageCurrency" :class="{show: appVisualStateShowPageManageCurrency}">
         <chrome>
           <button @click="ClearEphemeralVisualStates()">done</button>
         </chrome>
@@ -97,21 +140,27 @@
           <header>
             <icon class="gem"></icon>
             <h1>Rewards</h1>
-            <credit>Gems can be reallocated at any time. Once a Powerup is used, those gems are spent. Clearing one level earns 10 gems. Clearing all levels in one game earns an additional 1,000 gems. </credit>
+            <credit>Gems can be reallocated at any time. Once a Powerup is used, those gems are spent. Clearing one
+              level earns 10 gems. Clearing all levels in one game earns an additional 1,000 gems. </credit>
           </header>
           <section>
             <rewards v-for="currency in getCurrencies" v-if="currency.isEnabled">
               <h2 class="inline">{{NumberWithCommas(currency.count)}} Gems Left</h2>
-              <rewardcontainer v-for="reward in getItemsSortedByCost" v-if="reward.currency.name === currency.name" :class="{expanded: reward.isExpanded}" @click="reward.isExpanded = !reward.isExpanded">
+              <rewardcontainer v-for="reward in getItemsSortedByCost" v-if="reward.currency.name === currency.name"
+                :class="{expanded: reward.isExpanded}" @click="reward.isExpanded = !reward.isExpanded">
                 <reward>
-                  <cost><icon :class="currency.className"></icon>{{NumberWithCommas(reward.cost)}}</cost>
+                  <cost>
+                    <icon :class="currency.className"></icon>{{NumberWithCommas(reward.cost)}}
+                  </cost>
                   <info>
                     <name v-html="reward.name"></name>
                     <description>Maximum of {{reward.maxCount}}</description>
                   </info>
-                  <button class="quaternary" @click="AdjustItemCount(event, currency, reward, -1)" :disabled="reward.count === 0">–</button>
+                  <button class="quaternary" @click="AdjustItemCount(event, currency, reward, -1)"
+                    :disabled="reward.count === 0">–</button>
                   <amount>{{reward.count}}</amount>
-                  <button class="quaternary" @click="AdjustItemCount(event, currency, reward, 1)" :disabled="reward.cost > currency.count || currency.count === 0 || reward.count === reward.maxCount">+</button>
+                  <button class="quaternary" @click="AdjustItemCount(event, currency, reward, 1)"
+                    :disabled="reward.cost > currency.count || currency.count === 0 || reward.count === reward.maxCount">+</button>
                 </reward>
                 <explanation><span>{{reward.explanation}}</span></explanation>
               </rewardcontainer>
@@ -122,7 +171,8 @@
           </section>
         </content>
       </modal>
-      <modal :tab-index="appVisualStateShowPageCredits ? 0 : -1" :aria-hidden="!appVisualStateShowPageCredits" :class="{show: appVisualStateShowPageCredits}">
+      <modal :tab-index="appVisualStateShowPageCredits ? 0 : -1" :aria-hidden="!appVisualStateShowPageCredits"
+        :class="{show: appVisualStateShowPageCredits}">
         <chrome>
           <button @click="ClearEphemeralVisualStates()">done</button>
         </chrome>
@@ -151,10 +201,14 @@
             <credit>Kathleen Voss</credit>
             <credit>&nbsp;</credit>
             <credit>Thank you for making this game better!</credit>
-            <a class="button secondary isolate" :href="'mailto:bigtentgames@icloud.com?subject=Feedback - Like Me v' + currentVersion">Give feedback</a>
+            <a class="button secondary isolate"
+              :href="'mailto:bigtentgames@icloud.com?subject=Feedback - Like Me v' + currentVersion">Give feedback</a>
             <h2 style="margin-top: var(--defaultGap)">How can you help?</h2>
             <credit> You can share this game with your friends!</credit>
-            <button title="Click to share this game with your friends." class="quaternary isolate inline small" @click="ShareApp()"><icon class="share"></icon>Share this game!</button>
+            <button title="Click to share this game with your friends." class="quaternary isolate inline small"
+              @click="ShareApp()">
+              <icon class="share"></icon>Share this game!
+            </button>
           </section>
           <section v-if="!deviceHasTouch" style="display: none">
             <h2>Keyboard shortcuts</h2>
@@ -192,11 +246,13 @@
             </leftright>
           </section>
           <section>
-            <credit>&copy;{{new Date().getFullYear()}} <a href="https://bigtentgames.com" target="_blank">Big Tent Games</a></credit>
+            <credit>&copy;{{new Date().getFullYear()}} <a href="https://bigtentgames.com" target="_blank">Big Tent
+                Games</a></credit>
           </section>
         </content>
       </modal>
-      <modal :tab-index="appVisualStateShowPageAchievements ? 0 : -1" :aria-hidden="!appVisualStateShowPageAchievements" :class="{show: appVisualStateShowPageAchievements}">
+      <modal :tab-index="appVisualStateShowPageAchievements ? 0 : -1" :aria-hidden="!appVisualStateShowPageAchievements"
+        :class="{show: appVisualStateShowPageAchievements}">
         <chrome>
           <button @click="ClearEphemeralVisualStates()">done</button>
         </chrome>
@@ -207,19 +263,28 @@
           </header>
           <section :class="{simpleranks: appSettingsShowSimpleRankPlaques}">
             <ranks>
-              <rank @click="SetUseHardCoreModeToTrue(event)" v-if="userSettingsUseHardCoreMode || (getCurrentPlayerRank === getLastRank && userNumberOfPerfectBasicGames >= 3)" class="unlocked" :class="{enabled: userSettingsUseHardCoreMode}">
+              <rank @click="SetUseHardCoreModeToTrue(event)"
+                v-if="userSettingsUseHardCoreMode || (getCurrentPlayerRank === getLastRank && userNumberOfPerfectBasicGames >= 3)"
+                class="unlocked" :class="{enabled: userSettingsUseHardCoreMode}">
                 <name>
                   <detail>{{userSettingsUseHardCoreMode ? 'Hardcore enabled!' : 'Enable hardcore'}}</detail>
                   <credit>Ranks only unlock after 3 perfect games in a row.</credit>
                 </name>
               </rank>
-              <rank @click="CreateConfetti(r.hue, r.rank)" v-for="r in allPlayerRanks" class="small" :class="['rank' + r.rank, getLastRank.rank === r.rank ? 'last' : '']" v-if="r.rank <= userRank" :style="{backgroundColor: 'hsl(' + r.hue + ', 50%, 50%)', boxShadow: 'inset 0px 1px 4px hsla(0, 0%, 0%, 0.4), ' + (userSettingsUseHardCoreMode ? '0px 0px 20px hsla(' + r.hue + ', 100%, 60%, .5)' : '')}">
-                <herald :class="['rank' + r.rank]"><icon></icon></herald>
+              <rank @click="CreateConfetti(r.hue, r.rank)" v-for="r in allPlayerRanks" class="small"
+                :class="['rank' + r.rank, getLastRank.rank === r.rank ? 'last' : '']" v-if="r.rank <= userRank"
+                :style="{backgroundColor: 'hsl(' + r.hue + ', 50%, 50%)', boxShadow: 'inset 0px 1px 4px hsla(0, 0%, 0%, 0.4), ' + (userSettingsUseHardCoreMode ? '0px 0px 20px hsla(' + r.hue + ', 100%, 60%, .5)' : '')}">
+                <herald :class="['rank' + r.rank]">
+                  <icon></icon>
+                </herald>
                 <name>
                   <detail :style="{color: 'hsl(' + r.hue + ', 100%, 92%)'}">{{r.name}}</detail>
-                  <credit :style="{textDecoration: r.rank !== userRank ? 'line-through': 'none'}">{{r.levels}} levels {{r.rank === userRank ? 'per game' : ''}}</credit>
+                  <credit :style="{textDecoration: r.rank !== userRank ? 'line-through': 'none'}">{{r.levels}} levels
+                    {{r.rank === userRank ? 'per game' : ''}}</credit>
                 </name>
-                <herald :class="['rank' + r.rank, {cleared: r.rank < userRank || userNumberOfPerfectBasicGames >= 3}]"><icon></icon></herald>
+                <herald :class="['rank' + r.rank, {cleared: r.rank < userRank || userNumberOfPerfectBasicGames >= 3}]">
+                  <icon></icon>
+                </herald>
               </rank>
               <credit v-if="getNextRankRequirementsText !== ''" v-html="getNextRankRequirementsText"></credit>
               <rank aria-disabled="true" class="locked" v-for="r in allPlayerRanks" v-if="r.rank > userRank">
@@ -230,7 +295,9 @@
                 </name>
                 <herald></herald>
               </rank>
-              <rank v-if="!userSettingsUseHardCoreMode && getCurrentPlayerRank === getLastRank && userNumberOfPerfectBasicGames < 3" class="locked">
+              <rank
+                v-if="!userSettingsUseHardCoreMode && getCurrentPlayerRank === getLastRank && userNumberOfPerfectBasicGames < 3"
+                class="locked">
                 <herald></herald>
                 <name>
                   <detail>????????</detail>
@@ -242,7 +309,8 @@
           </section>
         </content>
       </modal>
-      <modal :tab-index="appVisualStateShowPageHighScores ? 0 : -1" :aria-hidden="!appVisualStateShowPageHighScores" :class="{show: appVisualStateShowPageHighScores}">
+      <modal :tab-index="appVisualStateShowPageHighScores ? 0 : -1" :aria-hidden="!appVisualStateShowPageHighScores"
+        :class="{show: appVisualStateShowPageHighScores}">
         <chrome>
           <button @click="ClearEphemeralVisualStates()">done</button>
         </chrome>
@@ -252,38 +320,49 @@
           </header>
           <section v-if="gameLastHighScore.isCurrent">
             <h2 style="margin-bottom: var(--defaultGap)">Last Game</h2>
-            <leftright @click="SetScoreForSharingAndShare(gameLastHighScore)" :title="gameLastHighScore.isDaily ? 'Recorded for the ' + FormatDate(gameLastHighScore.dailyDate) + ' daily challange.' : ''" class="lastscore">
+            <leftright @click="SetScoreForSharingAndShare(gameLastHighScore)"
+              :title="gameLastHighScore.isDaily ? 'Recorded for the ' + FormatDate(gameLastHighScore.dailyDate) + ' daily challange.' : ''"
+              class="lastscore">
               <left>{{gameLastHighScore.isDaily ? 'Daily Challenge' : gameLastHighScore.modeName}}</left>
               <right>{{NumberWithCommas(gameLastHighScore.value)}}</right>
             </leftright>
           </section>
           <section>
             <h2 style="margin-bottom: var(--defaultGap)">Daily Challenge</h2>
-            <leftright @click="SetScoreForSharingAndShare(score, getNormalModeComputed)" v-for="score in userScoresHighDailyByDate">
+            <leftright @click="SetScoreForSharingAndShare(score, getNormalModeComputed)"
+              v-for="score in userScoresHighDailyByDate">
               <left>{{FormatDate(score.date)}}</left>
               <right>{{NumberWithCommas(score.value)}}</right>
             </leftright>
-            <leftright v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighDailyByDate.length"> <left></left>&nbsp;<right></right> </leftright>
+            <leftright v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighDailyByDate.length">
+              <left></left>&nbsp;<right></right>
+            </leftright>
           </section>
           <section>
             <h2 style="margin-bottom: var(--defaultGap)">Ranked Games</h2>
-            <leftright @click="SetScoreForSharingAndShare(score, getNormalModeComputed)" v-for="score in userScoresHighEasyByValue" :class="{current: score.isCurrent}">
+            <leftright @click="SetScoreForSharingAndShare(score, getNormalModeComputed)"
+              v-for="score in userScoresHighEasyByValue" :class="{current: score.isCurrent}">
               <left>{{FormatDate(score.date)}}</left>
               <right>{{NumberWithCommas(score.value)}}</right>
             </leftright>
-            <leftright v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighEasyByValue.length"> <left></left>&nbsp;<right></right> </leftright>
+            <leftright v-for="e in appSettingsNumberOfHighScoresShown - userScoresHighEasyByValue.length">
+              <left></left>&nbsp;<right></right>
+            </leftright>
           </section>
           <section>
             <button class="simple danger" @click="ClearAllUserScores()">Clear All Scores</button>
           </section>
         </content>
       </modal>
-      <modal :tab-index="gameCurrentIsPaused && !gameCurrentIsGameOver ? 0 : -1" :aria-hidden="!gameCurrentIsPaused || gameCurrentIsGameOver" class="pause" @click="ToggleGamePause(event, false)" :class="{show: gameCurrentIsPaused && !gameCurrentIsGameOver}">
+      <modal :tab-index="gameCurrentIsPaused && !gameCurrentIsGameOver ? 0 : -1"
+        :aria-hidden="!gameCurrentIsPaused || gameCurrentIsGameOver" class="pause"
+        @click="ToggleGamePause(event, false)" :class="{show: gameCurrentIsPaused && !gameCurrentIsGameOver}">
         <button title="Click the button to resume playing the game." class="quaternary blink">
           <icon class="play"></icon>
         </button>
       </modal>
-      <modal :tab-index="appVisualStateShowPageSettings ? 0 : -1" :aria-hidden="!appVisualStateShowPageSettings" :class="{show: appVisualStateShowPageSettings}">
+      <modal :tab-index="appVisualStateShowPageSettings ? 0 : -1" :aria-hidden="!appVisualStateShowPageSettings"
+        :class="{show: appVisualStateShowPageSettings}">
         <chrome>
           <button @click="ClearEphemeralVisualStates()">done</button>
         </chrome>
@@ -343,7 +422,8 @@
             </controlgroup>
 
             <themes>
-              <theme v-for="theme in appSettingsThemes" :class="{selected: theme.isSelected}" @click="SelectTheme(theme)">
+              <theme v-for="theme in appSettingsThemes" :class="{selected: theme.isSelected}"
+                @click="SelectTheme(theme)">
                 <colors>
                   <color :style="{backgroundColor: theme.color1}"></color>
                   <color :style="{backgroundColor: theme.color2}"></color>
@@ -354,11 +434,15 @@
             </themes>
           </section>
           <section>
-            <version :style="{fontStyle: window.location.host !== 'likeme.games' ? 'italic' : ''}"><a href="https://github.com/wilvoss/likeme/commits/main/" target="_blank">{{currentVersion}}</a></version>
+            <version :style="{fontStyle: window.location.host !== 'likeme.games' ? 'italic' : ''}"><a
+                href="https://github.com/wilvoss/likeme/commits/main/" target="_blank">{{currentVersion}}</a></version>
           </section>
         </content>
       </modal>
-      <modal :tab-index="appVisualStateShowPageGameOver ? 0 : -1" :aria-hidden="!appVisualStateShowPageGameOver" class="notransition semitransparent" :class="{show: appVisualStateShowPageGameOver, preview: !appVisualStateShowGameOverContent}" @pointerdown="appVisualStateShowNotification = false;">
+      <modal :tab-index="appVisualStateShowPageGameOver ? 0 : -1" :aria-hidden="!appVisualStateShowPageGameOver"
+        class="notransition semitransparent"
+        :class="{show: appVisualStateShowPageGameOver, preview: !appVisualStateShowGameOverContent}"
+        @pointerdown="appVisualStateShowNotification = false;">
         <content :style="{justifyContent: getNormalModeComputed.isSelected ? '' : 'center'}">
           <header>
             <icon class="gem"></icon>
@@ -368,11 +452,15 @@
           <section class="stats">
             <leftright v-for="boon in gameCurrentUpdatedCurrencyDeltas">
               <left>{{boon.currency.pluralName}} earned</left>
-              <right><icon :class="boon.currency.className"></icon> {{NumberWithCommas(boon.delta)}}</right>
+              <right>
+                <icon :class="boon.currency.className"></icon> {{NumberWithCommas(boon.delta)}}
+              </right>
             </leftright>
             <leftright>
               <left> {{getNormalModeComputed.isSelected ? 'Final score ' : 'Total levels cleared '}} </left>
-              <right> {{getNormalModeComputed.isSelected? NumberWithCommas(gameLastHighScore.value) + ' pts' : gameLastHighScore.numberOfClears}} </right>
+              <right>
+                {{getNormalModeComputed.isSelected? NumberWithCommas(gameLastHighScore.value) + ' pts' : gameLastHighScore.numberOfClears}}
+              </right>
             </leftright>
             <leftright v-if="getNormalModeComputed.isSelected">
               <left>Perfect games</left>
@@ -392,23 +480,34 @@
             </leftright>
           </section>
           <section>
-            <button :disabled="gameCurrentTimer > 0 && gameLastHighScore.isDaily && gameLastHighScore.numberOfClears === gameLastHighScore.totalPossibleClears" v-if="!getInfiniteModeComputed.isSelected" title="Click to share your score with your friends." class="tertiary inline" @click="SetScoreForSharingAndShare(gameLastHighScore, getCurrentGameModeComputed, gameLastHighScore.rankId !== getLastRank.rank && getNormalModeComputed.isSelected && tempPerfectBasicGames === 3)">
+            <button
+              :disabled="gameCurrentTimer > 0 && gameLastHighScore.isDaily && gameLastHighScore.numberOfClears === gameLastHighScore.totalPossibleClears"
+              v-if="!getInfiniteModeComputed.isSelected" title="Click to share your score with your friends."
+              class="tertiary inline"
+              @click="SetScoreForSharingAndShare(gameLastHighScore, getCurrentGameModeComputed, gameLastHighScore.rankId !== getLastRank.rank && getNormalModeComputed.isSelected && tempPerfectBasicGames === 3)">
               Share!<icon class="share"></icon>
             </button>
-            <button title="Click to return to the home screen." class="secondary" @click="ToggleShowHomeOn(event)">Home</button>
-            <button v-if="!gameLastHighScore.isDaily" title="Click to start a new game" class="primary" @click="RestartGame()">New Game</button>
+            <button title="Click to return to the home screen." class="secondary"
+              @click="ToggleShowHomeOn(event)">Home</button>
+            <button v-if="!gameLastHighScore.isDaily" title="Click to start a new game" class="primary"
+              @click="RestartGame()">New Game</button>
           </section>
         </content>
         <chrome class="footer" v-if="getNormalModeComputed.isSelected">
-          <button title="Click to adjust the game settings." class="quaternary" @pointerdown="appVisualStateShowGameOverContent = false" @pointerup="appVisualStateShowGameOverContent = true" @pointerout="appVisualStateShowGameOverContent = true">
+          <button title="Click to adjust the game settings." class="quaternary"
+            @pointerdown="appVisualStateShowGameOverContent = false"
+            @pointerup="appVisualStateShowGameOverContent = true"
+            @pointerout="appVisualStateShowGameOverContent = true">
             <icon class="eye"></icon>
           </button>
         </chrome>
       </modal>
-      <challenge :tab-index="appVisualStateShowPageChallenge ? 0 : -1" :aria-hidden="!appVisualStateShowPageChallenge" class="semitransparent" :class="{show: appVisualStateShowPageChallenge}">
+      <challenge :tab-index="appVisualStateShowPageChallenge ? 0 : -1" :aria-hidden="!appVisualStateShowPageChallenge"
+        class="semitransparent" :class="{show: appVisualStateShowPageChallenge}">
         <section>
           <h1>{{getNormalModeComputed.isSelected ? 'Quit?' : 'Quit for real?'}}</h1>
-          <credit style="margin: 20px" v-if="getNormalModeComputed.isSelected && gameCurrentIsGameDailyChallenge">You won't be able to restart the {{FormatDate(gameDailyChallenge.date)}} Daily Challenge.</credit>
+          <credit style="margin: 20px" v-if="getNormalModeComputed.isSelected && gameCurrentIsGameDailyChallenge">You
+            won't be able to restart the {{FormatDate(gameDailyChallenge.date)}} Daily Challenge.</credit>
         </section>
         <section>
           <smallbuttons>
@@ -417,92 +516,123 @@
           </smallbuttons>
         </section>
       </challenge>
-      <stage :tab-index="!appVisualStateShowPageHome && !appTutorialIsInPlay && !gameCurrentIsPaused ? 0 : -1" :aria-hidden="appVisualStateShowPageHome || appTutorialIsInPlay || gameCurrentIsPaused" v-if="!appVisualStateShowPageHome && !appTutorialIsInPlay" :class="{paused: gameCurrentIsPaused}">
-        <chrome :class="{hide: !appVisualStateShowGameOverContent, alert: gameCurrentTimer < 6000 && !getInfiniteModeComputed.isSelected}">
+      <stage :tab-index="!appVisualStateShowPageHome && !appTutorialIsInPlay && !gameCurrentIsPaused ? 0 : -1"
+        :aria-hidden="appVisualStateShowPageHome || appTutorialIsInPlay || gameCurrentIsPaused"
+        v-if="!appVisualStateShowPageHome && !appTutorialIsInPlay" :class="{paused: gameCurrentIsPaused}">
+        <chrome
+          :class="{hide: !appVisualStateShowGameOverContent, alert: gameCurrentTimer < 6000 && !getInfiniteModeComputed.isSelected}">
           <button @click="ToggleSettings(event, true)">Options</button>
           <gameinfo @click="ToggleGamePause(event, !gameCurrentIsPaused)">
-            <labelsmall v-if="getNormalModeComputed.isSelected"> level {{parseInt(gameCurrentNumberOfClears) + 1}} <span>of</span> {{getCurrentPlayerRank.levels}} </labelsmall>
-            <time v-if="!getInfiniteModeComputed.isSelected">{{gameCurrentIsPaused ? 'Paused' : NumberWithCommas(gameCurrentTotalScore) + ' pts'}}</time>
+            <labelsmall v-if="getNormalModeComputed.isSelected"> level {{parseInt(gameCurrentNumberOfClears) + 1}}
+              <span>of</span> {{getCurrentPlayerRank.levels}} </labelsmall>
+            <time
+              v-if="!getInfiniteModeComputed.isSelected">{{gameCurrentIsPaused ? 'Paused' : NumberWithCommas(gameCurrentTotalScore) + ' pts'}}</time>
             <time v-if="getInfiniteModeComputed.isSelected">Zen Mode</time>
           </gameinfo>
           <button @click="ToggleChallenge(event, true)">Quit</button>
         </chrome>
-        <hint @pointerdown="appVisualStateShowElementHint = false" :class="{show: appVisualStateShowElementHint && !gameCurrentIsGameOver && userSettingsUseHints}">
+        <hint @pointerdown="appVisualStateShowElementHint = false"
+          :class="{show: appVisualStateShowElementHint && !gameCurrentIsGameOver && userSettingsUseHints}">
           <message v-html="gameCurrentHintText"></message>
         </hint>
         <playarea>
           <actionbar>
             <actionitems v-if="appSettingsEnableEconomy && !getInfiniteModeComputed.isSelected">
-              <actionitem :tab-index="item.count === 0 ? -1 : 0" :aria-disabled="item.count === 0" @click="HandleActionItemClick(item)" :class="{disabled: item.count === 0}" v-for="item in getFirstTwoItemsSortedByOrder">
+              <actionitem :tab-index="item.count === 0 ? -1 : 0" :aria-disabled="item.count === 0"
+                @click="HandleActionItemClick(item)" :class="{disabled: item.count === 0}"
+                v-for="item in getFirstTwoItemsSortedByOrder">
                 <count>{{item.count}}</count>
                 <namelet v-html="item.name"></namelet>
               </actionitem>
             </actionitems>
-            <scorearea :class="{clickable: !getInfiniteModeComputed.isSelected}" @click="ToggleGamePause(event, !gameCurrentIsPaused)">
-              <labelsmall>{{getInfiniteModeComputed.isSelected ? '' : 'II'}} {{getInfiniteModeComputed.isSelected ? 'clears' : 'pause'}} </labelsmall>
-              <currentscore :class="{bigpulse: !getInfiniteModeComputed.isSelected && !gameCurrentIsGameOver && gameCurrentTimer < 6000 }"> {{getInfiniteModeComputed.isSelected ? NumberWithCommas(gameCurrentNumberOfClears) : GetMsToTime(gameCurrentTimer)}} </currentscore>
+            <scorearea :class="{clickable: !getInfiniteModeComputed.isSelected}"
+              @click="ToggleGamePause(event, !gameCurrentIsPaused)">
+              <labelsmall>{{getInfiniteModeComputed.isSelected ? '' : 'II'}}
+                {{getInfiniteModeComputed.isSelected ? 'clears' : 'pause'}} </labelsmall>
+              <currentscore
+                :class="{bigpulse: !getInfiniteModeComputed.isSelected && !gameCurrentIsGameOver && gameCurrentTimer < 6000 }">
+                {{getInfiniteModeComputed.isSelected ? NumberWithCommas(gameCurrentNumberOfClears) : GetMsToTime(gameCurrentTimer)}}
+              </currentscore>
             </scorearea>
             <actionitems v-if="appSettingsEnableEconomy && !getInfiniteModeComputed.isSelected">
-              <actionitem :tab-index="item.count === 0 ? -1 : 0" :aria-disabled="item.count === 0" @click="HandleActionItemClick(item)" :class="{disabled: item.count === 0}" v-for="item in getSecondTwoItemsSortedByOrder">
+              <actionitem :tab-index="item.count === 0 ? -1 : 0" :aria-disabled="item.count === 0"
+                @click="HandleActionItemClick(item)" :class="{disabled: item.count === 0}"
+                v-for="item in getSecondTwoItemsSortedByOrder">
                 <count>{{item.count}}</count>
                 <namelet v-html="item.name"></namelet>
               </actionitem>
             </actionitems>
           </actionbar>
           <board>
-            <container @click="TogglePieceSelection(piece)" v-for="piece in gameCurrentBoardPieces" :class="{include:  piece.nudge && (userSettingsUseHints || appSettingsEnableEconomy) && piece.isMatch, exclude: piece.nudge && (userSettingsUseHints || appSettingsEnableEconomy) && !piece.isMatch, selected: piece.isSelected, dropped: piece.hasDropped}">
+            <container @click="TogglePieceSelection(piece)" v-for="piece in gameCurrentBoardPieces"
+              :class="{include:  piece.nudge && (userSettingsUseHints || appSettingsEnableEconomy) && piece.isMatch, exclude: piece.nudge && (userSettingsUseHints || appSettingsEnableEconomy) && !piece.isMatch, selected: piece.isSelected, dropped: piece.hasDropped}">
               <piece :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color}">
                 <gild :style="{backgroundImage: piece.backgroundImage }"> </gild>
               </piece>
             </container>
           </board>
-          <addtime :class="{flyaway: appVisualStateShowElementFlyaway}">+{{appSettingsCurrentGameMode.bonustime/1000}} seconds!</addtime>
+          <addtime :class="{flyaway: appVisualStateShowElementFlyaway}">+{{appSettingsCurrentGameMode.bonustime/1000}}
+            seconds!</addtime>
           <me :class="{nope: gameCurrentIsUserGuessWrong}">
             <container @click="CheckBoard()">
-              <piece :style="{maskImage: gameCurrentMePiece.shape, webkitMaskImage: gameCurrentMePiece.shape, backgroundColor: gameCurrentMePiece.color}">
+              <piece
+                :style="{maskImage: gameCurrentMePiece.shape, webkitMaskImage: gameCurrentMePiece.shape, backgroundColor: gameCurrentMePiece.color}">
                 <gild :style="{backgroundImage: gameCurrentMePiece.backgroundImage }"> </gild>
               </piece>
             </container>
           </me>
         </playarea>
       </stage>
-      <tutorial :tab-index="appTutorialIsInPlay ? 0 : -1" :aria-hidden="!appTutorialIsInPlay" :class="{show: appTutorialIsInPlay}">
+      <tutorial :tab-index="appTutorialIsInPlay ? 0 : -1" :aria-hidden="!appTutorialIsInPlay"
+        :class="{show: appTutorialIsInPlay}">
         <chrome v-if="appTutorialCurrentStepIndex !== appTutorialSteps.length - 1">
           <button v-if="appTutorialUserHasSeen" @click="HandleDoneTutorial()">Done</button>
           <button v-if="!appTutorialUserHasSeen" @click="HandleSkipTutorial()">Skip Tutorial</button>
         </chrome>
         <playarea>
           <h2>{{ChangeTutorialPiecesToCats(appTutorialSteps[appTutorialCurrentStepIndex].title)}}</h2>
-          <description v-html="ChangeTutorialPiecesToCats(appTutorialSteps[appTutorialCurrentStepIndex].description)"> </description>
-          <board :class="{unreveal: appTutorialSteps[appTutorialCurrentStepIndex].unreveal, partial: appTutorialSteps[appTutorialCurrentStepIndex].partial  }">
-            <container class="dropped" :class="{selected: piece.isSelected, describe: appTutorialSteps[appTutorialCurrentStepIndex].describe}" v-for="(piece, index) in appTutorialBoardPieces.board" @click="piece.isSelected = appTutorialCurrentStepIndex > 3 ? !piece.isSelected : piece.isSelected">
-              <description v-if="index < 4" :class="{show: appTutorialCurrentStepIndex === 3}" v-html="piece.description"></description>
+          <description v-html="ChangeTutorialPiecesToCats(appTutorialSteps[appTutorialCurrentStepIndex].description)">
+          </description>
+          <board
+            :class="{unreveal: appTutorialSteps[appTutorialCurrentStepIndex].unreveal, partial: appTutorialSteps[appTutorialCurrentStepIndex].partial  }">
+            <container class="dropped"
+              :class="{selected: piece.isSelected, describe: appTutorialSteps[appTutorialCurrentStepIndex].describe}"
+              v-for="(piece, index) in appTutorialBoardPieces.board"
+              @click="piece.isSelected = appTutorialCurrentStepIndex > 3 ? !piece.isSelected : piece.isSelected">
+              <description v-if="index < 4" :class="{show: appTutorialCurrentStepIndex === 3}"
+                v-html="piece.description"></description>
               <piece :style="{maskImage: piece.shape, webkitMaskImage: piece.shape, backgroundColor: piece.color}">
                 <gild :style="{backgroundImage: piece.backgroundImage }"> </gild>
               </piece>
             </container>
           </board>
           <addtime :class="{flyaway: appVisualStateShowElementFlyaway}">+3 seconds</addtime>
-          <me v-if="appTutorialCurrentStepIndex !== appTutorialSteps.length - 1 && !appTutorialSteps[appTutorialCurrentStepIndex].checkBoard">
+          <me
+            v-if="appTutorialCurrentStepIndex !== appTutorialSteps.length - 1 && !appTutorialSteps[appTutorialCurrentStepIndex].checkBoard">
             <container @click="HandleTutorialNext()">
-              <piece v-if="appTutorialCurrentStepIndex === 0" :style="{maskImage: 'var(--shape4)', webkitMaskImage: 'var(--shape4)', backgroundColor: 'var(--color1)'}">
+              <piece v-if="appTutorialCurrentStepIndex === 0"
+                :style="{maskImage: 'var(--shape4)', webkitMaskImage: 'var(--shape4)', backgroundColor: 'var(--color1)'}">
                 <gild :style="{backgroundImage: 'var(--bgImage1)' }"> </gild>
               </piece>
-              <piece v-if="appTutorialCurrentStepIndex > 0" :style="{maskImage: appTutorialMePiece.shape, webkitMaskImage: appTutorialMePiece.shape, backgroundColor: appTutorialMePiece.color}">
+              <piece v-if="appTutorialCurrentStepIndex > 0"
+                :style="{maskImage: appTutorialMePiece.shape, webkitMaskImage: appTutorialMePiece.shape, backgroundColor: appTutorialMePiece.color}">
                 <gild :style="{backgroundImage: appTutorialMePiece.backgroundImage }"> </gild>
               </piece>
             </container>
           </me>
           <me v-if="appTutorialCurrentStepIndex === appTutorialSteps.length - 1">
             <container @click="HandleDoneTutorial()">
-              <piece :style="{maskImage: appTutorialMePiece.shape, webkitMaskImage: appTutorialMePiece.shape, backgroundColor: appTutorialMePiece.color}">
+              <piece
+                :style="{maskImage: appTutorialMePiece.shape, webkitMaskImage: appTutorialMePiece.shape, backgroundColor: appTutorialMePiece.color}">
                 <gild :style="{backgroundImage: appTutorialMePiece.backgroundImage }"> </gild>
               </piece>
             </container>
           </me>
-          <me v-if="appTutorialSteps[appTutorialCurrentStepIndex].checkBoard" :class="{nope: gameCurrentIsUserGuessWrong}">
+          <me v-if="appTutorialSteps[appTutorialCurrentStepIndex].checkBoard"
+            :class="{nope: gameCurrentIsUserGuessWrong}">
             <container @click="HandleTutorialCheck()">
-              <piece :style="{maskImage: appTutorialMePiece.shape, webkitMaskImage: appTutorialMePiece.shape, backgroundColor: appTutorialMePiece.color}">
+              <piece
+                :style="{maskImage: appTutorialMePiece.shape, webkitMaskImage: appTutorialMePiece.shape, backgroundColor: appTutorialMePiece.color}">
                 <gild :style="{backgroundImage: appTutorialMePiece.backgroundImage }"> </gild>
               </piece>
             </container>
@@ -510,11 +640,20 @@
         </playarea>
         <section>
           <smallbuttons>
-            <button :aria-disabled="appTutorialCurrentStepIndex === 0" :disabled="appTutorialCurrentStepIndex === 0" v-if="appTutorialCurrentStepIndex < appTutorialSteps.length - 1" :class="{disabled: appTutorialCurrentStepIndex === 0}" @click="HandleTutorialBack()" class="secondary">Back</button>
-            <button v-if="appTutorialCurrentStepIndex < appTutorialSteps.length - 1 && appTutorialCurrentStepIndex === 4" class="secondary" @click="HandleTutorialNext()">Next</button>
-            <button v-if="appTutorialCurrentStepIndex < appTutorialSteps.length - 1 && appTutorialCurrentStepIndex !== 4" class="secondary" @click="HandleTutorialNext()">Next</button>
-            <button v-if="!appTutorialUserHasSeen && appTutorialCurrentStepIndex === appTutorialSteps.length - 1" class="primary" @click="HandleDoneTutorial()">Let's Go!</button>
-            <button v-if="appTutorialUserHasSeen && appTutorialCurrentStepIndex === appTutorialSteps.length - 1" class="secondary" @click="HandleSkipTutorial()">Done</button>
+            <button :aria-disabled="appTutorialCurrentStepIndex === 0" :disabled="appTutorialCurrentStepIndex === 0"
+              v-if="appTutorialCurrentStepIndex < appTutorialSteps.length - 1"
+              :class="{disabled: appTutorialCurrentStepIndex === 0}" @click="HandleTutorialBack()"
+              class="secondary">Back</button>
+            <button
+              v-if="appTutorialCurrentStepIndex < appTutorialSteps.length - 1 && appTutorialCurrentStepIndex === 4"
+              class="secondary" @click="HandleTutorialNext()">Next</button>
+            <button
+              v-if="appTutorialCurrentStepIndex < appTutorialSteps.length - 1 && appTutorialCurrentStepIndex !== 4"
+              class="secondary" @click="HandleTutorialNext()">Next</button>
+            <button v-if="!appTutorialUserHasSeen && appTutorialCurrentStepIndex === appTutorialSteps.length - 1"
+              class="primary" @click="HandleDoneTutorial()">Let's Go!</button>
+            <button v-if="appTutorialUserHasSeen && appTutorialCurrentStepIndex === appTutorialSteps.length - 1"
+              class="secondary" @click="HandleSkipTutorial()">Done</button>
           </smallbuttons>
         </section>
       </tutorial>
@@ -526,4 +665,5 @@
     <script src="models/models-min.js" type="text/javascript"></script>
     <script src="scripts/likeme-min.js" type="text/javascript"></script>
   </body>
+
 </html>
