@@ -21,7 +21,7 @@ var app = new Vue({
   data: {
     serviceWorker: '',
     storedVersion: 0,
-    currentVersion: '4.2.323',
+    currentVersion: '4.2.324',
     deviceHasTouch: true,
     allPlayerRanks: AllPlayerRanks,
     currency: new Currency(),
@@ -2074,13 +2074,19 @@ ${this.NumberWithCommas(this.gameScoreToShare.value)} pts - ${this.gameScoreToSh
       note('HandleServiceWorkerRegistration() called');
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker
-          .register('./sw.js')
+          .register('/sw.js', {
+            scope: '/',
+            updateViaCache: 'none',
+          })
           .then((reg) => {
             log('Service worker registered with scope:', reg.scope);
           })
-          .catch((error) => {
-            error('Service worker registration failed:', error);
+          .catch((err) => {
+            console.error('Service worker registration failed:', err);
+            error(`Service worker registration failed: ${err.message}`);
           });
+      } else {
+        error('Service workers are not supported in this browser.');
       }
     },
   },

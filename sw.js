@@ -1,4 +1,4 @@
-const CACHE_VERSION = '4.2.323';
+const CACHE_VERSION = '4.2.324';
 const CURRENT_CACHE = `main-${CACHE_VERSION}`;
 
 // prettier-ignore
@@ -66,7 +66,7 @@ const cacheFiles = [
   'models/models.js',
   'models/models-min.js',
   'scripts/likeme.js',
-  'scripts/likeme-min.js',
+  'scripts/likeme.min.js',
   'styles/altpattern1.css',
   'styles/cats-likeme-darkmode.css',
   'styles/cats-likeme.css',
