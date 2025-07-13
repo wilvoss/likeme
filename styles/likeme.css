@@ -1633,7 +1633,7 @@ tutorial playarea {
 tutorial board {
   align-content: start;
   opacity: 1;
-  transition: 300ms var(--transitionEase) all;
+  transition: 300ms cubic-bezier(0.4, 0, 0.6, 1) all;
   margin-top: 0px;
   margin-bottom: 0px;
   height: calc((var(--pieceSize) + 4px) * 3);
@@ -1666,7 +1666,7 @@ tutorial description {
 
 tutorial board.unreveal {
   opacity: 0;
-  transition: var(--transitionTime) ease-out all;
+  transition: 300ms cubic-bezier(0.165, 0.84, 0.44, 1) all;
   height: 0px;
 }
 
